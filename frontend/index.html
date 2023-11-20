@@ -3,6 +3,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link href="style.css" rel="stylesheet"/>
+    <link href="style.css" rel="stylesheet"/>
     <link href="node_modules/leaflet/dist/leaflet.css"
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
           rel="stylesheet"/>
@@ -17,14 +19,47 @@
 <h1>Walkscapes svetainė</h1>
 <h2>Sveiki atvykę</h2>
 
-<h3>Žmonės</h3>
-<table id="peopleTable">
-</table>
+<table id="peopleTable"></table>
 <script src="table.js"></script>
 
 <div id="map" style="width: 100%; height: 500px;"></div>
 <script src="map.js"></script>
 
+<script src="uploadRecord.js"></script>
+<button onclick="togglePopup()">Open Popup</button>
+<div id="overlay">
+    <div id="popup">
+        <h2>Upload Image</h2>
+        <form id="uploadForm">
+            <label>Coordinates</label>
+            <input id="latitude" name="latitude" type="text">
+            <input id="longitude" name="longitude" type="text">
+            <br>
+            <label for="images">Choose Image:</label>
+            <input accept="image/*" id="images" multiple name="image" required type="file">
+            <br>
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" required rows="4"></textarea>
+            <br>
+            <button onclick="uploadRecord()" type="submit">Upload</button>
+            <button onclick="togglePopup()" type="button">Close</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function togglePopup() {
+        var overlay = document.getElementById('overlay');
+        overlay.style.display = (overlay.style.display === 'none' || overlay.style.display === '') ? 'flex' : 'none';
+    }
+
+    document.getElementById('uploadForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        togglePopup();
+    });
+</script>
+
+<br>
 <img id="dbImage" src="">
 <script src="image.js"></script>
 
