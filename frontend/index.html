@@ -4,29 +4,28 @@
 <head>
     <meta charset="UTF-8">
     <link href="style.css" rel="stylesheet"/>
-    <link href="style.css" rel="stylesheet"/>
     <link href="node_modules/leaflet/dist/leaflet.css"
-          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
           rel="stylesheet"/>
     <!-- Make sure you put this AFTER Leaflet's CSS -->
-    <script integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    <script 
             src="node_modules/leaflet/dist/leaflet.js"></script>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Walkscapes</title>
 </head>
 
 <body>
-<h1>Walkscapes svetainė</h1>
-<h2>Sveiki atvykę</h2>
-
+<h1>Walkscapes</h1>
+<!--<h2>Sveiki atvykę</h2>-->
+<!--
 <table id="peopleTable"></table>
 <script src="table.js"></script>
-
+-->
 <div id="map" style="width: 100%; height: 500px;"></div>
 <script src="map.js"></script>
-
 <script src="uploadRecord.js"></script>
-<button onclick="togglePopup()">Open Popup</button>
+
+<!--<button onclick="togglePopup()" class="popup-button">Add new description</button>-->
+<button onclick="updateMarkers(markers)" type="button" class="popup-button">Update markers</button>
 <div id="overlay">
     <div id="popup">
         <h2>Upload Image</h2>
@@ -41,11 +40,12 @@
             <label for="description">Description:</label>
             <textarea id="description" name="description" required rows="4"></textarea>
             <br>
-            <button onclick="uploadRecord()" type="submit">Upload</button>
-            <button onclick="togglePopup()" type="button">Close</button>
+            <button onclick="uploadRecord()" type="submit" class="popup-button">Upload</button>
+            <button onclick="togglePopup()" class="popup-button" type="button">Close</button>
         </form>
     </div>
 </div>
+
 
 <script>
     function togglePopup() {
@@ -57,11 +57,13 @@
         e.preventDefault();
         togglePopup();
     });
+
 </script>
 
 <br>
+<!--
 <img id="dbImage" src="">
 <script src="image.js"></script>
-
+-->
 </body>
 </html>
