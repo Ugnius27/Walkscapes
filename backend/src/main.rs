@@ -107,7 +107,7 @@ async fn main() -> Result<(), sqlx::Error> {
             .service(post_record)
             .service(get_markers)
             .service(get_record)
-            // .service(get_record_image)
+            .service(get_record_image)
             .service(actix_files::Files::new("/", "../frontend")
                 .index_file("index.html"))
     })
@@ -229,7 +229,7 @@ async fn post_record(mut payload: Multipart, pool: web::Data<PgPool>) -> impl Re
 
 #[get("api/record/markers")]
 async fn get_markers(pool: web::Data<PgPool>) -> impl Responder {
-    let rows = match sqlx::query!("SELECT id, ST_X(coordinates::geometry) as latitude, ST_Y(coordinates::geometry) as longitude FROM markers").fetch_all(pool.get_ref()).await {
+    let rows = match sqlx::query!("SELECT id, ST_X(coordinates::geometry) as latitude, ST_Y(coordinates::geometry) as longitude FROM markers INNER JOIN records on records.marker_fk = id").fetch_all(pool.get_ref()).await {
         Ok(rows) => rows,
         Err(err) => {
             eprintln!("{err}");
@@ -273,7 +273,7 @@ async fn get_record(pool: web::Data<PgPool>, id: web::Path<i32>) -> impl Respond
             for row in result {
                 record.photos.push(row.id);
             }
-        }/*record.photos = result.id*/
+        }
         Err(err) => {
             eprintln!("{err}");
             return HttpResponse::InternalServerError().body("Database error");
@@ -287,17 +287,18 @@ async fn get_record(pool: web::Data<PgPool>, id: web::Path<i32>) -> impl Respond
 }
 
 //TODO: sanitize inputs
-// #[get("api/record/marker={marker_id}/photo={photo_id}")]
-// async fn get_record_image(pool: web::Data<PgPool>, marker_id: web::Path<i32>) -> impl Responder {
-// match sqlx::query_as!(Image, "SELECT id, filename, image_data FROM record_images WHERE record_fk = $1 AND id = $2", marker_id.into_inner(), photo_id.into_inner())
-//     .fetch_one(pool.get_ref()).await {
-//     Ok(image) =>
-//         HttpResponse::Ok()
-//             .content_type("image")
-//             .body(image.image_data),
-//     Err(_) => HttpResponse::NotFound().body("Image not found"),
-// }
-// }
+#[get("api/record/marker={marker_id}/photo={photo_id}")]
+async fn get_record_image(pool: web::Data<PgPool>, path: web::Path<(i32, i32)>) -> impl Responder {
+    let (record_id, photo_id) = path.into_inner();
+    match sqlx::query_as!(Image, "SELECT id, filename, image_data FROM record_images WHERE record_fk = $1 AND id = $2", record_id, photo_id)
+        .fetch_one(pool.get_ref()).await {
+        Ok(image) =>
+            HttpResponse::Ok()
+                .content_type("image")
+                .body(image.image_data),
+        Err(_) => HttpResponse::NotFound().body("Image not found"),
+    }
+}
 
 async fn insert_record_image(pool: &sqlx::PgPool, image: Image, record_fk: i32) -> Result<(), sqlx::Error> {
     let result = sqlx::query!("INSERT INTO record_images (record_fk, filename, image_data) VALUES ($1, $2, $3)",
