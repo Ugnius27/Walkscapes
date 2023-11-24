@@ -7,7 +7,7 @@
     <link href="node_modules/leaflet/dist/leaflet.css"
           rel="stylesheet"/>
     <!-- Make sure you put this AFTER Leaflet's CSS -->
-    <script 
+    <script
             src="node_modules/leaflet/dist/leaflet.js"></script>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Walkscapes</title>
@@ -20,12 +20,12 @@
 <table id="peopleTable"></table>
 <script src="table.js"></script>
 -->
-<div id="map" style="width: 100%; height: 500px;"></div>
+<div id="map" style="width: 100%; height: 80%;"></div>
 <script src="map.js"></script>
 <script src="uploadRecord.js"></script>
 
 <!--<button onclick="togglePopup()" class="popup-button">Add new description</button>-->
-<button onclick="updateMarkers(markers)" type="button" class="popup-button">Update markers</button>
+<button class="popup-button" onclick="updateMarkers(markers)" type="button">Update markers</button>
 <div id="overlay">
     <div id="popup">
         <h2>Upload Image</h2>
@@ -40,8 +40,8 @@
             <label for="description">Description:</label>
             <textarea id="description" name="description" required rows="4"></textarea>
             <br>
-            <button onclick="uploadRecord()" type="submit" class="popup-button">Upload</button>
-            <button onclick="togglePopup()" class="popup-button" type="button">Close</button>
+            <button class="popup-button" onclick="uploadRecord()" type="submit">Upload</button>
+            <button class="popup-button" onclick="togglePopup()" type="button">Close</button>
         </form>
     </div>
 </div>

@@ -2,12 +2,14 @@ use std::fs::File;
 use std::io::Read;
 use futures_util::stream::StreamExt;
 use sqlx::postgres::{PgPoolOptions, PgRow};
-use sqlx::{FromRow, PgPool, Postgres, Row};
-use actix_web::{web, App, HttpServer, Responder, HttpMessage, HttpResponse, HttpRequest};
+use sqlx::{FromRow, PgPool, Postgres, Row, Transaction};
+use actix_web::{web, get, post, App, HttpServer, Responder, HttpMessage, HttpResponse, HttpRequest};
 use serde::{Serialize, Deserialize};
 use std::io::Write;
-use actix_multipart::Multipart;
+use std::str::FromStr;
+use actix_multipart::{Multipart, Field};
 use futures_util::TryStreamExt;
+use serde::de::Unexpected::Float;
 
 
 #[derive(Debug, FromRow, Serialize)]
@@ -20,17 +22,59 @@ struct Person {
 #[derive(Debug, FromRow, Serialize)]
 struct Image {
     id: i32,
-    name: String,
+    filename: String,
     image_data: Vec<u8>,
+}
+
+#[derive(Debug, FromRow, Serialize)]
+struct RecordImage {
+    record_fk: i32,
+    id: i32,
+    filename: String,
+    image_data: Vec<u8>,
+}
+
+impl From<Image> for RecordImage {
+    fn from(image: Image) -> RecordImage {
+        RecordImage {
+            record_fk: 0,
+            id: image.id,
+            filename: image.filename,
+            image_data: image.image_data,
+        }
+    }
+}
+
+#[derive(Debug, FromRow, Serialize)]
+struct Marker {
+    id: i32,
+    latitude: f64,
+    longitude: f64,
+}
+
+impl Marker {
+    fn new() -> Self {
+        Marker {
+            id: 0,
+            latitude: 0.0,
+            longitude: 0.0,
+        }
+    }
 }
 
 #[derive(Debug, FromRow, Serialize)]
 struct Record {
     id: i32,
-    latitude: f64,
-    longitude: f64,
-    description: String,
-    images_fk: i32,
+    description: Option<String>,
+}
+
+impl Record {
+    fn new() -> Self {
+        Record {
+            id: 0,
+            description: None,
+        }
+    }
 }
 
 #[tokio::main]
@@ -43,9 +87,9 @@ async fn main() -> Result<(), sqlx::Error> {
     HttpServer::new(move || {
         App::new()
             .app_data(web::Data::new(pool.clone()))
-            .service(web::resource("api/people").to(get_people))
-            .service(web::resource("api/image/{name}").route(web::get().to(get_image)))
-            .service(web::resource("api/record/upload").route(web::post().to(post_record)))
+            .service(get_image)
+            .service(get_people)
+            .service(post_record)
             .service(actix_files::Files::new("/", "../frontend")
                 .index_file("index.html"))
     })
@@ -58,14 +102,16 @@ async fn main() -> Result<(), sqlx::Error> {
     Ok(())
 }
 
+#[get("api/people")]
 async fn get_people(pool: web::Data<PgPool>) -> impl Responder {
     let people: Vec<Person> = sqlx::query_as!(Person, "SELECT * FROM people")
         .fetch_all(pool.get_ref()).await.expect("Nepavyko gauti duomenų iš DB");
     serde_json::to_string(&people).unwrap().to_string()
 }
 
+#[get("api/image/{name}")]
 async fn get_image(name: web::Path<String>, pool: web::Data<PgPool>) -> impl Responder {
-    let image = sqlx::query_as!(Image, "SELECT * FROM images WHERE name = $1", name.into_inner())
+    let image = sqlx::query_as!(Image, "SELECT * FROM images WHERE filename = $1", name.into_inner())
         .fetch_one(pool.get_ref()).await;
 
     match image {
@@ -78,16 +124,13 @@ async fn get_image(name: web::Path<String>, pool: web::Data<PgPool>) -> impl Res
     }
 }
 
+#[post("api/record/upload")]
 async fn post_record(req: HttpRequest, mut payload: Multipart, pool: web::Data<PgPool>) -> impl Responder {
     println!("Content-Type: {:?}", req.headers().get("Content-Type"));
     let pool = pool.get_ref();
-    let mut record = Record {
-        id: 0,
-        latitude: 0.0,
-        longitude: 0.0,
-        description: String::new(),
-        images_fk: 0,
-    };
+
+    let mut marker = Marker::new();
+    let mut record = Record::new();
     let mut images: Vec<Image> = Vec::new();
 
     while let Some(field) = payload.next().await {
@@ -96,32 +139,130 @@ async fn post_record(req: HttpRequest, mut payload: Multipart, pool: web::Data<P
             Err(err) => return HttpResponse::BadRequest().body(format!("Error processing field: {}", err))
         };
 
-        let mut bytes = Vec::new();
-        while let Some(chunk) = field.next().await {
-            bytes.extend_from_slice(&chunk.unwrap());
-        }
-        let field_name = field.content_disposition().get_name().unwrap();
+        let Some(field_name) = field.content_disposition().get_name() else {
+            return HttpResponse::BadRequest().body("Field has no name");
+        };
 
         match field_name {
             "image" => {
-                let image = Image {
-                    id: 0,
-                    name: field.content_disposition().get_filename().unwrap().to_owned(),
-                    image_data: bytes,
-                };
-                images.push(image);
+                match extract_image_from_field(field).await {
+                    Ok(image) => images.push(image),
+                    Err(err) => return HttpResponse::BadRequest().body(err),
+                }
             }
-            "description" => {}
-            "latitude" => {}
-            "longitude" => {}
-            _ => {}
+            "description" => {
+                match extract_string_from_field(field).await {
+                    Ok(desc) => record.description = Some(desc),
+                    Err(err) => return HttpResponse::BadRequest().body(err),
+                }
+            }
+            "latitude" => {
+                match extract_f64_from_field(field).await {
+                    Ok(lat) => marker.latitude = lat,
+                    Err(err) => return HttpResponse::BadRequest().body(err),
+                }
+            }
+            "longitude" => {
+                match extract_f64_from_field(field).await {
+                    Ok(long) => marker.longitude = long,
+                    Err(err) => return HttpResponse::BadRequest().body(err),
+                }
+            }
+            _ => return HttpResponse::BadRequest().body("Unexpected field name"),
         }
     }
-    if !images.is_empty() {
-        for image in images {
-            sqlx::query!("INSERT INTO images (name, image_data) VALUES ($1, $2)",
-            image.name, image.image_data).execute(pool).await.unwrap();
+
+    // let mut transaction = match pool.begin().await {
+    //     Ok(tran) => tran,
+    //     Err(err) => {
+    //         eprintln!("{err}");
+    //         return HttpResponse::InternalServerError().body("Database error");
+    //     }
+    // };
+
+    let marker_id = match insert_marker(&pool, marker).await {
+        Ok(id) => id,
+        Err(err) => {
+            eprintln!("{err}");
+            return HttpResponse::InternalServerError().body("Database error");
+        }
+    };
+
+    record.id = marker_id;
+    if let Err(err) = insert_record(&pool, record).await {
+        eprintln!("{err}");
+        return HttpResponse::InternalServerError().body("Database error");
+    }
+
+    for image in images {
+        if let Err(err) = insert_record_image(&pool, image, marker_id).await {
+            eprintln!("{err}");
+            return HttpResponse::InternalServerError().body("Database error");
         }
     }
-    HttpResponse::Ok().body("Data received successfully!")
+
+    // match Err(err) = transaction.commit().await {
+    //     eprintln!("{err}");
+    //     return HttpResponse::InternalServerError().body("Database error");
+    // }
+
+    HttpResponse::Ok().body("Data received")
+}
+
+async fn insert_record_image(pool: &sqlx::PgPool, image: Image, record_fk: i32) -> Result<(), sqlx::Error> {
+    let result = sqlx::query!("INSERT INTO record_images (record_fk, filename, image_data) VALUES ($1, $2, $3)",
+            record_fk, image.filename, image.image_data)
+        .execute(pool).await?;
+    Ok(())
+}
+
+async fn insert_record(pool: &sqlx::PgPool, record: Record) -> Result<(), sqlx::Error> {
+    let result = sqlx::query!("INSERT INTO records (marker_fk, description) VALUES ($1, $2)",
+        record.id,
+        record.description).execute(pool).await?;
+    Ok(())
+}
+
+async fn insert_marker(pool: &sqlx::PgPool, marker: Marker) -> Result<i32, sqlx::Error> {
+    let result = sqlx::query!("INSERT INTO markers (coordinates) VALUES (ST_MakePoint($1, $2)) RETURNING id",
+        marker.latitude,
+        marker.longitude).fetch_one(pool).await?;
+    Ok(result.id)
+}
+
+
+async fn extract_bytes_from_field(mut field: Field) -> Result<Vec::<u8>, &'static str> {
+    let mut bytes = Vec::new();
+    while let Some(chunk) = field.next().await {
+        bytes.extend_from_slice(&chunk.map_err(|_| "Problem processing payload")?);
+    }
+    Ok(bytes)
+}
+
+async fn extract_image_from_field(mut field: Field) -> Result<Image, &'static str> {
+    let filename = field.content_disposition()
+        .get_filename()
+        .ok_or("Malformed field in multipart")? //Not sure if this check is necessary
+        .to_owned();
+    let bytes = extract_bytes_from_field(field).await?;
+    Ok(Image {
+        id: 0,
+        filename: filename,
+        image_data: bytes,
+    })
+}
+
+async fn extract_string_from_field(mut field: Field) -> Result<String, &'static str> {
+    let bytes = extract_bytes_from_field(field).await?;
+    Ok(String::from_utf8(bytes).map_err(|_| "String in multipart was not UTF8")?)
+}
+
+async fn extract_f64_from_field(mut field: Field) -> Result<f64, &'static str> {
+    let bytes = extract_bytes_from_field(field).await?;
+    unsafe {
+        match f64::from_str(&String::from_utf8_unchecked(bytes)) {
+            Ok(f) => Ok(f),
+            Err(_) => Err("Failed to parse float in multipart"),
+        }
+    }
 }

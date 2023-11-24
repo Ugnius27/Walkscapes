@@ -4,20 +4,23 @@ body {
     padding: 50px;
 
     margin: 0;
-    height: 100vh;
+    height: 90vh;
     background: linear-gradient(to bottom, #aaf5a5, #ffffff);
-  }
-  
-  /* h1 {
-    color: #333;
-  } */
+
+    /*height: 100%;*/
+    /*overflow-y: hidden;*/
+}
+
+/* h1 {
+  color: #333;
+} */
 
 h1 {
-  color: #141515; /* Green color for the heading */
-  font-size: 3em; /* Adjust the font size as needed */
-  margin-bottom: 20px; /* Add some space below the heading */
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Add a subtle text shadow */
-}  
+    color: #141515; /* Green color for the heading */
+    font-size: 3em; /* Adjust the font size as needed */
+    margin-bottom: 20px; /* Add some space below the heading */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Add a subtle text shadow */
+}
 
 #overlay {
     display: none;
@@ -30,7 +33,7 @@ h1 {
     justify-content: center;
     align-items: center;
     z-index: 1000;
-} 
+}
 
 #popup {
     background-color: #fff;
@@ -43,15 +46,15 @@ h1 {
 #uploadForm {
     text-align: left;
 }
+
 #uploadForm label {
     display: block;
     margin-top: 10px;
 }
+
 #uploadForm textarea {
     width: 100%;
 }
-
-
 
 
 .popup-button {
@@ -64,16 +67,16 @@ h1 {
     border: none;
     border-radius: 5px;
     color: #ffffff;
-    background-color: #4CAF50; 
+    background-color: #4CAF50;
     transition: background-color 0.3s ease;
 
     margin-top: 10px;
     /* margin-bottom: 10px; */
-  }
-  
+}
+
 .popup-button:hover {
     background-color: #45a049;
-  }
+}
 
 /* .custom-popup {
     width: 600px;
