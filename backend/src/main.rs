@@ -8,6 +8,7 @@ use serde::{Serialize, Deserialize};
 use std::io::Write;
 use std::str::FromStr;
 use actix_multipart::{Multipart, Field};
+use actix_multipart::MultipartError::Payload;
 use futures_util::TryStreamExt;
 use serde::de::Unexpected::Float;
 
@@ -46,6 +47,11 @@ impl From<Image> for RecordImage {
 }
 
 #[derive(Debug, FromRow, Serialize)]
+struct Point {
+    coords: (f64, f64),
+}
+
+#[derive(Debug, FromRow, Serialize)]
 struct Marker {
     id: i32,
     latitude: f64,
@@ -64,8 +70,10 @@ impl Marker {
 
 #[derive(Debug, FromRow, Serialize)]
 struct Record {
+    //#[serde(skip_serializing)] //better to change re sql query
     id: i32,
     description: Option<String>,
+    photos: Vec<i32>,
 }
 
 impl Record {
@@ -73,6 +81,7 @@ impl Record {
         Record {
             id: 0,
             description: None,
+            photos: Vec::new(),
         }
     }
 }
@@ -80,9 +89,15 @@ impl Record {
 #[tokio::main]
 async fn main() -> Result<(), sqlx::Error> {
     const DATABASE_URL: &str = "postgres://testuser:slaptazodis@158.129.1.132/test";
-    let pool = PgPoolOptions::new()
+    let pool = match PgPoolOptions::new()
         .max_connections(5)
-        .connect(DATABASE_URL).await?;
+        .connect(DATABASE_URL).await {
+        Ok(pool) => pool,
+        Err(err) => {
+            eprintln!("{err}");
+            panic!();
+        }
+    };
 
     HttpServer::new(move || {
         App::new()
@@ -90,6 +105,9 @@ async fn main() -> Result<(), sqlx::Error> {
             .service(get_image)
             .service(get_people)
             .service(post_record)
+            .service(get_markers)
+            .service(get_record)
+            // .service(get_record_image)
             .service(actix_files::Files::new("/", "../frontend")
                 .index_file("index.html"))
     })
@@ -124,9 +142,9 @@ async fn get_image(name: web::Path<String>, pool: web::Data<PgPool>) -> impl Res
     }
 }
 
+//TODO: sanitize
 #[post("api/record/upload")]
-async fn post_record(req: HttpRequest, mut payload: Multipart, pool: web::Data<PgPool>) -> impl Responder {
-    println!("Content-Type: {:?}", req.headers().get("Content-Type"));
+async fn post_record(mut payload: Multipart, pool: web::Data<PgPool>) -> impl Responder {
     let pool = pool.get_ref();
 
     let mut marker = Marker::new();
@@ -208,6 +226,78 @@ async fn post_record(req: HttpRequest, mut payload: Multipart, pool: web::Data<P
 
     HttpResponse::Ok().body("Data received")
 }
+
+#[get("api/record/markers")]
+async fn get_markers(pool: web::Data<PgPool>) -> impl Responder {
+    let rows = match sqlx::query!("SELECT id, ST_X(coordinates::geometry) as latitude, ST_Y(coordinates::geometry) as longitude FROM markers").fetch_all(pool.get_ref()).await {
+        Ok(rows) => rows,
+        Err(err) => {
+            eprintln!("{err}");
+            return HttpResponse::NotFound().body("No markers found");
+        }
+    };
+    let mut markers = Vec::new();
+    for row in rows {
+        let marker = Marker {
+            id: row.id,
+            latitude: row.latitude.unwrap_or_default(),
+            longitude: row.longitude.unwrap_or_default(),
+        };
+        markers.push(marker);
+    }
+    match serde_json::to_string(&markers) {
+        Ok(result) => HttpResponse::Ok().body(result),
+        Err(err) => {
+            eprintln!("{err}");
+            return HttpResponse::InternalServerError().body(""); //TODO: json error? idk
+        }
+    }
+}
+
+//TODO: sanitize inputs
+#[get("api/record/marker={marker_id}")]
+async fn get_record(pool: web::Data<PgPool>, id: web::Path<i32>) -> impl Responder {
+    let mut record = Record::new();
+    record.id = id.into_inner();
+    match sqlx::query!("SELECT marker_fk as id, description from records WHERE marker_fk = $1", record.id).fetch_one(pool.get_ref()).await {
+        Ok(result) => record.description = result.description,
+        Err(err) => {
+            eprintln!("{err}");
+            return HttpResponse::NotFound().body("e"); //TODO e
+        }
+    };
+
+    match sqlx::query!("SELECT id from record_images inner join records on records.marker_fk = record_fk WHERE record_fk = $1", record.id
+    ).fetch_all(pool.get_ref()).await {
+        Ok(result) => {
+            for row in result {
+                record.photos.push(row.id);
+            }
+        }/*record.photos = result.id*/
+        Err(err) => {
+            eprintln!("{err}");
+            return HttpResponse::InternalServerError().body("Database error");
+        }
+    };
+
+    match serde_json::to_string(&record) {
+        Ok(result) => HttpResponse::Ok().body(result),
+        Err(err) => HttpResponse::InternalServerError().body("") //TODO: json error?
+    }
+}
+
+//TODO: sanitize inputs
+// #[get("api/record/marker={marker_id}/photo={photo_id}")]
+// async fn get_record_image(pool: web::Data<PgPool>, marker_id: web::Path<i32>) -> impl Responder {
+// match sqlx::query_as!(Image, "SELECT id, filename, image_data FROM record_images WHERE record_fk = $1 AND id = $2", marker_id.into_inner(), photo_id.into_inner())
+//     .fetch_one(pool.get_ref()).await {
+//     Ok(image) =>
+//         HttpResponse::Ok()
+//             .content_type("image")
+//             .body(image.image_data),
+//     Err(_) => HttpResponse::NotFound().body("Image not found"),
+// }
+// }
 
 async fn insert_record_image(pool: &sqlx::PgPool, image: Image, record_fk: i32) -> Result<(), sqlx::Error> {
     let result = sqlx::query!("INSERT INTO record_images (record_fk, filename, image_data) VALUES ($1, $2, $3)",
