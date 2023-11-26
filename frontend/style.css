@@ -1,12 +1,14 @@
 body {
     font-family: Arial, sans-serif;
     text-align: center;
-    padding: 50px;
+    padding: 40px;
 
     margin: 0;
     height: 90vh;
     /*height: auto;*/
-    background: linear-gradient(to bottom, #aaf5a5, #ffffff);
+    /*background: linear-gradient(to bottom, #aaf5a5, #ffffff);*/
+    /*background: linear-gradient(to bottom, #000000, #ffffff)*/
+    background: #d9f8d9
 
     /*height: 100%;*/
     /*overflow-y: hidden;*/
@@ -18,7 +20,8 @@ body {
 
 h1 {
     color: #141515; /* Green color for the heading */
-    font-size: 3em; /* Adjust the font size as needed */
+    /*color: #ffffff; */
+    font-size: 2em; /* Adjust the font size as needed */
     margin-bottom: 30px; /* Add some space below the heading */
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Add a subtle text shadow */
 }
@@ -95,7 +98,8 @@ h1 {
 
 h2 {
     color: #141515; /* Green color for the heading */
-    font-size: 30px; /* Adjust the font size as needed */
+    /*color: #ffffff;*/
+    font-size: 20px; /* Adjust the font size as needed */
     margin-bottom: 15px; /* Add some space below the heading */
 }
 
@@ -108,27 +112,48 @@ h2 {
 
     text-align: left;
     font-size: 24px;
+    color: #141515;
 
-    background-color: rgba(255, 255, 255, 0.3); /* Adjust the alpha value (last parameter) */
+    /*background-color: rgba(255, 255, 255, 0.3); /* Adjust the alpha value (last parameter) */
+    background-color: rgba(255, 255, 255, 0.35);
+
+
+    /**/
+
+    cursor: pointer;
+    transition: height 0.3s ease; /* Add a smooth transition effect */
 
 }
 
-.record img {
+.record.closed {
+    height: 50px; /* Set a default height when closed */
+    overflow: hidden; /* Hide overflow content when closed */
+}
+
+/* .record img {
     max-width: 100%;
     height: auto;
     margin-top: 10px;
-}
+} */
 
 .paragraph{
     color: #141515; 
-    font-size: 25px; 
+    /*color: #ffffff; */
+    font-size: 18px; 
     margin-bottom: 15px;
 }
 
 
 
 .image {
-    max-width: 100%; /* Ensures the image won't exceed its original size */
+    max-width: 200%; /* Ensures the image won't exceed its original size */
     height: auto;   /* Allows the height to adjust based on the aspect ratio */
-    width: 200px;    /* Set a fixed width or any other desired value */
-  }
+    width: 300px;    /* Set a fixed width or any other desired value */
+ 
+    display: block; 
+    margin-left: auto; 
+    margin-right: auto;
+
+
+}
+

@@ -33,7 +33,7 @@
         font-family: Arial, sans-serif;
         text-align: center;
         padding: 50px;
-        background: linear-gradient(to bottom, #aaf5a5, #ffffff);
+        /*background: linear-gradient(to bottom, #aaf5a5, #ffffff);*/
         min-height: 100vh;
         background-attachment: fixed;
     }
@@ -62,41 +62,58 @@
 
                     // Display each record in a styled container
                     var recordElement = document.createElement('div');
-                    recordElement.classList.add('record');
+                    //recordElement.classList.add('record'); //!!!
+                    recordElement.classList.add('record', 'closed'); // Add the 'closed' class
 
-
+                    const fullDescription = record.description; // Full description
                     // Display description
+                    const truncatedDescription = record.description.substring(0, 50); // Get the first 50 characters
+                    recordElement.innerHTML = 
+                    `<p class="paragraph">${truncatedDescription}...</p>`; // Display truncated description
+
+                    /*// Display description
                     recordElement.innerHTML = 
                         `<h2><strong>Description:</strong></h2>
-                        <Br><p class="paragraph"> ${record.description} </p>`;
-
+                        <Br><p class="paragraph"> ${record.description} </p>`;*/
+                            let imgElement; // Declare imgElement outside the block
                    // Display photos
-                   if (record.photos != ""){
+                    if (record.photos != ""){
                         console.log("ppp: " + record.photos);
                         photo = await fetchRecordImage(markers[markerId].ids[i], record.photos);
                         //photo = await fetchRecordImage(23, 23);
                         if (photo != ""){
                             const imageUrl = URL.createObjectURL(photo);
-                            const imgElement = document.createElement('img');
+                            imgElement = document.createElement('img');
                             imgElement.src = imageUrl;
                             // Apply the 'image' class to the imgElement
                             imgElement.className = 'image';
+                            imgElement.style.display = 'none';
                             recordElement.appendChild(imgElement)
                         }
                         else {
                             console.log("Error fetching photo");
                         }
-                   } else {
-                    console.log("No photos available");
-                }
+                    } else {
+                        console.log("No photos available");
+                    }
 
 
+                // Toggle the 'closed' class on click
+                recordElement.addEventListener('click', function () {
+                    this.classList.toggle('closed');
 
 
+                    // Toggle between truncated and full description
+                    const paragraphElement = this.querySelector('.paragraph');
+                    if (this.classList.contains('closed')) {
+                        paragraphElement.innerHTML = `${truncatedDescription}...`;
+                        imgElement.style.display = 'none';
+                    } else {
+                        paragraphElement.innerHTML = fullDescription;
+                        imgElement.style.display = 'block'; 
 
-
-
-
+                    }
+                });
                     document.getElementById('markerInfo').appendChild(recordElement);
                 }
 

@@ -11,7 +11,7 @@ var radiusOfACluster = 0.00050;
 
 const santaka = [54.89984180616253, 23.961551736420333];
 
-var map = L.map('map').setView(santaka, 18);
+var map = L.map('map').setView(santaka, 15);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19, // Set the maximum zoom level
 }).addTo(map);
