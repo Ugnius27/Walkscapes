@@ -9,6 +9,11 @@
     <!-- Make sure you put this AFTER Leaflet's CSS -->
     <script src="node_modules/leaflet/dist/leaflet.js"></script>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <!-- Marker Cluster CSS and JS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+<script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
     <title>Walkscapes</title>
 </head>
 
@@ -22,6 +27,7 @@
 <div id="map" style="width: 100%; height: 80%;"></div>
 <script src="map.js"></script>
 <script src="uploadRecord.js"></script>
+<script src="suggestions.js"></script>
 
 <!--<button onclick="togglePopup()" class="popup-button">Add new description</button>-->
 <!--<button class="popup-button" onclick="updateMarkers(markers)" type="button">Update markers</button>-->

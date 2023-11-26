@@ -1,25 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-	<link href="style.css" rel="stylesheet"/>
-	<link href="node_modules/leaflet/dist/leaflet.css"
-          rel="stylesheet"/>
-
-	<script src="node_modules/leaflet/dist/leaflet.js"></script>
-	<meta content="width=device-width, initial-scale=1.0" name="viewport">
-
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Suggestions</title>
-    <!-- Include your CSS files here -->
-    <link rel="stylesheet" href="styles.css">
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="node_modules/leaflet/dist/leaflet.css">
+
+    <script src="node_modules/leaflet/dist/leaflet.js"></script>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
 </head>
 
 <body>
-    <!-- Your content goes here -->
     <h1>Suggestions</h1>
-    <!-- Include your JavaScript files here -->
+    <div id="map"></div>
+    <div id="markerInfo"></div>
+    <script src="node_modules/leaflet/dist/leaflet.js"></script>
     <script src="map.js"></script>
+<style> 
+
+    body, html {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    /*body{
+        height: auto;
+    }*/
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        padding: 50px;
+        background: linear-gradient(to bottom, #aaf5a5, #ffffff);
+        min-height: 100vh;
+        background-attachment: fixed;
+    }
+
+    
+</style>
+    <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const markerId = urlParams.get('markerId');
+
+            const markerInfoElement = document.getElementById('markerInfo');
+
+            if (markerId !== null) {
+                console.log(markerId);
+                markerInfoElement.innerHTML = `You are viewing information for Marker ${markerId}`;
+
+                console.log("html" + markerId);
+
+                var markers = JSON.parse(localStorage.getItem('markers')) || [];
+                console.log("L: " + markers.length);
+                var records = [];
+                for (var i = 0; i < markers[markerId].ids.length; i++) {
+                    console.log(markers[markerId].ids[i]);
+                    var record = await fetchRecordsForMarker(markers[markerId].ids[i]);
+
+                    // Display each record in a styled container
+                    var recordElement = document.createElement('div');
+                    recordElement.classList.add('record');
+
+
+                    // Display description
+                    recordElement.innerHTML = 
+                        `<h2><strong>Description:</strong></h2>
+                        <Br><p class="paragraph"> ${record.description} </p>`;
+
+                   // Display photos
+                   if (record.photos != ""){
+                        console.log("ppp: " + record.photos);
+                        photo = await fetchRecordImage(markers[markerId].ids[i], record.photos);
+                        //photo = await fetchRecordImage(23, 23);
+                        if (photo != ""){
+                            const imageUrl = URL.createObjectURL(photo);
+                            const imgElement = document.createElement('img');
+                            imgElement.src = imageUrl;
+                            // Apply the 'image' class to the imgElement
+                            imgElement.className = 'image';
+                            recordElement.appendChild(imgElement)
+                        }
+                        else {
+                            console.log("Error fetching photo");
+                        }
+                   } else {
+                    console.log("No photos available");
+                }
+
+
+
+
+
+
+
+
+                    document.getElementById('markerInfo').appendChild(recordElement);
+                }
+
+            } else {
+                markerInfoElement.innerHTML = 'Invalid marker ID';
+            }
+        })
+    </script>
 </body>
+
 </html>

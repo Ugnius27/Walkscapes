@@ -5,6 +5,7 @@ body {
 
     margin: 0;
     height: 90vh;
+    /*height: auto;*/
     background: linear-gradient(to bottom, #aaf5a5, #ffffff);
 
     /*height: 100%;*/
@@ -18,7 +19,7 @@ body {
 h1 {
     color: #141515; /* Green color for the heading */
     font-size: 3em; /* Adjust the font size as needed */
-    margin-bottom: 20px; /* Add some space below the heading */
+    margin-bottom: 30px; /* Add some space below the heading */
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Add a subtle text shadow */
 }
 
@@ -86,3 +87,48 @@ h1 {
     font-size: 18px; /* set your desired font size */
     text-align: center;
 }
+
+
+
+
+
+
+h2 {
+    color: #141515; /* Green color for the heading */
+    font-size: 30px; /* Adjust the font size as needed */
+    margin-bottom: 15px; /* Add some space below the heading */
+}
+
+.record {
+    padding: 30px;
+    margin: 45px;
+    border-radius: 10px;
+    border-width: 50px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+    text-align: left;
+    font-size: 24px;
+
+    background-color: rgba(255, 255, 255, 0.3); /* Adjust the alpha value (last parameter) */
+
+}
+
+.record img {
+    max-width: 100%;
+    height: auto;
+    margin-top: 10px;
+}
+
+.paragraph{
+    color: #141515; 
+    font-size: 25px; 
+    margin-bottom: 15px;
+}
+
+
+
+.image {
+    max-width: 100%; /* Ensures the image won't exceed its original size */
+    height: auto;   /* Allows the height to adjust based on the aspect ratio */
+    width: 200px;    /* Set a fixed width or any other desired value */
+  }
