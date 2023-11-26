@@ -1,0 +1,12 @@
+C:\Users\gerda\OneDrive\Stalinis kompiuteris\Naujas aplankas\Walkscapes\backend\target\debug\deps\libmime_guess-074f6361c56aeaf1.rmeta: C:\Users\gerda\.cargo\registry\src\index.crates.io-6f17d22bba15001f\mime_guess-2.0.4\src\lib.rs C:\Users\gerda\.cargo\registry\src\index.crates.io-6f17d22bba15001f\mime_guess-2.0.4\src\impl_bin_search.rs C:\Users\gerda\.cargo\registry\src\index.crates.io-6f17d22bba15001f\mime_guess-2.0.4\src\mime_types.rs C:\Users\gerda\OneDrive\Stalinis\ kompiuteris\Naujas\ aplankas\Walkscapes\backend\target\debug\build\mime_guess-1978393b7db560a3\out/mime_types_generated.rs
+
+C:\Users\gerda\OneDrive\Stalinis kompiuteris\Naujas aplankas\Walkscapes\backend\target\debug\deps\libmime_guess-074f6361c56aeaf1.rlib: C:\Users\gerda\.cargo\registry\src\index.crates.io-6f17d22bba15001f\mime_guess-2.0.4\src\lib.rs C:\Users\gerda\.cargo\registry\src\index.crates.io-6f17d22bba15001f\mime_guess-2.0.4\src\impl_bin_search.rs C:\Users\gerda\.cargo\registry\src\index.crates.io-6f17d22bba15001f\mime_guess-2.0.4\src\mime_types.rs C:\Users\gerda\OneDrive\Stalinis\ kompiuteris\Naujas\ aplankas\Walkscapes\backend\target\debug\build\mime_guess-1978393b7db560a3\out/mime_types_generated.rs
+
+C:\Users\gerda\OneDrive\Stalinis kompiuteris\Naujas aplankas\Walkscapes\backend\target\debug\deps\mime_guess-074f6361c56aeaf1.d: C:\Users\gerda\.cargo\registry\src\index.crates.io-6f17d22bba15001f\mime_guess-2.0.4\src\lib.rs C:\Users\gerda\.cargo\registry\src\index.crates.io-6f17d22bba15001f\mime_guess-2.0.4\src\impl_bin_search.rs C:\Users\gerda\.cargo\registry\src\index.crates.io-6f17d22bba15001f\mime_guess-2.0.4\src\mime_types.rs C:\Users\gerda\OneDrive\Stalinis\ kompiuteris\Naujas\ aplankas\Walkscapes\backend\target\debug\build\mime_guess-1978393b7db560a3\out/mime_types_generated.rs
+
+C:\Users\gerda\.cargo\registry\src\index.crates.io-6f17d22bba15001f\mime_guess-2.0.4\src\lib.rs:
+C:\Users\gerda\.cargo\registry\src\index.crates.io-6f17d22bba15001f\mime_guess-2.0.4\src\impl_bin_search.rs:
+C:\Users\gerda\.cargo\registry\src\index.crates.io-6f17d22bba15001f\mime_guess-2.0.4\src\mime_types.rs:
+C:\Users\gerda\OneDrive\Stalinis\ kompiuteris\Naujas\ aplankas\Walkscapes\backend\target\debug\build\mime_guess-1978393b7db560a3\out/mime_types_generated.rs:
+
+# env-dep:OUT_DIR=C:\\Users\\gerda\\OneDrive\\Stalinis kompiuteris\\Naujas aplankas\\Walkscapes\\backend\\target\\debug\\build\\mime_guess-1978393b7db560a3\\out

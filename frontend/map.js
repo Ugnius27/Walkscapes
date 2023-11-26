@@ -1,3 +1,11 @@
+//import * as getDataFromDB from "./getDataFromDB.js";
+//------------------ should be in another js file
+
+const API_BASE_URL = 'http://localhost:8080';
+const MARKERS_API_ENDPOINT = '/api/record/markers';
+
+//-------------------
+
 const santaka = [54.89984180616253, 23.961551736420333];
 
 var map = L.map('map').setView(santaka, 18);
@@ -26,24 +34,24 @@ map.on('click', function (e) {
 //import { convertToArrayOfCoordinates } from './additional.js';
 
 var records = [
-    {
-        id: 1,
-        latitude: 54.89984,
-        longitude: 23.961321,
-        description: "description of first record",
-    },
-    {
-        id: 2,
-        latitude: 54.899726,
-        longitude: 23.961326,
-        description: "description of second record",
-    },
-    {
-        id: 3,
-        latitude: 54.900393,
-        longitude: 23.96175,
-        description: "description of third record",
-    },
+    // {
+    //     id: 1,
+    //     latitude: 54.89984,
+    //     longitude: 23.961321,
+    //     description: "description of first record",
+    // },
+    // {
+    //     id: 2,
+    //     latitude: 54.899726,
+    //     longitude: 23.961326,
+    //     description: "description of second record",
+    // },
+    // {
+    //     id: 3,
+    //     latitude: 54.900393,
+    //     longitude: 23.96175,
+    //     description: "description of third record",
+    // },
 ];
 
 //coordinates = convertToArrayOfCoordinates(records);
@@ -85,11 +93,11 @@ function toggleIcon(markers, markerNrToToggle, icon){
 
 
 function createMarker(map, lat, lng, text) {
-    console.log(markers.length); 
+    console.log("markers lngth  " +  markers.length); 
     markers[markers.length] = 
     {
         coordinates: [lat, lng],
-        amountOfRecords: 1,
+        amountOfRecords: 1,  // fdelete this one
         marker: null,
     }
 
@@ -141,17 +149,173 @@ function redirectToSuggestionsPage() {
     window.location.href = 'suggestions.html';
 }
 
+// should be in another file --------------
 
-// after each submit, updateMarkers function will be called
-function updateMarkers(markers) {
-    records.forEach(function (record) {
-        var needToCreate = true;
-        for (var i = 0; i < markers.length; i++){
-            if (markers[i].coordinates[0] == record.latitude && markers[i].coordinates[1] == record.longitude){
-                needToCreate = false;
-            }
-        }
-        if (needToCreate)
-            createMarker(map, record.latitude, record.longitude, record.latitude + ", " + record.longitude);
-    });
+// fetch markers from the API
+async function fetchMarkers() {
+    ///
+    //var markers = [];
+    /////
+
+    try {
+      const response = await fetch(`${API_BASE_URL}${MARKERS_API_ENDPOINT}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch markers');
+      }
+  
+      const markers = await response.json();
+
+      console.log( markers);
+      console.log("markers length0: " + markers.length)
+      return markers;
+
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
 }
+
+async function fetchRecordsForMarker(markerId) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/record/marker=${markerId}`);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch records for marker ${markerId}`);
+      }
+  
+      const records = await response.json();
+      console.log("records0: " + records.length)
+      console.log(records);
+      return records;
+  
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  }
+  
+//   // Example: Fetch records for marker with ID 23
+//   async function getRecordsForMarkerId() {
+//     const markerId = 23;
+  
+//     try {
+//       const records = await fetchRecordsForMarker(markerId);
+//       // Process the records as needed
+//       console.log(records);
+  
+//     } catch (error) {
+//       console.error(error);
+//     }
+//   }
+  
+  // Call the function
+  //console.log("fetchjed records")
+  //fetchRecordsForMarker(23);
+  
+function putMarkersOnMap(){
+    fetchMarkers().then(markersInJson => {
+        //console.log(markersInJson.length);
+        for (var i = 0; i < markersInJson.length; i++){
+            //console.log(markersInJson[i].latitude + "   secs: " + (new Date()).getTime());
+            createMarker(map, markersInJson[i].latitude, markersInJson[i].longitude, "hh");
+        }
+
+        //console.log("abbbbbbbbbb" + "   secs: " + (new Date()).getTime());
+        //console.log(markers.length);
+        markers[markers.length - 1].marker.closePopup();
+    });    
+}
+putMarkersOnMap();
+
+  
+  // Call the function
+  //getRecordsForMarkerId();
+  
+
+
+
+
+// // Function to process the data
+// function getData() {
+//     var markers = [];
+    
+//     // Ensure you handle the asynchronous nature of fetchMarkers
+//     fetchMarkers().then(markersInJson => {
+//       console.log("markers length: " + markersInJson.length)  
+
+//       for (var i = 0; i < markersInJson.length; i++) {
+        
+//         markers[i] = {
+//             id: markersInJson[i].id,
+//             coordinates: [markersInJson[i].latitude, markersInJson[i].longitude],
+//             records: [],
+//             marker: null,
+//         };
+
+//         console.log(markersInJson[i].id);
+//         fetchRecordsForMarker(markersInJson[i].id).then(recordsInJson =>{
+//             console.log("records length: " + recordsInJson.length)
+//             for (var j = 0; j < recordsInJson.length; j++){
+//                 markers[i].records[j] = {
+//                     description: recordsInJson[j].description,
+//                     record_images: []
+//                 }
+//             }
+//         })
+//       }
+  
+//       console.log(markersInJson);
+
+//       console.log("aaaaaaaaaa");
+//       console.log(markers);
+//     });
+// }
+  
+
+///
+// function getData(){
+//     //records = [];
+//     var markers = [];
+//     var markersInJson = fetchMarkers();
+
+//     for (var i = 0; i < markersInJson.length; i++){
+//         markers[i] = 
+//         {
+//             coordinates: [markersInJson[i].latitude, markersInJson[i].longitude],
+//             records: [],
+//             marker: null,
+//         }
+
+//     }
+
+//     console.log( markersInJson);
+//     console.log(markers);
+// }
+
+// getData();
+
+
+
+
+
+
+  
+//-------------------------------------
+  
+// import { f1 } from "./getDataFromDB.js";
+// after each submit, updateMarkers function will be called
+// function updateMarkers(markers) {
+//     // records.forEach(function (record) {
+//     //     var needToCreate = true;
+//     //     for (var i = 0; i < markers.length; i++){
+//     //         if (markers[i].coordinates[0] == record.latitude && markers[i].coordinates[1] == record.longitude){
+//     //             needToCreate = false;
+//     //         }
+//     //     }
+//     //     if (needToCreate)
+//     //         createMarker(map, record.latitude, record.longitude, record.latitude + ", " + record.longitude);
+//     // });
+
+//     // fetchMarkers();    
+//     //putMarkersOnMap(fetchMarkers());
+//     putMarkersOnMap();
+// }

@@ -1,0 +1,9 @@
+C:\Users\gerda\OneDrive\Stalinis kompiuteris\Naujas aplankas\Walkscapes\backend\target\debug\deps\futures_macro-b5765f1a5df41109.dll: C:\Users\gerda\.cargo\registry\src\index.crates.io-6f17d22bba15001f\futures-macro-0.3.29\src\lib.rs C:\Users\gerda\.cargo\registry\src\index.crates.io-6f17d22bba15001f\futures-macro-0.3.29\src\executor.rs C:\Users\gerda\.cargo\registry\src\index.crates.io-6f17d22bba15001f\futures-macro-0.3.29\src\join.rs C:\Users\gerda\.cargo\registry\src\index.crates.io-6f17d22bba15001f\futures-macro-0.3.29\src\select.rs C:\Users\gerda\.cargo\registry\src\index.crates.io-6f17d22bba15001f\futures-macro-0.3.29\src\stream_select.rs
+
+C:\Users\gerda\OneDrive\Stalinis kompiuteris\Naujas aplankas\Walkscapes\backend\target\debug\deps\futures_macro-b5765f1a5df41109.d: C:\Users\gerda\.cargo\registry\src\index.crates.io-6f17d22bba15001f\futures-macro-0.3.29\src\lib.rs C:\Users\gerda\.cargo\registry\src\index.crates.io-6f17d22bba15001f\futures-macro-0.3.29\src\executor.rs C:\Users\gerda\.cargo\registry\src\index.crates.io-6f17d22bba15001f\futures-macro-0.3.29\src\join.rs C:\Users\gerda\.cargo\registry\src\index.crates.io-6f17d22bba15001f\futures-macro-0.3.29\src\select.rs C:\Users\gerda\.cargo\registry\src\index.crates.io-6f17d22bba15001f\futures-macro-0.3.29\src\stream_select.rs
+
+C:\Users\gerda\.cargo\registry\src\index.crates.io-6f17d22bba15001f\futures-macro-0.3.29\src\lib.rs:
+C:\Users\gerda\.cargo\registry\src\index.crates.io-6f17d22bba15001f\futures-macro-0.3.29\src\executor.rs:
+C:\Users\gerda\.cargo\registry\src\index.crates.io-6f17d22bba15001f\futures-macro-0.3.29\src\join.rs:
+C:\Users\gerda\.cargo\registry\src\index.crates.io-6f17d22bba15001f\futures-macro-0.3.29\src\select.rs:
+C:\Users\gerda\.cargo\registry\src\index.crates.io-6f17d22bba15001f\futures-macro-0.3.29\src\stream_select.rs:
