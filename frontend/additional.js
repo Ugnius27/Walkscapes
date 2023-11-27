@@ -85,3 +85,6 @@ function addNewDescription(lat, lng) {
     // Call togglePopup or perform other actions if needed
     togglePopup();
 }
+
+///////////////////////
+

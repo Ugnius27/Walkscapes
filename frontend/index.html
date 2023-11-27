@@ -39,16 +39,13 @@
     <div id="popup">
         <h2>Upload Image</h2>
         <form id="uploadForm">
-            <!-- <label>Coordinates</label>
-            <input id="latitude" name="latitude" type="text">
-            <input id="longitude" name="longitude" type="text"> -->
-            <!-- <br> -->
             <label for="images">Choose Image:</label>
             <input accept="image/*" id="images" multiple name="image" required type="file">
             <br>
             <label for="description">Description:</label>
             <textarea id="description" name="description" required rows="4"></textarea>
             <br>
+            <!-- <div id="uploadedImagesList"></div> -->
             <button class="popup-button" onclick="uploadRecord(coordsForUploading[0], coordsForUploading[1])" type="submit">Upload</button>
             <button class="popup-button" onclick="togglePopup()" type="button">Close</button>
         </form>
@@ -56,28 +53,35 @@
 </div>
 
 <script type="module">
-    /*function togglePopup() {
-        var overlay = document.getElementById('overlay');
-        overlay.style.display = (overlay.style.display === 'none' || overlay.style.display === '') ? 'flex' : 'none';
-    }*/
-
     document.getElementById('uploadForm').addEventListener('submit', function (e) {
         e.preventDefault();
         togglePopup();
+
+        
+
     });
+    
+     /* document.getElementById('images').addEventListener('change', function () {
+            displayUploadedImages(this.files);
+        });
+    
+       function displayUploadedImages(files) {
+            const uploadedImagesList = document.getElementById('uploadedImagesList');
+            uploadedImagesList.innerHTML = '';
+    
+            for (let i = 0; i < files.length; i++) {
+                const listItem = document.createElement('div');
+                listItem.textContent = files[i].name;
+                uploadedImagesList.appendChild(listItem);
+            }
+        } */
 
 
-    // Set the values of latitude and longitude in the form
-    //document.getElementById('latitude').value = coordinates[0];
-   // document.getElementById('longitude').value = coordinates[1];
 
+         
 
 </script>
 
 <br>
-<!--
-<img id="dbImage" src="">
-<script src="image.js"></script>
--->
 </body>
 </html>

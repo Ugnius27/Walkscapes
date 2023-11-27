@@ -67,32 +67,24 @@
                     console.log(markers[markerId].ids[i]);
                     var record = await fetchRecordsForMarker(markers[markerId].ids[i]);
 
-                    // Display each record in a styled container
                     var recordElement = document.createElement('div');
                     //recordElement.classList.add('record'); //!!!
                     recordElement.classList.add('record', 'closed'); // Add the 'closed' class
 
                     const fullDescription = record.description; // Full description
-                    // Display description
                     const truncatedDescription = record.description.substring(0, 50); // Get the first 50 characters
                     recordElement.innerHTML = 
                     `<p class="paragraph">${truncatedDescription}...</p>`; // Display truncated description
 
-                    /*// Display description
-                    recordElement.innerHTML = 
-                        `<h2><strong>Description:</strong></h2>
-                        <Br><p class="paragraph"> ${record.description} </p>`;*/
-                            let imgElement; // Declare imgElement outside the block
-                   // Display photos
+                    
+                    let imgElement; 
                     if (record.photos != ""){
                         console.log("ppp: " + record.photos);
                         photo = await fetchRecordImage(markers[markerId].ids[i], record.photos);
-                        //photo = await fetchRecordImage(23, 23);
                         if (photo != ""){
                             const imageUrl = URL.createObjectURL(photo);
                             imgElement = document.createElement('img');
                             imgElement.src = imageUrl;
-                            // Apply the 'image' class to the imgElement
                             imgElement.className = 'image';
                             imgElement.style.display = 'none';
                             recordElement.appendChild(imgElement)
@@ -104,20 +96,19 @@
                         console.log("No photos available");
                     }
 
-
-                // Toggle the 'closed' class on click
                 recordElement.addEventListener('click', function () {
                     this.classList.toggle('closed');
                     this.classList.toggle('opened');
 
-                    // Toggle between truncated and full description
                     const paragraphElement = this.querySelector('.paragraph');
                     if (this.classList.contains('closed')) {
                         paragraphElement.innerHTML = `${truncatedDescription}...`;
-                        imgElement.style.display = 'none';
+                        if (imgElement != null)
+                            imgElement.style.display = 'none';
                     } else {
                         paragraphElement.innerHTML = fullDescription;
-                        imgElement.style.display = 'block'; 
+                        if (imgElement != null)
+                            imgElement.style.display = 'block'; 
 
                     }
                 });
