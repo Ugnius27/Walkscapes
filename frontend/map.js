@@ -1,81 +1,3 @@
-//import * as getDataFromDB from "./getDataFromDB.js";
-
-
-//------------------ should be in another js file
-
-const API_BASE_URL = 'http://localhost:8080';
-const MARKERS_API_ENDPOINT = '/api/record/markers';
-
-var amountOfClusters = 0;
-var radiusOfACluster = 0.00050;
-
-//-------------------
-
-const santaka = [54.89984180616253, 23.961551736420333];
-
-var map = L.map('map').setView(santaka, 15);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 20, // Set the maximum zoom level
-}).addTo(map);
-
-var markerSantaka = L.marker(santaka).addTo(map);
-markerSantaka.bindPopup("Kažkokia informacija")
-
-// var circle = L.circle(santaka, {
-//     color: 'red',
-//     fillColor: '#ffaa00',
-//     fillOpacity: 0.5,
-//     radius: 50
-// }).addTo(map);
-
-// creating a marker by clicking
-// map.on('click', function (e) {
-//     createMarker(map, e.latlng.lat, e.latlng.lng, e.latlng.toString(), 0)
-// })
-
-
-//------------ temporary variables ------------------
-
-//const convertToArrayOfCoordinates = require('./additional.js');
-//import { convertToArrayOfCoordinates } from './additional.js';
-
-var records = [
-    // {
-    //     id: 1,
-    //     latitude: 54.89984,
-    //     longitude: 23.961321,
-    //     description: "description of first record",
-    // },
-    // {
-    //     id: 2,
-    //     latitude: 54.899726,
-    //     longitude: 23.961326,
-    //     description: "description of second record",
-    // },
-    // {
-    //     id: 3,
-    //     latitude: 54.900393,
-    //     longitude: 23.96175,
-    //     description: "description of third record",
-    // },
-];
-
-//coordinates = convertToArrayOfCoordinates(records);
-//coordinates = records.map(record => [record.latitude, record.longitude]);
-
-var markers = [];
-
-var redIcon = new L.Icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
-    shadowUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png'
-});
-
-var defaultIcon = new L.Icon({
-    iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
-    shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
-});
-
-//---------------------------------------------------
 function toggleIcon(markers, markerNrToToggle, icon){
     // if (markers[markerNrToToggle].marker.getIcon() === icon){
     //     markers[markerNrToToggle].marker.setIcon(defaultIcon);
@@ -97,19 +19,6 @@ function toggleIcon(markers, markerNrToToggle, icon){
     //markers[markerNr].isRed = !markers[markerNr].isRed;
 }
 
-console.log('map.js loaded');
-
-// function redirectToSuggestionsPage(markerNr) {
-//     // Construct the URL with the marker ID as a query parameter
-//     console.log("-------------------------------------------------");
-//     //console.log("marker nr " + markerNr);
-//     localStorage.setItem(`markerNrToBeRed`, JSON.stringify(markerNr));
-
-
-//     const url = `suggestions.html?markerId=${markerNr}`;
-//     window.location.href = url;
-// }
-console.log('map.js loaded2');
 function createMarker(map, lat, lng, text, id) {
     console.log("markers lngth  " +  markers.length); 
     console.log([lat, lng]);
@@ -178,110 +87,8 @@ function createMarker(map, lat, lng, text, id) {
     markers[markerNr].marker.openPopup();
 }
 
-// function redirectToSuggestionsPage() {
-//     // Assuming you have a suggestions page named 'suggestions.html'
-//     window.location.href = 'suggestions.html';
-// }
-// function redirectToSuggestionsPage(markerNr) {
-//     // Construct the URL with the marker ID as a query parameter
-//     //console.log("-------------------------------------------------");
-//     //console.log("marker nr " + markerNr);
-//     localStorage.setItem(`markerNrToBeRed`, JSON.stringify(markerNr));
 
-
-//     const url = `suggestions.html?markerId=${markerNr}`;
-//     window.location.href = url;
-// }
-
-
-// should be in another file --------------
-
-
-
-// // fetch markers from the API
-// async function fetchMarkers() {
-//     try {
-//       const response = await fetch(`${API_BASE_URL}${MARKERS_API_ENDPOINT}`);
-//       if (!response.ok) {
-//         throw new Error('Failed to fetch markers');
-//       }
-  
-//       const markers = await response.json();
-
-//       console.log( markers);
-//       //console.log("markers length0: " + markers.length)
-//       return markers;
-
-//     } catch (error) {
-//       console.error(error);
-//       return [];
-//     }
-// }
-
-// async function fetchRecordsForMarker(markerId) {
-//     try {
-//       const response = await fetch(`${API_BASE_URL}/api/record/marker=${markerId}`);
-//       if (!response.ok) {
-//         throw new Error(`Failed to fetch records for marker ${markerId}`);
-//       }
-  
-//       const records = await response.json();
-//       //console.log("records0: " + records.length)
-//       //console.log(records);
-//       return records;
-  
-//     } catch (error) {
-//       console.error(error);
-//       return [];
-//     }
-// }
-
-
-// async function fetchRecordImage(markerId, photoId) {
-//     try {
-//       const response = await fetch(`${API_BASE_URL}/api/record/marker=${markerId}/photo=${photoId}`);
-//       if (!response.ok) {
-//         throw new Error(`Failed to fetch records for marker's ${markerId} photo ${photoId}`);
-//       }
-  
-//       //const photo = await response;
-//       //console.log("records0: " + records.length)
-//       const photo = await response.blob(); // or await response.blob();
-    
-//       // Log specific details instead of the entire response object
-//       //console.log("Photo length:", photo.length);
-
-
-
-//       /*const imageUrl = URL.createObjectURL(photo);
-//       const imgElement = document.createElement('img');
-//       imgElement.src = imageUrl;
-//       document.body.appendChild(imgElement);*/
-      
-
-
-//       return photo;
-  
-//     } catch (error) {
-//       console.error(error);
-//       return "";
-//     }
-// }
-
-//fetchRecordImage(23, 23);
-  // Call the function
-  //console.log("fetchjed records")
-  //fetchRecordsForMarker(23);
-
-// function extractMarkerData(marker) {
-//     return {
-//         ids: marker.ids,
-//         coordinates: marker.coordinates,
-//         // Add other properties you want to store
-//     };
-    
-// }
-var markersForHtml = [];
+// // // var markersForHtml = [];
   
 function putMarkersOnMap(){
     fetchMarkers().then(markersInJson => {
@@ -317,11 +124,11 @@ function putMarkersOnMap(){
         
     });    
 }
-putMarkersOnMap();
+// // // putMarkersOnMap();
 
 
 //------------------------------------------
-var addTableIsOnTheMap = false;
+// // // var addTableIsOnTheMap = false;
 // Function to get the current location
 function currentLocation(callback) {
     // Check if the Geolocation API is available
@@ -464,21 +271,15 @@ function makeMarkerUndraggable(markerId) {
     
 }
 
-// function setToNewDescriptionPopup(marker){
-//     var addButton = '<button id="popupButtonAdd__" onclick="togglePopup()" class="popup-button">Add new description</button>';
-//     marker.setPopupContent(`<div class="custom-popup-text">${addButton}`, { offset: [10, 10], className: 'custom-popup' }).addTo(map);
-
-
-// }
 // Function to create the custom button
 function addButtonOnMap(customTableControl){
     // Create a button element
-    var myButton = L.DomUtil.create('button', 'my-custom-button');
+    var myButton = L.DomUtil.create('button', 'add-button');
     var imgElement = document.createElement('img');
-    imgElement.src = 'plus.png';
+    imgElement.src = 'add.png';
     imgElement.alt = 'My Image';
-    imgElement.style.width = '30px'; // set your desired width
-    imgElement.style.height = '30px'; // set your desired height
+    imgElement.style.width = '40px'; // set your desired width
+    imgElement.style.height = '40px'; // set your desired height
     myButton.appendChild(imgElement);
 
     // Define a custom control and add the button to it
@@ -508,63 +309,4 @@ function addButtonOnMap(customTableControl){
         
         console.log("clicked");
     });
-
-
-    
 }
-
-let customTableControl = createCustomTable();
-// var addTableIsOnTheMap = false;
-addButtonOnMap(customTableControl);
-// Function to create the custom table
-
-// function createCustomTable() {
-//         // Create a table with two buttons
-//         var tableContent =
-//             '<table class="popup-table">' +
-//             '<tr><td>Choose where to put new marker:</td></tr>' +
-//             '<tr><td><button onclick="addToCurrentLocation()" class="popup-button">Add to Current Location</button></td></tr>' +
-//             '<tr><td><button onclick="chooseLocation()" class="popup-button">Choose Location</button></td></tr>' +
-//             '</table>';
-
-//         // Create a custom container div for the table
-//         var containerDiv = L.DomUtil.create('div', 'popup-table');
-//         containerDiv.innerHTML = tableContent;
-
-//         // Create a custom control and add the container to it
-//         var customTableControl = L.control({ position: 'topright' });
-//         customTableControl.onAdd = function (map) {
-//             return containerDiv;
-//         };
-
-//         // Add the custom control to the map
-//         //customTableControl.addTo(map);
-//         return customTableControl;
-// }
-
-
-
-
-//-------------------------------------
-// function distance(point1, point2){
-//     //console.log("ddd: " + point1[0], "   " + point2[0] + "  " + point1[1] + "   " + point2[1]);
-//     console.log("distance: " + Math.sqrt(Math.pow((point1[0] - point2[0]), 2) + Math.pow((point1[1] - point2[1]), 2)));
-//     return Math.sqrt(Math.pow((point1[0] - point2[0]), 2) + Math.pow((point1[1] - point2[1]), 2));
-// }
-
-// // should be in suggestions.js
-
-// function markerNrThatIsInTheSameCluster(coordinates, radiusOfACluster){
-//     console.log(markers.length);
-//     for (var i = 0; i < markers.length; i++){
-
-//         if (distance(markers[i].coordinates, coordinates) <= radiusOfACluster){
-//             //console.log("!!!!");
-//             return i;
-//         }
-//     }
-
-//     return -1;
-// }
-
-

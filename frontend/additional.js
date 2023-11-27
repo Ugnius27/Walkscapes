@@ -69,3 +69,9 @@ function markerNrThatIsInTheSameCluster(coordinates, radiusOfACluster){
 
     return -1;
 }
+
+
+function togglePopup() {
+    var overlay = document.getElementById('overlay');
+    overlay.style.display = (overlay.style.display === 'none' || overlay.style.display === '') ? 'flex' : 'none';
+}

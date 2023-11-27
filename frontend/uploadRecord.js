@@ -20,15 +20,3 @@ function uploadRecord() {
         .then((response) => response.json())
         .then((json) => console.log(json));
 }
-
-
-// function redirectToSuggestionsPage(markerNr) {
-//     // Construct the URL with the marker ID as a query parameter
-//     console.log("-------------------------------------------------");
-//     //console.log("marker nr " + markerNr);
-//     localStorage.setItem(`markerNrToBeRed`, JSON.stringify(markerNr));
-
-
-//     const url = `suggestions.html?markerId=${markerNr}`;
-//     window.location.href = url;
-// }

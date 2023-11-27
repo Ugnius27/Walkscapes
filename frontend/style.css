@@ -164,6 +164,10 @@ h2 {
 
 }
 
+.add-button{
+    background-color:#ffffff;
+}
+
 
 
 
@@ -180,10 +184,26 @@ h2 {
 
 
 
-  .popup-table {
+.popup-table {
     background-color: white;
-    padding: 10px;
-    border: 2px solid #ccc;
+    padding: 5px; /* Adjust this value to increase or decrease the gap */
+    /* border: 2px solid #141515; */
     border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box; /* Ensure that padding is included in the element's total width and height */
+}
+
+.popup-table button {
+    margin: 5px; /* Adjust this value to control the gap between buttons and the container border */
+    /* Additional button styling if needed */
+}
+
+
+.record:hover {
+    /* filter: brightness(0.8); Adjust the brightness value as needed */
+    background-color: #acebac;
+    transition: filter 0.3s ease; /* Add a smooth transition effect */
+}
+
+.record.opened{
+    background-color: #acebac;
 }

@@ -22,6 +22,7 @@
     <script src="getDataFromDB.js"></script>
     <script src="additional.js"></script>
     <script src="map.js"></script>
+    <script src="main.js"></script>
 <style> 
 
     body, html {
@@ -107,7 +108,7 @@
                 // Toggle the 'closed' class on click
                 recordElement.addEventListener('click', function () {
                     this.classList.toggle('closed');
-
+                    this.classList.toggle('opened');
 
                     // Toggle between truncated and full description
                     const paragraphElement = this.querySelector('.paragraph');
