@@ -13,7 +13,7 @@ const santaka = [54.89984180616253, 23.961551736420333];
 
 var map = L.map('map').setView(santaka, 15);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19, // Set the maximum zoom level
+    maxZoom: 20, // Set the maximum zoom level
 }).addTo(map);
 
 var markerSantaka = L.marker(santaka).addTo(map);
@@ -26,9 +26,10 @@ markerSantaka.bindPopup("Kažkokia informacija")
 //     radius: 50
 // }).addTo(map);
 
-map.on('click', function (e) {
-    createMarker(map, e.latlng.lat, e.latlng.lng, e.latlng.toString(), 0)
-})
+// creating a marker by clicking
+// map.on('click', function (e) {
+//     createMarker(map, e.latlng.lat, e.latlng.lng, e.latlng.toString(), 0)
+// })
 
 
 //------------ temporary variables ------------------
@@ -94,7 +95,6 @@ function toggleIcon(markers, markerNrToToggle, icon){
     //markers[markerNr].isRed = !markers[markerNr].isRed;
 }
 
-var UUU = 777;
 function createMarker(map, lat, lng, text, id) {
     console.log("markers lngth  " +  markers.length); 
     console.log([lat, lng]);
@@ -167,9 +167,14 @@ function createMarker(map, lat, lng, text, id) {
 //     // Assuming you have a suggestions page named 'suggestions.html'
 //     window.location.href = 'suggestions.html';
 // }
-function redirectToSuggestionsPage(markerId) {
+function redirectToSuggestionsPage(markerNr) {
     // Construct the URL with the marker ID as a query parameter
-    const url = `suggestions.html?markerId=${markerId}`;
+    //console.log("-------------------------------------------------");
+    //console.log("marker nr " + markerNr);
+    localStorage.setItem(`markerNrToBeRed`, JSON.stringify(markerNr));
+
+
+    const url = `suggestions.html?markerId=${markerNr}`;
     window.location.href = url;
 }
 
@@ -248,7 +253,7 @@ async function fetchRecordImage(markerId, photoId) {
     }
 }
 
-fetchRecordImage(23, 23);
+//fetchRecordImage(23, 23);
   // Call the function
   //console.log("fetchjed records")
   //fetchRecordsForMarker(23);
@@ -282,9 +287,248 @@ function putMarkersOnMap(){
         
 
         localStorage.setItem('markers', JSON.stringify(markersForHtml));
+
+
+        var currentFileName = window.location.pathname.split('/').pop();
+        console.log(currentFileName);
+
+        var redMarkerInSuggestionsNr = localStorage.getItem('markerNrToBeRed');
+        if (redMarkerInSuggestionsNr != null && currentFileName == "suggestions.html"){
+            console.log("REDDD");
+            markers[redMarkerInSuggestionsNr].marker.setIcon(redIcon);
+        }
+        console.log("NOT REDDD");
+
+        
     });    
 }
 putMarkersOnMap();
+
+
+//------------------------------------------
+var addTableIsOnTheMap = false;
+// Function to get the current location
+function currentLocation(callback) {
+    // Check if the Geolocation API is available
+    if ("geolocation" in navigator) {
+        // Get current location
+        navigator.geolocation.getCurrentPosition(
+            function (position) {
+                // Coordinates object
+                var coordinates = position.coords;
+
+                // Latitude and Longitude
+                var latitude = coordinates.latitude;
+                var longitude = coordinates.longitude;
+
+                console.log("Latitude: " + latitude + ", Longitude: " + longitude);
+
+                // Invoke the callback with the coordinates
+                callback([latitude, longitude]);
+            },
+            function (error) {
+                console.error("Error getting location:", error.message);
+                // Invoke the callback with null in case of an error
+                callback(null);
+            }
+        );
+    } else {
+        console.log("Geolocation is not supported by this browser.");
+        // Invoke the callback with null if geolocation is not supported
+        callback(null);
+    }
+}
+
+// Function to handle the "Add to Current Location" button click
+function addToCurrentLocation() {
+    // Implement the logic to add to the current location
+    console.log('Add to Current Location clicked');
+    map.removeControl(customTableControl);
+    addTableIsOnTheMap = false;
+
+    // Call currentLocation with a callback
+    currentLocation(function (currentCoordinates) {
+        if (currentCoordinates) {
+            console.log(currentCoordinates);
+            var newMarker = L.marker(currentCoordinates, { icon: redIcon}).addTo(map);
+            //createMarker(map, currentCoordinates[0], currentCoordinates[1], "Current location");
+            //uploadRecord(currentCoordinates);
+            newMarker.bindPopup(currentCoordinates[0] + ", " + currentCoordinates[1]);//.openPopup();
+            togglePopup();
+        } else {
+            console.log("Unable to get current location.");
+        }
+    });
+}
+
+
+// Function to handle the "Choose Location" button click
+function chooseLocation() {
+    map.removeControl(customTableControl);
+    addTableIsOnTheMap = false;
+    // Implement the logic to choose a location
+    console.log('Choose Location clicked');
+    var count = 0;
+
+
+    // Add a click event listener to the map
+    map.on('click', function (e) {
+        // Remove the click event listener to prevent multiple markers on subsequent clicks
+        
+        
+        // Get the clicked coordinates
+        var lat = e.latlng.lat;
+        var lng = e.latlng.lng;
+        console.log(e.latlng.toString());
+         // Create a draggable marker at the clicked location
+         
+
+         // Open the popup only for the first click
+        if (count == 1) {
+            console.log(count + "cccc");
+            var newMarker = L.marker([lat, lng], { icon: redIcon, draggable: true }).addTo(map);
+            //newMarker.bindPopup("Drag me!").openPopup();
+            var fixPlace = `<button id="fixMarkersPlace" onclick="makeMarkerUndraggable(${newMarker._leaflet_id})" class="popup-button">Fix marker\'s place</button>`;
+            // var addButton = '<button id="popupButtonAdd__" onclick="togglePopup()" class="popup-button">Add new description</button>';
+            newMarker.bindPopup(`<div class="custom-popup-text">Drag me!<Br>${fixPlace}`, { offset: [10, 10], className: 'custom-popup' }).addTo(map);
+            newMarker.openPopup();
+
+        // Add dragend event listener to handle marker drag
+                newMarker.on('dragend', function (event) {
+                    var marker = event.target;
+                    var position = marker.getLatLng();
+                    console.log("Marker dragged to: " + position.lat + ", " + position.lng);
+                });
+
+
+                // Add dragstart event listener to open the popup during dragging
+            newMarker.on('dragstart', function () {
+                newMarker.openPopup();
+            });
+
+            // Add drag event listener to update the popup position during dragging
+            newMarker.on('drag', function () {
+                newMarker.getPopup().setLatLng(newMarker.getLatLng());
+            });
+        }
+        if (count == 2)
+            map.off('click');
+
+        count++;
+
+        
+
+        // Call the function to upload the record
+        //createMarker(map, e.latlng.lat, e.latlng.lng, e.latlng.toString(), 0)
+
+        //uploadRecord(lat, lng); // Pass the coordinates to the uploadRecord function
+    });
+}
+function setToNewDescriptionPopup(marker){
+    var addButton = '<button id="popupButtonAdd__" onclick="togglePopup()" class="popup-button">Add new description</button>';
+    marker.setPopupContent(`<div class="custom-popup-text">${addButton}`, { offset: [10, 10], className: 'custom-popup' }).addTo(map);
+
+}
+function makeMarkerUndraggable(markerId) {
+    var marker = map._layers[markerId];
+    if (marker) {
+        marker.dragging.disable();
+    }
+
+    marker.closePopup();
+    setToNewDescriptionPopup(marker);
+    //marker.closePopup();
+    //marker.openPopup();
+
+
+    // Delay opening the popup to ensure Leaflet has processed the changes
+    setTimeout(function () {
+        marker.openPopup();
+        console.log("done");
+    }, 10); // You can adjust the delay time as needed
+    
+}
+
+// function setToNewDescriptionPopup(marker){
+//     var addButton = '<button id="popupButtonAdd__" onclick="togglePopup()" class="popup-button">Add new description</button>';
+//     marker.setPopupContent(`<div class="custom-popup-text">${addButton}`, { offset: [10, 10], className: 'custom-popup' }).addTo(map);
+
+
+// }
+// Function to create the custom button
+function addButtonOnMap(customTableControl){
+    // Create a button element
+    var myButton = L.DomUtil.create('button', 'my-custom-button');
+    var imgElement = document.createElement('img');
+    imgElement.src = 'plus.png';
+    imgElement.alt = 'My Image';
+    imgElement.style.width = '30px'; // set your desired width
+    imgElement.style.height = '30px'; // set your desired height
+    myButton.appendChild(imgElement);
+
+    // Define a custom control and add the button to it
+    var customControl = L.control({ position: 'topright' });
+    customControl.onAdd = function (map) {
+        var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+        container.appendChild(myButton);
+        return container;
+    };
+
+    // Add the custom control to the map
+    customControl.addTo(map);
+    
+    // Add a click event listener to the button
+    myButton.addEventListener('click', function () {
+        // Call the function to create the custom popup
+        //createCustomTable()
+        if (!addTableIsOnTheMap){
+            customTableControl.addTo(map);
+            addTableIsOnTheMap = true;
+        }
+        else{
+            map.removeControl(customTableControl);
+
+            addTableIsOnTheMap = false;
+        }
+        
+        console.log("clicked");
+    });
+
+
+    
+}
+
+let customTableControl = createCustomTable();
+// var addTableIsOnTheMap = false;
+addButtonOnMap(customTableControl);
+// Function to create the custom table
+
+function createCustomTable() {
+        // Create a table with two buttons
+        var tableContent =
+            '<table class="popup-table">' +
+            '<tr><td>Choose where to put new marker:</td></tr>' +
+            '<tr><td><button onclick="addToCurrentLocation()" class="popup-button">Add to Current Location</button></td></tr>' +
+            '<tr><td><button onclick="chooseLocation()" class="popup-button">Choose Location</button></td></tr>' +
+            '</table>';
+
+        // Create a custom container div for the table
+        var containerDiv = L.DomUtil.create('div', 'popup-table');
+        containerDiv.innerHTML = tableContent;
+
+        // Create a custom control and add the container to it
+        var customTableControl = L.control({ position: 'topright' });
+        customTableControl.onAdd = function (map) {
+            return containerDiv;
+        };
+
+        // Add the custom control to the map
+        //customTableControl.addTo(map);
+        return customTableControl;
+}
+
+
+
 
 //-------------------------------------
 function distance(point1, point2){
@@ -307,38 +551,3 @@ function markerNrThatIsInTheSameCluster(coordinates, radiusOfACluster){
 
     return -1;
 }
-
-// console.log("last:");
-// createMarker(map, 54.898726, 23.961326, "uu", 76);
-
-// Add the Marker Cluster Group layer
-// var markers2 = L.markerClusterGroup({maxClusterRadius: 50});
-
-// // Add individual markers to the cluster group
-// L.marker([54.900, 23.963326]).addTo(markers2).setIcon(redIcon);
-// L.marker([54.900, 23.962826]).addTo(markers2).setIcon(redIcon);
-// L.marker([54.9001, 23.962826]).addTo(markers2).setIcon(redIcon);
-
-// L.marker([54.8991, 23.962826]).addTo(markers2).setIcon(redIcon);
-// L.marker([54.8992, 23.962826]).addTo(markers2).setIcon(redIcon);
-// L.marker([54.8993, 23.962826]).addTo(markers2).setIcon(redIcon);
-// // Add more markers...
-
-// // Add the Marker Cluster Group layer to the map
-// map.addLayer(markers2);
-
-// // Optionally, you can add additional layers, controls, etc.
-// L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-//     attribution: '© OpenStreetMap contributors'
-// }).addTo(map);
-
-
-
-
-// createMarker(map, 54.999726, 23.961326, "uu", 76);
-
-
-
-// Save markers to localStorage
-// console.log(markers.length + "   jjjjjjjj");
-// localStorage.setItem('markers', JSON.stringify(markers));
