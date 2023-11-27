@@ -110,6 +110,13 @@ h2 {
     margin-bottom: 15px; /* Add some space below the heading */
 }
 
+h3 {
+    color: #141515; /* Green color for the heading */
+    /*color: #ffffff;*/
+    font-size: 15px; /* Adjust the font size as needed */
+    margin-bottom: 15px; /* Add some space below the heading */
+}
+
 .record {
     padding: 30px;
     margin: 45px;
@@ -150,6 +157,18 @@ h2 {
     margin-bottom: 15px;
 }
 
+.list{
+    color: #141515; 
+    /*color: #ffffff; */
+    font-size: 14px; 
+    margin-bottom: 15px;
+    /* padding: 20px; */
+    list-style-type: disc; 
+}
+
+.list li{
+    padding-bottom: 10px;
+}
 
 
 .image {
@@ -168,7 +187,10 @@ h2 {
     background-color:#ffffff;
 }
 
-
+.delete-button{
+    background-color:#ffffff;
+    padding-left: 5px
+}
 
 
 

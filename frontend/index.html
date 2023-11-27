@@ -19,11 +19,6 @@
 
 <body>
 <h1>Walkscapes</h1>
-<!--<h2>Sveiki atvykę</h2>-->
-<!--
-<table id="peopleTable"></table>
-<script src="table.js"></script>
--->
 <div id="map" style="width: 100%; height: 80%;"></div>
 <script src="getDataFromDB.js"></script>
 <script src="additional.js"></script>
@@ -32,53 +27,96 @@
 <script src="suggestions.js"></script>
 <script src="main.js"></script>
 
-
-<!--<button onclick="togglePopup()" class="popup-button">Add new description</button>-->
-<!--<button class="popup-button" onclick="updateMarkers(markers)" type="button">Update markers</button>-->
 <div id="overlay">
     <div id="popup">
         <h2>Upload Image</h2>
         <form id="uploadForm">
-            <label for="images">Choose Image:</label>
+            <h3 for="images">Choose Image:</h3>
             <input accept="image/*" id="images" multiple name="image" required type="file">
-            <br>
-            <label for="description">Description:</label>
+            <!-- Display uploaded images -->
+            <div id="uploadedImages">
+                <h3>Uploaded Images:</h3>
+                <ul id="imageList" class="list"></ul>
+            </div>
+         
+            <h3 for="description">Description:</h3>
             <textarea id="description" name="description" required rows="4"></textarea>
             <br>
-            <!-- <div id="uploadedImagesList"></div> -->
-            <button class="popup-button" onclick="uploadRecord(coordsForUploading[0], coordsForUploading[1])" type="submit">Upload</button>
-            <button class="popup-button" onclick="togglePopup()" type="button">Close</button>
+            <!-- <button class="popup-button" onclick="uploadRecord(coordsForUploading[0], coordsForUploading[1])" type="submit">Upload</button> -->
+            <!-- <button class="popup-button" onclick="togglePopup()" type="button">Close</button> -->
+            <button id="submit" class="popup-button" onclick="submitButtonClicked()" type="submit">Submit</button>
+            <button id="close" class="popup-button" onclick="closeButtonClicked()" type="button">Close</button>
+        
+            
         </form>
     </div>
 </div>
 
+
 <script type="module">
+    updateImageList();
+    // Open suggestions.html and pass the overlay reference
+    /*function closeButtonClicked(){
+        submitted = false;
+        togglePopup();
+    }
+
+    function submitButtonClicked(){
+        submitted = true;
+        uploadRecord(coordsForUploading[0], coordsForUploading[1])
+    }
+*/
+
+
+
     document.getElementById('uploadForm').addEventListener('submit', function (e) {
         e.preventDefault();
         togglePopup();
+    });  
 
+    //let imageList = []; // Store selected files here
+
+    /*function updateImageList() {
+        const imageListContainer = document.getElementById('imageList');
+        //imageListContainer.innerHTML = ""; // Clear the list
+
+        const newImages = document.getElementById('images').files;
+
+        for (let i = 0; i < newImages.length; i++) {
+            const li = document.createElement('li');
+            const deleteButton = document.createElement('button');
+
+            li.textContent = newImages[i].name;
+
+            // Use a closure to capture the correct index for each delete button
+            (function(index) {
+                deleteButton.textContent = 'Delete';
+                deleteButton.addEventListener('click', function() {
+                    // Call a function to handle image deletion
+                    deleteImage(index);
+                });
+            })(i);
+            li.appendChild(deleteButton);
+            imageListContainer.appendChild(li);
+        }
         
+        console.log(imageListContainer);
+        // Update the global variable with the selected files
+        imageList = Array.from(newImages);
 
-    });
-    
-     /* document.getElementById('images').addEventListener('change', function () {
-            displayUploadedImages(this.files);
-        });
-    
-       function displayUploadedImages(files) {
-            const uploadedImagesList = document.getElementById('uploadedImagesList');
-            uploadedImagesList.innerHTML = '';
-    
-            for (let i = 0; i < files.length; i++) {
-                const listItem = document.createElement('div');
-                listItem.textContent = files[i].name;
-                uploadedImagesList.appendChild(listItem);
-            }
-        } */
+        console.log(imageList);
+    }
 
+    function deleteImage(index) {
+        // Remove the image at the specified index
+        const imageListContainer = document.getElementById('imageList');
+        imageListContainer.removeChild(imageListContainer.children[index]);
 
+        // Update the list of uploaded images
+        //updateImageList();
+    }*/
 
-         
+    document.getElementById('images').addEventListener('change', updateImageList);
 
 </script>
 

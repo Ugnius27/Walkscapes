@@ -8,7 +8,7 @@ const santaka = [54.89984180616253, 23.961551736420333];
 
 var map = L.map('map').setView(santaka, 15);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 20, // Set the maximum zoom level
+    maxZoom: 20,
 }).addTo(map);
 
 var markerSantaka = L.marker(santaka).addTo(map);
@@ -49,7 +49,15 @@ var defaultIcon = new L.Icon({
 });
 
 var markersForHtml = [];
+//var closeClicked = false;
+var submitted = false; //??
+let overlayClosedCallback = null; //???
+
 putMarkersOnMap();
 var addTableIsOnTheMap = false;
 let customTableControl = createCustomTable();
-addButtonOnMap(customTableControl);
+
+console.log(window.location.pathname);
+if (!window.location.pathname.includes('suggestions')){
+    addButtonOnMap(customTableControl);
+}
