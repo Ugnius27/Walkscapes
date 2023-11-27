@@ -12,9 +12,9 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 var markerSantaka = L.marker(santaka).addTo(map);
-markerSantaka.bindPopup("Kažkokia informacija")
+markerSantaka.bindPopup("Santakos slėnis")
 
-
+var coordsForUploading = [0, 0]; //initial
 var records = [
     // {
     //     id: 1,

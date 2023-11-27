@@ -75,3 +75,13 @@ function togglePopup() {
     var overlay = document.getElementById('overlay');
     overlay.style.display = (overlay.style.display === 'none' || overlay.style.display === '') ? 'flex' : 'none';
 }
+
+function addNewDescription(lat, lng) {
+    // Assuming coordsForUploading is a global variable
+    // Update coordsForUploading using the markerNr or any other logic
+    console.log("in desscrrrrrrrrrr");
+    coordsForUploading = [lat, lng]/* Your logic to update coordsForUploading */;
+    
+    // Call togglePopup or perform other actions if needed
+    togglePopup();
+}

@@ -51,7 +51,10 @@ function createMarker(map, lat, lng, text, id) {
 
     // markers[markerNr].marker.bindPopup('<div class="custom-popup-text">' + text + button1 + button2, { offset: [0, -20], className: 'custom-popup' }).addTo(map)
     var button1 = `<br><button id="popupButtonView${markerNr}" class="popup-button" onclick="redirectToSuggestionsPage(${markerNr})">View suggestions</button>`;
-    var button2 = '<button id="popupButtonAdd' + markerNr + '" onclick="togglePopup()" class="popup-button">Add new description</button>';
+    //var button2 = '<button id="popupButtonAdd' + markerNr + '" onclick="togglePopup()" class="popup-button">Add new description</button>';
+    // var button2 = '<button id="popupButtonAdd' + markerNr + '" onclick="addNewDescription(${lat}, ${lng})" class="popup-button">Add new description</button>';
+    var button2 = `<button id="popupButtonAdd${markerNr}" onclick="addNewDescription(${lat}, ${lng})" class="popup-button">Add new description</button>`;
+
 
     markers[markerNr].marker.bindPopup(`<div class="custom-popup-text">${text}${button1}${button2}`, { offset: [0, -20], className: 'custom-popup' }).addTo(map);
 
@@ -176,6 +179,8 @@ function addToCurrentLocation() {
             //createMarker(map, currentCoordinates[0], currentCoordinates[1], "Current location");
             //uploadRecord(currentCoordinates);
             newMarker.bindPopup(currentCoordinates[0] + ", " + currentCoordinates[1]);//.openPopup();
+
+            coordsForUploading = [currentCoordinates[0], currentCoordinates[1]];
             togglePopup();
         } else {
             console.log("Unable to get current location.");
@@ -210,7 +215,7 @@ function chooseLocation() {
             console.log(count + "cccc");
             var newMarker = L.marker([lat, lng], { icon: redIcon, draggable: true }).addTo(map);
             //newMarker.bindPopup("Drag me!").openPopup();
-            var fixPlace = `<button id="fixMarkersPlace" onclick="makeMarkerUndraggable(${newMarker._leaflet_id})" class="popup-button">Fix marker\'s place</button>`;
+            var fixPlace = `<button id="fixMarkersPlace" onclick="makeMarkerUndraggable(${newMarker._leaflet_id}, ${lat}, ${lng})" class="popup-button">Fix marker\'s place</button>`;
             // var addButton = '<button id="popupButtonAdd__" onclick="togglePopup()" class="popup-button">Add new description</button>';
             newMarker.bindPopup(`<div class="custom-popup-text">Drag me!<Br>${fixPlace}`, { offset: [10, 10], className: 'custom-popup' }).addTo(map);
             newMarker.openPopup();
@@ -246,19 +251,20 @@ function chooseLocation() {
         //uploadRecord(lat, lng); // Pass the coordinates to the uploadRecord function
     });
 }
-function setToNewDescriptionPopup(marker){
-    var addButton = '<button id="popupButtonAdd__" onclick="togglePopup()" class="popup-button">Add new description</button>';
+function setToNewDescriptionPopup(marker, lat, lng){
+    // var addButton = '<button id="popupButtonAdd__" onclick="togglePopup()" class="popup-button">Add new description</button>';
+    var addButton = `<button id="popupButtonAdd__" onclick="addNewDescription(${lat}, ${lng})" class="popup-button">Add new description</button>`;
     marker.setPopupContent(`<div class="custom-popup-text">${addButton}`, { offset: [10, 10], className: 'custom-popup' }).addTo(map);
 
 }
-function makeMarkerUndraggable(markerId) {
+function makeMarkerUndraggable(markerId, lat, lng) {
     var marker = map._layers[markerId];
     if (marker) {
         marker.dragging.disable();
     }
 
     marker.closePopup();
-    setToNewDescriptionPopup(marker);
+    setToNewDescriptionPopup(marker, lat, lng);
     //marker.closePopup();
     //marker.openPopup();
 
