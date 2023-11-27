@@ -25,9 +25,12 @@
 <script src="table.js"></script>
 -->
 <div id="map" style="width: 100%; height: 80%;"></div>
+<script src="getDataFromDB.js"></script>
+<script src="additional.js"></script>
 <script src="map.js"></script>
 <script src="uploadRecord.js"></script>
 <script src="suggestions.js"></script>
+
 
 <!--<button onclick="togglePopup()" class="popup-button">Add new description</button>-->
 <!--<button class="popup-button" onclick="updateMarkers(markers)" type="button">Update markers</button>-->
@@ -51,8 +54,7 @@
     </div>
 </div>
 
-
-<script>
+<script type="module">
     function togglePopup() {
         var overlay = document.getElementById('overlay');
         overlay.style.display = (overlay.style.display === 'none' || overlay.style.display === '') ? 'flex' : 'none';
@@ -62,6 +64,7 @@
         e.preventDefault();
         togglePopup();
     });
+
 
 </script>
 

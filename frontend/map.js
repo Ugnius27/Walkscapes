@@ -1,4 +1,6 @@
 //import * as getDataFromDB from "./getDataFromDB.js";
+
+
 //------------------ should be in another js file
 
 const API_BASE_URL = 'http://localhost:8080';
@@ -59,7 +61,7 @@ var records = [
 ];
 
 //coordinates = convertToArrayOfCoordinates(records);
-coordinates = records.map(record => [record.latitude, record.longitude]);
+//coordinates = records.map(record => [record.latitude, record.longitude]);
 
 var markers = [];
 
@@ -95,6 +97,19 @@ function toggleIcon(markers, markerNrToToggle, icon){
     //markers[markerNr].isRed = !markers[markerNr].isRed;
 }
 
+console.log('map.js loaded');
+
+// function redirectToSuggestionsPage(markerNr) {
+//     // Construct the URL with the marker ID as a query parameter
+//     console.log("-------------------------------------------------");
+//     //console.log("marker nr " + markerNr);
+//     localStorage.setItem(`markerNrToBeRed`, JSON.stringify(markerNr));
+
+
+//     const url = `suggestions.html?markerId=${markerNr}`;
+//     window.location.href = url;
+// }
+console.log('map.js loaded2');
 function createMarker(map, lat, lng, text, id) {
     console.log("markers lngth  " +  markers.length); 
     console.log([lat, lng]);
@@ -167,105 +182,105 @@ function createMarker(map, lat, lng, text, id) {
 //     // Assuming you have a suggestions page named 'suggestions.html'
 //     window.location.href = 'suggestions.html';
 // }
-function redirectToSuggestionsPage(markerNr) {
-    // Construct the URL with the marker ID as a query parameter
-    //console.log("-------------------------------------------------");
-    //console.log("marker nr " + markerNr);
-    localStorage.setItem(`markerNrToBeRed`, JSON.stringify(markerNr));
+// function redirectToSuggestionsPage(markerNr) {
+//     // Construct the URL with the marker ID as a query parameter
+//     //console.log("-------------------------------------------------");
+//     //console.log("marker nr " + markerNr);
+//     localStorage.setItem(`markerNrToBeRed`, JSON.stringify(markerNr));
 
 
-    const url = `suggestions.html?markerId=${markerNr}`;
-    window.location.href = url;
-}
+//     const url = `suggestions.html?markerId=${markerNr}`;
+//     window.location.href = url;
+// }
 
 
 // should be in another file --------------
 
 
 
-// fetch markers from the API
-async function fetchMarkers() {
-    try {
-      const response = await fetch(`${API_BASE_URL}${MARKERS_API_ENDPOINT}`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch markers');
-      }
+// // fetch markers from the API
+// async function fetchMarkers() {
+//     try {
+//       const response = await fetch(`${API_BASE_URL}${MARKERS_API_ENDPOINT}`);
+//       if (!response.ok) {
+//         throw new Error('Failed to fetch markers');
+//       }
   
-      const markers = await response.json();
+//       const markers = await response.json();
 
-      console.log( markers);
-      //console.log("markers length0: " + markers.length)
-      return markers;
+//       console.log( markers);
+//       //console.log("markers length0: " + markers.length)
+//       return markers;
 
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
-}
+//     } catch (error) {
+//       console.error(error);
+//       return [];
+//     }
+// }
 
-async function fetchRecordsForMarker(markerId) {
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/record/marker=${markerId}`);
-      if (!response.ok) {
-        throw new Error(`Failed to fetch records for marker ${markerId}`);
-      }
+// async function fetchRecordsForMarker(markerId) {
+//     try {
+//       const response = await fetch(`${API_BASE_URL}/api/record/marker=${markerId}`);
+//       if (!response.ok) {
+//         throw new Error(`Failed to fetch records for marker ${markerId}`);
+//       }
   
-      const records = await response.json();
-      //console.log("records0: " + records.length)
-      //console.log(records);
-      return records;
+//       const records = await response.json();
+//       //console.log("records0: " + records.length)
+//       //console.log(records);
+//       return records;
   
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
-}
+//     } catch (error) {
+//       console.error(error);
+//       return [];
+//     }
+// }
 
 
-async function fetchRecordImage(markerId, photoId) {
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/record/marker=${markerId}/photo=${photoId}`);
-      if (!response.ok) {
-        throw new Error(`Failed to fetch records for marker's ${markerId} photo ${photoId}`);
-      }
+// async function fetchRecordImage(markerId, photoId) {
+//     try {
+//       const response = await fetch(`${API_BASE_URL}/api/record/marker=${markerId}/photo=${photoId}`);
+//       if (!response.ok) {
+//         throw new Error(`Failed to fetch records for marker's ${markerId} photo ${photoId}`);
+//       }
   
-      //const photo = await response;
-      //console.log("records0: " + records.length)
-      const photo = await response.blob(); // or await response.blob();
+//       //const photo = await response;
+//       //console.log("records0: " + records.length)
+//       const photo = await response.blob(); // or await response.blob();
     
-      // Log specific details instead of the entire response object
-      //console.log("Photo length:", photo.length);
+//       // Log specific details instead of the entire response object
+//       //console.log("Photo length:", photo.length);
 
 
 
-      /*const imageUrl = URL.createObjectURL(photo);
-      const imgElement = document.createElement('img');
-      imgElement.src = imageUrl;
-      document.body.appendChild(imgElement);*/
+//       /*const imageUrl = URL.createObjectURL(photo);
+//       const imgElement = document.createElement('img');
+//       imgElement.src = imageUrl;
+//       document.body.appendChild(imgElement);*/
       
 
 
-      return photo;
+//       return photo;
   
-    } catch (error) {
-      console.error(error);
-      return "";
-    }
-}
+//     } catch (error) {
+//       console.error(error);
+//       return "";
+//     }
+// }
 
 //fetchRecordImage(23, 23);
   // Call the function
   //console.log("fetchjed records")
   //fetchRecordsForMarker(23);
 
-  function extractMarkerData(marker) {
-    return {
-        ids: marker.ids,
-        coordinates: marker.coordinates,
-        // Add other properties you want to store
-    };
+// function extractMarkerData(marker) {
+//     return {
+//         ids: marker.ids,
+//         coordinates: marker.coordinates,
+//         // Add other properties you want to store
+//     };
     
-}
+// }
 var markersForHtml = [];
   
 function putMarkersOnMap(){
@@ -503,51 +518,53 @@ let customTableControl = createCustomTable();
 addButtonOnMap(customTableControl);
 // Function to create the custom table
 
-function createCustomTable() {
-        // Create a table with two buttons
-        var tableContent =
-            '<table class="popup-table">' +
-            '<tr><td>Choose where to put new marker:</td></tr>' +
-            '<tr><td><button onclick="addToCurrentLocation()" class="popup-button">Add to Current Location</button></td></tr>' +
-            '<tr><td><button onclick="chooseLocation()" class="popup-button">Choose Location</button></td></tr>' +
-            '</table>';
+// function createCustomTable() {
+//         // Create a table with two buttons
+//         var tableContent =
+//             '<table class="popup-table">' +
+//             '<tr><td>Choose where to put new marker:</td></tr>' +
+//             '<tr><td><button onclick="addToCurrentLocation()" class="popup-button">Add to Current Location</button></td></tr>' +
+//             '<tr><td><button onclick="chooseLocation()" class="popup-button">Choose Location</button></td></tr>' +
+//             '</table>';
 
-        // Create a custom container div for the table
-        var containerDiv = L.DomUtil.create('div', 'popup-table');
-        containerDiv.innerHTML = tableContent;
+//         // Create a custom container div for the table
+//         var containerDiv = L.DomUtil.create('div', 'popup-table');
+//         containerDiv.innerHTML = tableContent;
 
-        // Create a custom control and add the container to it
-        var customTableControl = L.control({ position: 'topright' });
-        customTableControl.onAdd = function (map) {
-            return containerDiv;
-        };
+//         // Create a custom control and add the container to it
+//         var customTableControl = L.control({ position: 'topright' });
+//         customTableControl.onAdd = function (map) {
+//             return containerDiv;
+//         };
 
-        // Add the custom control to the map
-        //customTableControl.addTo(map);
-        return customTableControl;
-}
+//         // Add the custom control to the map
+//         //customTableControl.addTo(map);
+//         return customTableControl;
+// }
 
 
 
 
 //-------------------------------------
-function distance(point1, point2){
-    //console.log("ddd: " + point1[0], "   " + point2[0] + "  " + point1[1] + "   " + point2[1]);
-    console.log("distance: " + Math.sqrt(Math.pow((point1[0] - point2[0]), 2) + Math.pow((point1[1] - point2[1]), 2)));
-    return Math.sqrt(Math.pow((point1[0] - point2[0]), 2) + Math.pow((point1[1] - point2[1]), 2));
-}
+// function distance(point1, point2){
+//     //console.log("ddd: " + point1[0], "   " + point2[0] + "  " + point1[1] + "   " + point2[1]);
+//     console.log("distance: " + Math.sqrt(Math.pow((point1[0] - point2[0]), 2) + Math.pow((point1[1] - point2[1]), 2)));
+//     return Math.sqrt(Math.pow((point1[0] - point2[0]), 2) + Math.pow((point1[1] - point2[1]), 2));
+// }
 
-// should be in suggestions.js
+// // should be in suggestions.js
 
-function markerNrThatIsInTheSameCluster(coordinates, radiusOfACluster){
-    console.log(markers.length);
-    for (var i = 0; i < markers.length; i++){
+// function markerNrThatIsInTheSameCluster(coordinates, radiusOfACluster){
+//     console.log(markers.length);
+//     for (var i = 0; i < markers.length; i++){
 
-        if (distance(markers[i].coordinates, coordinates) <= radiusOfACluster){
-            //console.log("!!!!");
-            return i;
-        }
-    }
+//         if (distance(markers[i].coordinates, coordinates) <= radiusOfACluster){
+//             //console.log("!!!!");
+//             return i;
+//         }
+//     }
 
-    return -1;
-}
+//     return -1;
+// }
+
+

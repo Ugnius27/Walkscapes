@@ -18,6 +18,9 @@
     <div id="map"></div>
     <div id="markerInfo"></div>
     <script src="node_modules/leaflet/dist/leaflet.js"></script>
+
+    <script src="getDataFromDB.js"></script>
+    <script src="additional.js"></script>
     <script src="map.js"></script>
 <style> 
 
@@ -41,6 +44,7 @@
     
 </style>
     <script>
+
         document.addEventListener('DOMContentLoaded', async function () {
             const urlParams = new URLSearchParams(window.location.search);
             const markerId = urlParams.get('markerId');
