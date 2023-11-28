@@ -218,6 +218,7 @@ h3 {
     /* border: 2px solid #141515; */
     border-radius: 5px;
     box-sizing: border-box; /* Ensure that padding is included in the element's total width and height */
+    font-size: 18px;
 }
 
 .popup-table button {

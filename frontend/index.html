@@ -32,7 +32,17 @@
         <h2>Upload Image</h2>
         <form id="uploadForm">
             <h3 for="images">Choose Image:</h3>
-            <input accept="image/*" id="images" multiple name="image" required type="file">
+            <!-- Custom button -->
+            <!-- <label accept="image/*" id="images" multiple name="image" for="images" class="popup-button" type="file">Choose Files</label> -->
+
+
+            <!-- Label for the file input -->
+            <label for="images" class="popup-button">Choose Files</label>
+    
+            <!-- Actual file input -->
+            <input accept="image/*" id="images" multiple name="image" required type="file" style="display: none;">
+
+            <!-- <input accept="image/*" id="images" multiple name="image" required type="file"> -->
             <!-- Display uploaded images -->
             <div id="uploadedImages">
                 <h3>Uploaded Images:</h3>
@@ -40,7 +50,7 @@
             </div>
          
             <h3 for="description">Description:</h3>
-            <textarea id="description" name="description" required rows="4"></textarea>
+            <textarea id="description" name="description" required rows="4" cols="60" rows="40"></textarea>
             <br>
             <!-- <button class="popup-button" onclick="uploadRecord(coordsForUploading[0], coordsForUploading[1])" type="submit">Upload</button> -->
             <!-- <button class="popup-button" onclick="togglePopup()" type="button">Close</button> -->

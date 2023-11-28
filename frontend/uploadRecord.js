@@ -57,7 +57,7 @@ function toggleImagesList(){
     var uploadedImagesContainer = document.getElementById('uploadedImages');
     uploadedImagesContainer.style.display = imageList.length > 0 ? 'block' : 'none';
     console.log(imageList);
-    console.log("111111111111");
+    // console.log("111111111111");
 }
 
 function deleteImage(index) {
