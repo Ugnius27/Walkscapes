@@ -39,7 +39,21 @@ function updateImageList() {
 
             deleteButton.addEventListener('click', function(e) {
                 e.preventDefault();
-                deleteImage(index);
+
+                var listItem = e.target.closest('li');
+                // Check if the parent li exists
+                if (listItem) {
+                    // Get the index of the li element in its parent
+                    var index = Array.from(listItem.parentNode.children).indexOf(listItem);
+
+                    // Call your deleteImage function with the index
+                    deleteImage(index);
+
+                    // Remove the li element from the DOM
+                    listItem.remove();
+                }
+                
+                //deleteImage(index);
             });
         })(i);
         li.appendChild(deleteButton);
@@ -57,12 +71,16 @@ function toggleImagesList(){
     var uploadedImagesContainer = document.getElementById('uploadedImages');
     uploadedImagesContainer.style.display = imageList.length > 0 ? 'block' : 'none';
     console.log(imageList);
-    // console.log("111111111111");
+    
 }
 
 function deleteImage(index) {
     const imageListContainer = document.getElementById('imageList');
-    imageListContainer.removeChild(imageListContainer.children[index]);
+    console.log("removing:" + index);
+    console.log(imageListContainer.children[index]);
+    console.log("container: ");
+    console.log(imageListContainer);
+    //imageListContainer.removeChild(imageListContainer.children[index]);
     imageList.splice(index, 1);
 
     toggleImagesList();

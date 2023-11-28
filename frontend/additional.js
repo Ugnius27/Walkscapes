@@ -117,4 +117,6 @@ function submitButtonClicked(){
     submitted = true;
     console.log(submitted);
     uploadRecord(coordsForUploading[0], coordsForUploading[1]);
+    // location.reload(true);
+
 }

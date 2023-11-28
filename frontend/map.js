@@ -194,6 +194,7 @@ function makeMarkerUndraggable(markerId, lat, lng) {
         if (addDescrButton || fixButton) {
             console.log('4444444444444444  ' );
             createMarker(map, lat, lng, `${lat}, ${lng}`)
+            //location.reload(true);
         }
         else{
             console.log('hidee  ');
