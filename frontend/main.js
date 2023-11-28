@@ -2,7 +2,7 @@ const API_BASE_URL = 'http://localhost:8080';
 const MARKERS_API_ENDPOINT = '/api/record/markers';
 
 var amountOfClusters = 0;
-var radiusOfACluster = 0.00050;
+var radiusOfACluster = 0.0050;
 
 const santaka = [54.89984180616253, 23.961551736420333];
 
@@ -14,28 +14,8 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 var markerSantaka = L.marker(santaka).addTo(map);
 markerSantaka.bindPopup("Santakos slėnis")
 
-var coordsForUploading = [0, 0]; //initial
-var records = [
-    // {
-    //     id: 1,
-    //     latitude: 54.89984,
-    //     longitude: 23.961321,
-    //     description: "description of first record",
-    // },
-    // {
-    //     id: 2,
-    //     latitude: 54.899726,
-    //     longitude: 23.961326,
-    //     description: "description of second record",
-    // },
-    // {
-    //     id: 3,
-    //     latitude: 54.900393,
-    //     longitude: 23.96175,
-    //     description: "description of third record",
-    // },
-];
-
+var coordsForUploading = [0, 0];
+var records = [];
 var markers = [];
 
 var redIcon = new L.Icon({
@@ -49,9 +29,8 @@ var defaultIcon = new L.Icon({
 });
 
 var markersForHtml = [];
-//var closeClicked = false;
-var submitted = false; //??
-let overlayClosedCallback = null; //???
+var submitted = false;
+let overlayClosedCallback = null;
 
 putMarkersOnMap();
 var addTableIsOnTheMap = false;

@@ -1,4 +1,3 @@
-// fetch markers from the API
 async function fetchMarkers() {
     try {
       const response = await fetch(`${API_BASE_URL}${MARKERS_API_ENDPOINT}`);
@@ -26,8 +25,6 @@ async function fetchRecordsForMarker(markerId) {
       }
   
       const records = await response.json();
-      //console.log("records0: " + records.length)
-      //console.log(records);
       return records;
   
     } catch (error) {
@@ -39,27 +36,14 @@ async function fetchRecordsForMarker(markerId) {
 
 async function fetchRecordImage(markerId, photoId) {
     try {
+      console.log("marker id: " + markerId + "   photo id:  " + photoId);
+
       const response = await fetch(`${API_BASE_URL}/api/record/marker=${markerId}/photo=${photoId}`);
       if (!response.ok) {
         throw new Error(`Failed to fetch records for marker's ${markerId} photo ${photoId}`);
       }
   
-      //const photo = await response;
-      //console.log("records0: " + records.length)
-      const photo = await response.blob(); // or await response.blob();
-    
-      // Log specific details instead of the entire response object
-      //console.log("Photo length:", photo.length);
-
-
-
-      /*const imageUrl = URL.createObjectURL(photo);
-      const imgElement = document.createElement('img');
-      imgElement.src = imageUrl;
-      document.body.appendChild(imgElement);*/
-      
-
-
+      const photo = await response.blob(); 
       return photo;
   
     } catch (error) {

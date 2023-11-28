@@ -51,31 +51,6 @@ function markerNrThatIsInTheSameCluster(coordinates, radiusOfACluster){
     return -1;
 }
 
-// function togglePopup() {
-//     return new Promise(resolve => {
-//         var overlay = document.getElementById('overlay');
-
-//         if (!overlay) {
-//             console.log("overlay could not be found");
-//             resolve();
-//             return;
-//         }
-
-//         overlay.style.display = (overlay.style.display === 'none' || overlay.style.display === '') ? 'flex' : 'none';
-
-//         overlay.classList.toggle('active');
-
-//         // Wait for the transition to complete (you may need to adjust the time)
-//         setTimeout(() => {
-//             if (!overlay.classList.contains('active')) {
-//                 console.log('Overlay closed');
-//                 cleanOverlayData();
-//             }
-//             resolve();
-//         }, 300); // 300 milliseconds, adjust if needed
-//     });
-// }
-
 function waitForElementWithHandler(selector) {
     return new Promise((resolve) => {
         const checkElement = () => {
@@ -91,9 +66,7 @@ function waitForElementWithHandler(selector) {
     }).then((element) => {
         return new Promise((resolve) => {
             const clickHandler = () => {
-                //console.log('Close button clicked');
                 console.log(`${selector} button clicked`);
-                // Remove the click event listener after it's triggered once
                 element.removeEventListener('click', clickHandler);
                 resolve();
             };
@@ -112,35 +85,22 @@ async function togglePopup() {
     }
 
     overlay.style.display = (overlay.style.display === 'none' || overlay.style.display === '') ? 'flex' : 'none';
-
     overlay.classList.toggle('active');
 
-    // Set up a handler for the 'transitionend' event
     const transitionEndHandler = () => {
-        // Call the callback if it exists
         if (overlayClosedCallback != null) {
             overlayClosedCallback();
             console.log('Overlay closeddd');
             cleanOverlayData();
         }
 
-        // Remove the event listener to avoid memory leaks
         overlay.removeEventListener('transitionend', transitionEndHandler);
     };
 
-    // Add an event listener for the 'transitionend' event
     overlay.addEventListener('transitionend', transitionEndHandler);
-
-    // Wait until closeButton is available and clickHandler has been executed
-    // await (waitForElementWithHandler('#close') || waitForElementWithHandler('#submit'));
     await Promise.race([waitForElementWithHandler('#close'), waitForElementWithHandler('#submit')]);
 
 }
-// function waitForOverlayClosed(callback) {
-//     overlayClosedCallback = callback;
-// }
-
-
 
 function addNewDescription(lat, lng) {
     coordsForUploading = [lat, lng];
@@ -156,16 +116,5 @@ function closeButtonClicked(){
 function submitButtonClicked(){
     submitted = true;
     console.log(submitted);
-    uploadRecord(coordsForUploading[0], coordsForUploading[1])
-    //document.getElementById('overlay').style.display = 'none';
-
-    // var overlay = document.getElementById('overlay');
-
-    // if (!overlay) {
-    //     console.log("overlay could not be found");
-    //     return;
-    // }
-
-    // console.log("ttttttttttttttttt");
-    // overlay.style.display = (overlay.style.display === 'none' || overlay.style.display === '') ? 'flex' : 'none';
+    uploadRecord(coordsForUploading[0], coordsForUploading[1]);
 }

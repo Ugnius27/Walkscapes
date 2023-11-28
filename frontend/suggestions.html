@@ -14,6 +14,9 @@
 </head>
 
 <body>
+    <a href="index.html" >
+        <img src="Transparent_house.png" alt="Go to Home Page" class="home-pic">
+    </a>
     <h1>Suggestions</h1>
     <div id="map"></div>
     <div id="markerInfo"></div>
@@ -77,26 +80,70 @@
                     `<p class="paragraph">${truncatedDescription}...</p>`; // Display truncated description
 
                     
-                    let imgElement; 
-                    if (record.photos != ""){
-                        console.log("ppp: " + record.photos);
-                        photo = await fetchRecordImage(markers[markerId].ids[i], record.photos);
-                        if (photo != ""){
-                            const imageUrl = URL.createObjectURL(photo);
-                            imgElement = document.createElement('img');
-                            imgElement.src = imageUrl;
-                            imgElement.className = 'image';
-                            imgElement.style.display = 'none';
-                            recordElement.appendChild(imgElement)
+                    //let imgElement; 
+                    let imgElement;
+                    if (record.photos != "" && record.photos.length > 0){
+
+                        //-----------------
+
+                        var images = [];
+                        console.log("pppppppppppppppp" + record.photos.length);
+
+                        for (let j = 0; j < record.photos.length; j++) {
+                            images.push(fetchRecordImage(markers[markerId].ids[i], record.photos[j]));
+                            console.log(images[j]);
                         }
-                        else {
-                            console.log("Error fetching photo");
+                    
+                        // Wait for all images to be fetched
+                        const fetchedImages = await Promise.all(images);
+
+
+                        // Process the fetched images
+                        for (let j = 0; j < fetchedImages.length; j++) {
+                            const photo = fetchedImages[j];
+                            console.log(photo);
+                            if (photo !== "") {
+                                var imageUrl = URL.createObjectURL(photo);
+                                imgElement = document.createElement('img');
+                                imgElement.src = imageUrl;
+                                imgElement.className = 'image';
+                                imgElement.style.display = 'none';
+                                //imgElement.style.display = 'block';
+                                recordElement.appendChild(imgElement);
+                            } else {
+                                console.log("Error fetching photo");
+                            }
+                            
                         }
+
+                        console.log(recordElement);
+
+                        //----------------
+
+
+
+
+                        /*console.log("ppp: " + record.photos + "   " + record.photos.length);
+                        for (let j = 0; j < record.photos.length; j++){
+                            photo = await fetchRecordImage(markers[markerId].ids[i], record.photos[j]);
+                            if (photo != ""){
+                                const imageUrl = URL.createObjectURL(photo);
+                                imgElement = document.createElement('img');
+                                imgElement.src = imageUrl;
+                                imgElement.className = 'image';
+                                imgElement.style.display = 'none';
+                                recordElement.appendChild(imgElement)
+                            }
+                            else {
+                                console.log("Error fetching photo");
+                            }
+                        }*/
+                        
                     } else {
                         console.log("No photos available");
                     }
 
-                recordElement.addEventListener('click', function () {
+                /*recordElement.addEventListener('click', function () {
                     this.classList.toggle('closed');
                     this.classList.toggle('opened');
 
@@ -109,9 +156,39 @@
                         paragraphElement.innerHTML = fullDescription;
                         if (imgElement != null)
                             imgElement.style.display = 'block'; 
+                        
+                        recordElement.style.display = 'block';
 
                     }
+                });*/
+
+                recordElement.addEventListener('click', function () {
+                    this.classList.toggle('closed');
+                    this.classList.toggle('opened');
+                
+                    const paragraphElement = this.querySelector('.paragraph');
+                    // Use const instead of let for imgElements
+                    const imgElements = this.querySelectorAll('.image');
+                    
+                    if (this.classList.contains('closed')) {
+                        paragraphElement.innerHTML = `${truncatedDescription}...`;
+                
+                        // Loop through all imgElements and set display to 'none'
+                        imgElements.forEach(imgElement => {
+                            imgElement.style.display = 'none';
+                        });
+                    } else {
+                        paragraphElement.innerHTML = fullDescription;
+                
+                        // Loop through all imgElements and set display to 'block'
+                        imgElements.forEach(imgElement => {
+                            imgElement.style.display = 'block';
+                        });
+                
+                        recordElement.style.display = 'block';
+                    }
                 });
+                
                     document.getElementById('markerInfo').appendChild(recordElement);
                 }
 

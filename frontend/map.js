@@ -24,7 +24,7 @@ function createMarker(map, lat, lng, text, id) {
     console.log("does not go to existing cluster " + sameClusterMarkerNr);
     markers[markers.length] = 
     {
-        ids: [id], // ids of all around markers 
+        ids: [id], // ids of all markers that are around
         coordinates: [lat, lng],
         marker: null,
     }
@@ -42,10 +42,6 @@ function createMarker(map, lat, lng, text, id) {
         toggleIcon(markers, markerNr, redIcon);
     })
 
-    // markers[markerNr].marker.on('dblclick', function () {
-    //     markers[markerNr].marker.removeFrom(map)
-    // })
-
     markers[markerNr].marker.on('popupclose', function () {
         markers[markerNr].marker.setIcon(defaultIcon);
     });
@@ -60,11 +56,9 @@ function putMarkersOnMap(){
                          `${markersInJson[i].latitude}, ${markersInJson[i].longitude}`, markersInJson[i].id);
         }
 
-        markers[markers.length - 1].marker.closePopup();
-
-        console.log(markers.length + "   jjjjjjjj");
         for (var i = 0; i < markers.length; i++){
             markersForHtml[i] = extractMarkerData(markers[i]);
+            markers[i].marker.closePopup();
         }
 
         localStorage.setItem('markers', JSON.stringify(markersForHtml));
@@ -74,16 +68,10 @@ function putMarkersOnMap(){
 
         var redMarkerInSuggestionsNr = localStorage.getItem('markerNrToBeRed');
         if (redMarkerInSuggestionsNr != null && currentFileName == "suggestions.html"){
-            //console.log("REDDD");
             markers[redMarkerInSuggestionsNr].marker.setIcon(redIcon);
         }
-        //console.log("NOT REDDD");
     });    
 }
-
-
-
-
 
 function currentLocation(callback) {
     if ("geolocation" in navigator) {
@@ -94,8 +82,7 @@ function currentLocation(callback) {
                 var latitude = coordinates.latitude;
                 var longitude = coordinates.longitude;
 
-                console.log("Latitude: " + latitude + ", Longitude: " + longitude);
-
+                // console.log("Latitude: " + latitude + ", Longitude: " + longitude);
                 callback([latitude, longitude]);
             },
             function (error) {
@@ -108,34 +95,6 @@ function currentLocation(callback) {
         callback(null);
     }
 }
-
-// function addToCurrentLocation() {
-//     console.log('Add to Current Location clicked');
-//     map.removeControl(customTableControl);
-//     addTableIsOnTheMap = false;
-
-//     currentLocation(function (currentCoordinates) {
-//         if (currentCoordinates) {
-//             console.log(currentCoordinates);
-//             var newMarker = L.marker(currentCoordinates, { icon: redIcon}).addTo(map);
-//             newMarker.bindPopup(currentCoordinates[0] + ", " + currentCoordinates[1]);//.openPopup();
-
-//             coordsForUploading = [currentCoordinates[0], currentCoordinates[1]];
-//             togglePopup();
-
-//             console.log("After togglePopup()   in addToCurrentLocation()");
-        
-//                 //     createMarker(map, currentCoordinates[0], currentCoordinates[1], 
-//                 //                 `${currentCoordinates[0]}, ${currentCoordinates[1]}`)
-
-            
-//         } else {
-//             console.log("Unable to get current location.");
-//         }
-        
-//     });
-// }
-
 
 async function addToCurrentLocation() {
     console.log('Add to Current Location clicked');
@@ -150,36 +109,16 @@ async function addToCurrentLocation() {
 
             coordsForUploading = [currentCoordinates[0], currentCoordinates[1]];
 
-            // Wait for the overlay to be closed
             await togglePopup();
-
-            console.log("After togglePopup() in addToCurrentLocation");
-
             if (submitted){
                 console.log("This was submitted");
-                //createMarker(map, currentCoordinates[0], currentCoordinates[1], 
-                //`${currentCoordinates[0]}, ${currentCoordinates[1]}`)
-
-
-
-                var overlay = document.getElementById('overlay');
-
-                // if (!overlay) {
-                //     console.log("overlay could not be found");
-                //     return;
-                // }
-
-                //console.log("ttttttttttttttttt");
-                //overlay.style.display = 'none';
+                createMarker(map, currentCoordinates[0], currentCoordinates[1], 
+                `${currentCoordinates[0]}, ${currentCoordinates[1]}`);
             }
             else{
                 console.log("This was not submitted");
                 map.removeLayer(newMarker);
-
-                
             }
-
-            // Additional actions after the overlay is closed
         } else {
             console.log("Unable to get the current location.");
         }
@@ -192,25 +131,28 @@ function chooseLocation() {
     console.log('Choose Location clicked');
     var count = 0;
 
-
     map.on('click', function (e) {
         var lat = e.latlng.lat;
         var lng = e.latlng.lng;
+        coordsForUploading = [lat, lng];
         console.log(e.latlng.toString());
        
         if (count == 1) {
             console.log(count + "cccc");
             var newMarker = L.marker([lat, lng], { icon: redIcon, draggable: true }).addTo(map);
             var fixPlace = `<button id="fixMarkersPlace" onclick="makeMarkerUndraggable(${newMarker._leaflet_id}, ${lat}, ${lng})" class="popup-button">Fix marker\'s place</button>`;
-            newMarker.bindPopup(`<div class="custom-popup-text">Drag me!<Br>${fixPlace}`, { offset: [10, 10], className: 'custom-popup' }).addTo(map);
+            newMarker.bindPopup(`<div class="custom-popup-text">Drag to desired place<Br>Double-click to close<Br>${fixPlace}`, { offset: [10, 10], className: 'custom-popup' }).addTo(map);
             newMarker.openPopup();
 
             newMarker.on('dragend', function (event) {
                 var marker = event.target;
                 var position = marker.getLatLng();
-                //console.log("Marker dragged to: " + position.lat + ", " + position.lng);
-            });
+                lat = position.lat;
+                lng = position.lng;
 
+                coordsForUploading = [position.lat, position.lng];
+                console.log("Marker dragged to: " + position.lat + ", " + position.lng);
+            });
 
             newMarker.on('dragstart', function () {
                 newMarker.openPopup();
@@ -219,6 +161,10 @@ function chooseLocation() {
             newMarker.on('drag', function () {
                 newMarker.getPopup().setLatLng(newMarker.getLatLng());
             });
+
+            newMarker.on('dblclick', function () {
+                newMarker.removeFrom(map)
+            })
         }
         if (count == 2)
             map.off('click');
@@ -241,6 +187,20 @@ function makeMarkerUndraggable(markerId, lat, lng) {
     setToNewDescriptionPopup(marker, lat, lng);
 
     setTimeout(function () {
+        document.body.addEventListener('click', function (event) {
+        var addDescrButton = event.target.closest('#popupButtonAdd__');
+        var fixButton = event.target.closest('#fixMarkersPlace');
+
+        if (addDescrButton || fixButton) {
+            console.log('4444444444444444  ' );
+            createMarker(map, lat, lng, `${lat}, ${lng}`)
+        }
+        else{
+            console.log('hidee  ');
+            map.removeLayer(marker);
+        }
+        });
+
         marker.openPopup();
         console.log("done");
     }, 10);
@@ -264,7 +224,6 @@ function addButtonOnMap(customTableControl){
     };
 
     customControl.addTo(map);
-    
     myButton.addEventListener('click', function () {
         if (!addTableIsOnTheMap){
             customTableControl.addTo(map);

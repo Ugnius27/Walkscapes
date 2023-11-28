@@ -180,8 +180,14 @@ h3 {
     margin-left: auto; 
     margin-right: auto;
 
-
+    padding: 20px;
 }
+
+/* .home-pic{
+    max-width: 1px; 
+    height: auto;     
+    width: auto; 
+} */
 
 .add-button{
     background-color:#ffffff;
@@ -228,4 +234,15 @@ h3 {
 
 .record.opened{
     background-color: #acebac;
+}
+
+
+.home-pic{
+    max-width: 50px; /* Adjust the max-width as needed */
+    height: auto;     /* Allows the height to adjust based on the aspect ratio */
+    width: auto; 
+
+    position: absolute; /* Sets the positioning to absolute */
+    top: 0;           /* Positions the image at the top */
+    left: 0;
 }
