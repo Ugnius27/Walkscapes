@@ -1,4 +1,3 @@
-const API_BASE_URL = 'http://localhost:8080';
 const MARKERS_API_ENDPOINT = '/api/record/markers';
 
 var amountOfClusters = 0;
@@ -37,6 +36,6 @@ var addTableIsOnTheMap = false;
 let customTableControl = createCustomTable();
 
 console.log(window.location.pathname);
-if (!window.location.pathname.includes('suggestions')){
+if (!window.location.pathname.includes('suggestions')) {
     addButtonOnMap(customTableControl);
 }
