@@ -1,14 +1,16 @@
 use std::fs::File;
 use std::io::Read;
 use futures_util::stream::StreamExt;
-use sqlx::postgres::{PgPoolOptions, PgRow};
-use sqlx::{FromRow, PgPool, Postgres, Row, Transaction};
+use sqlx::mysql::{MySqlPoolOptions, MySqlRow};
+use sqlx::{FromRow, MySqlPool, MySql, Row, Transaction};
 use actix_web::{web, get, post, App, HttpServer, Responder, HttpMessage, HttpResponse, HttpRequest};
 use serde::{Serialize, Deserialize};
 use std::io::Write;
 use std::str::FromStr;
 use actix_multipart::{Multipart, Field};
 use actix_multipart::MultipartError::Payload;
+use dotenv::dotenv;
+use std::env;
 use futures_util::TryStreamExt;
 use serde::de::Unexpected::Float;
 
@@ -88,10 +90,9 @@ impl Record {
 
 #[tokio::main]
 async fn main() -> Result<(), sqlx::Error> {
-    const DATABASE_URL: &str = "postgres://testuser:slaptazodis@158.129.1.132/test";
-    let pool = match PgPoolOptions::new()
-        .max_connections(5)
-        .connect(DATABASE_URL).await {
+    dotenv::dotenv().ok();
+    let database_url = env::var("DATABASE_URL").expect("URL error");
+    let pool = match MySqlPool::connect(&database_url).await {
         Ok(pool) => pool,
         Err(err) => {
             eprintln!("{err}");
@@ -102,8 +103,8 @@ async fn main() -> Result<(), sqlx::Error> {
     HttpServer::new(move || {
         App::new()
             .app_data(web::Data::new(pool.clone()))
-            .service(get_image)
-            .service(get_people)
+            // .service(get_image)
+            // .service(get_people)
             .service(post_record)
             .service(get_markers)
             .service(get_record)
@@ -120,31 +121,31 @@ async fn main() -> Result<(), sqlx::Error> {
     Ok(())
 }
 
-#[get("api/people")]
-async fn get_people(pool: web::Data<PgPool>) -> impl Responder {
-    let people: Vec<Person> = sqlx::query_as!(Person, "SELECT * FROM people")
-        .fetch_all(pool.get_ref()).await.expect("Nepavyko gauti duomenų iš DB");
-    serde_json::to_string(&people).unwrap().to_string()
-}
+// #[get("api/people")]
+// async fn get_people(pool: web::Data<PgPool>) -> impl Responder {
+//     let people: Vec<Person> = sqlx::query_as!(Person, "SELECT * FROM people")
+//         .fetch_all(pool.get_ref()).await.expect("Nepavyko gauti duomenų iš DB");
+//     serde_json::to_string(&people).unwrap().to_string()
+// }
 
-#[get("api/image/{name}")]
-async fn get_image(name: web::Path<String>, pool: web::Data<PgPool>) -> impl Responder {
-    let image = sqlx::query_as!(Image, "SELECT * FROM images WHERE filename = $1", name.into_inner())
-        .fetch_one(pool.get_ref()).await;
+// #[get("api/image/{name}")]
+// async fn get_image(name: web::Path<String>, pool: web::Data<PgPool>) -> impl Responder {
+//     let image = sqlx::query_as!(Image, "SELECT * FROM images WHERE filename = $1", name.into_inner())
+//         .fetch_one(pool.get_ref()).await;
 
-    match image {
-        Ok(image) => {
-            HttpResponse::Ok()
-                .content_type("image")
-                .body(image.image_data)
-        }
-        Err(_) => HttpResponse::NotFound().body("Image not found"),
-    }
-}
+// match image {
+//     Ok(image) => {
+//         HttpResponse::Ok()
+//             .content_type("image")
+//             .body(image.image_data)
+//     }
+//     Err(_) => HttpResponse::NotFound().body("Image not found"),
+// }
+// }
 
 //TODO: sanitize
 #[post("api/record/upload")]
-async fn post_record(mut payload: Multipart, pool: web::Data<PgPool>) -> impl Responder {
+async fn post_record(mut payload: Multipart, pool: web::Data<MySqlPool>) -> impl Responder {
     let pool = pool.get_ref();
 
     let mut marker = Marker::new();
@@ -190,13 +191,13 @@ async fn post_record(mut payload: Multipart, pool: web::Data<PgPool>) -> impl Re
         }
     }
 
-    // let mut transaction = match pool.begin().await {
-    //     Ok(tran) => tran,
-    //     Err(err) => {
-    //         eprintln!("{err}");
-    //         return HttpResponse::InternalServerError().body("Database error");
-    //     }
-    // };
+// let mut transaction = match pool.begin().await {
+//     Ok(tran) => tran,
+//     Err(err) => {
+//         eprintln!("{err}");
+//         return HttpResponse::InternalServerError().body("Database error");
+//     }
+// };
 
     let marker_id = match insert_marker(&pool, marker).await {
         Ok(id) => id,
@@ -219,17 +220,17 @@ async fn post_record(mut payload: Multipart, pool: web::Data<PgPool>) -> impl Re
         }
     }
 
-    // match Err(err) = transaction.commit().await {
-    //     eprintln!("{err}");
-    //     return HttpResponse::InternalServerError().body("Database error");
-    // }
+// match Err(err) = transaction.commit().await {
+//     eprintln!("{err}");
+//     return HttpResponse::InternalServerError().body("Database error");
+// }
 
     HttpResponse::Ok().body("Data received")
 }
 
 #[get("api/record/markers")]
-async fn get_markers(pool: web::Data<PgPool>) -> impl Responder {
-    let rows = match sqlx::query!("SELECT id, ST_X(coordinates::geometry) as latitude, ST_Y(coordinates::geometry) as longitude FROM markers INNER JOIN records on records.marker_fk = id").fetch_all(pool.get_ref()).await {
+async fn get_markers(pool: web::Data<MySqlPool>) -> impl Responder {
+    let rows = match sqlx::query!("SELECT id, latitude, longitude FROM markers INNER JOIN records on records.marker_fk = id").fetch_all(pool.get_ref()).await {
         Ok(rows) => rows,
         Err(err) => {
             eprintln!("{err}");
@@ -256,10 +257,10 @@ async fn get_markers(pool: web::Data<PgPool>) -> impl Responder {
 
 //TODO: sanitize inputs
 #[get("api/record/marker={marker_id}")]
-async fn get_record(pool: web::Data<PgPool>, id: web::Path<i32>) -> impl Responder {
+async fn get_record(pool: web::Data<MySqlPool>, id: web::Path<i32>) -> impl Responder {
     let mut record = Record::new();
     record.id = id.into_inner();
-    match sqlx::query!("SELECT marker_fk as id, description from records WHERE marker_fk = $1", record.id).fetch_one(pool.get_ref()).await {
+    match sqlx::query!("SELECT marker_fk as id, description from records WHERE marker_fk = ?", record.id).fetch_one(pool.get_ref()).await {
         Ok(result) => record.description = result.description,
         Err(err) => {
             eprintln!("{err}");
@@ -267,8 +268,8 @@ async fn get_record(pool: web::Data<PgPool>, id: web::Path<i32>) -> impl Respond
         }
     };
 
-    match sqlx::query!("SELECT id from record_images inner join records on records.marker_fk = record_fk WHERE record_fk = $1", record.id
-    ).fetch_all(pool.get_ref()).await {
+    match sqlx::query!("SELECT id from images inner join records on records.marker_fk = record_fk WHERE record_fk = ?", record.id
+).fetch_all(pool.get_ref()).await {
         Ok(result) => {
             for row in result {
                 record.photos.push(row.id);
@@ -288,9 +289,9 @@ async fn get_record(pool: web::Data<PgPool>, id: web::Path<i32>) -> impl Respond
 
 //TODO: sanitize inputs
 #[get("api/record/marker={marker_id}/photo={photo_id}")]
-async fn get_record_image(pool: web::Data<PgPool>, path: web::Path<(i32, i32)>) -> impl Responder {
+async fn get_record_image(pool: web::Data<MySqlPool>, path: web::Path<(i32, i32)>) -> impl Responder {
     let (record_id, photo_id) = path.into_inner();
-    match sqlx::query_as!(Image, "SELECT id, filename, image_data FROM record_images WHERE record_fk = $1 AND id = $2", record_id, photo_id)
+    match sqlx::query_as!(RecordImage, "SELECT record_fk, id, filename, image_data FROM images WHERE record_fk = ? AND id = ?", record_id, photo_id)
         .fetch_one(pool.get_ref()).await {
         Ok(image) =>
             HttpResponse::Ok()
@@ -300,25 +301,29 @@ async fn get_record_image(pool: web::Data<PgPool>, path: web::Path<(i32, i32)>) 
     }
 }
 
-async fn insert_record_image(pool: &sqlx::PgPool, image: Image, record_fk: i32) -> Result<(), sqlx::Error> {
-    let result = sqlx::query!("INSERT INTO record_images (record_fk, filename, image_data) VALUES ($1, $2, $3)",
+async fn insert_record_image(pool: &sqlx::MySqlPool, image: Image, record_fk: i32) -> Result<(), sqlx::Error> {
+    let result = sqlx::query!("INSERT INTO images (record_fk, filename, image_data) VALUES (?, ?, ?)",
             record_fk, image.filename, image.image_data)
         .execute(pool).await?;
     Ok(())
 }
 
-async fn insert_record(pool: &sqlx::PgPool, record: Record) -> Result<(), sqlx::Error> {
-    let result = sqlx::query!("INSERT INTO records (marker_fk, description) VALUES ($1, $2)",
+async fn insert_record(pool: &sqlx::MySqlPool, record: Record) -> Result<(), sqlx::Error> {
+    let result = sqlx::query!("INSERT INTO records (marker_fk, description) VALUES (?, ?)",
         record.id,
         record.description).execute(pool).await?;
     Ok(())
 }
 
-async fn insert_marker(pool: &sqlx::PgPool, marker: Marker) -> Result<i32, sqlx::Error> {
-    let result = sqlx::query!("INSERT INTO markers (coordinates) VALUES (ST_MakePoint($1, $2)) RETURNING id",
+async fn insert_marker(pool: &sqlx::MySqlPool, marker: Marker) -> Result<i32, sqlx::Error> {
+    let result = sqlx::query!(
+        "INSERT INTO markers (latitude, longitude) VALUES (?, ?)",
         marker.latitude,
-        marker.longitude).fetch_one(pool).await?;
-    Ok(result.id)
+        marker.longitude
+    )
+        .execute(pool)
+        .await?;
+    Ok(result.last_insert_id() as i32)
 }
 
 
@@ -338,7 +343,7 @@ async fn extract_image_from_field(mut field: Field) -> Result<Image, &'static st
     let bytes = extract_bytes_from_field(field).await?;
     Ok(Image {
         id: 0,
-        filename: filename,
+        filename,
         image_data: bytes,
     })
 }
