@@ -4,16 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <link href="style.css" rel="stylesheet"/>
-    <link href="node_modules/leaflet/dist/leaflet.css"
-          rel="stylesheet"/>
+    <link href="node_modules/leaflet/dist/leaflet.css" rel="stylesheet"/>
     <!-- Make sure you put this AFTER Leaflet's CSS -->
     <script src="node_modules/leaflet/dist/leaflet.js"></script>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
     <!-- Marker Cluster CSS and JS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
-<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
-<script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+    <link href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" rel="stylesheet"/>
+    <link href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" rel="stylesheet"/>
+    <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
     <title>Walkscapes</title>
 </head>
 
@@ -37,27 +36,27 @@
 
 
             <!-- Label for the file input -->
-            <label for="images" class="popup-button">Choose Files</label>
-    
+            <label class="popup-button" for="images">Choose Files</label>
+
             <!-- Actual file input -->
-            <input accept="image/*" id="images" multiple name="image" required type="file" style="display: none;">
+            <input accept="image/*" id="images" multiple name="image" required style="display: none;" type="file">
 
             <!-- <input accept="image/*" id="images" multiple name="image" required type="file"> -->
             <!-- Display uploaded images -->
             <div id="uploadedImages">
                 <h3>Uploaded Images:</h3>
-                <ul id="imageList" class="list"></ul>
+                <ul class="list" id="imageList"></ul>
             </div>
-         
+
             <h3 for="description">Description:</h3>
-            <textarea id="description" name="description" required rows="4" cols="60" rows="40"></textarea>
+            <textarea cols="60" id="description" name="description" required rows="4" rows="40"></textarea>
             <br>
             <!-- <button class="popup-button" onclick="uploadRecord(coordsForUploading[0], coordsForUploading[1])" type="submit">Upload</button> -->
             <!-- <button class="popup-button" onclick="togglePopup()" type="button">Close</button> -->
-            <button id="submit" class="popup-button" onclick="submitButtonClicked()" type="submit">Submit</button>
-            <button id="close" class="popup-button" onclick="closeButtonClicked()" type="button">Close</button>
-        
-            
+            <button class="popup-button" id="submit" onclick="submitButtonClicked()" type="submit">Submit</button>
+            <button class="popup-button" id="close" onclick="closeButtonClicked()" type="button">Close</button>
+
+
         </form>
     </div>
 </div>
@@ -78,11 +77,10 @@
 */
 
 
-
     document.getElementById('uploadForm').addEventListener('submit', function (e) {
         e.preventDefault();
         togglePopup();
-    });  
+    });
 
     //let imageList = []; // Store selected files here
 

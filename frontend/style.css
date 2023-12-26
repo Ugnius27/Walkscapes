@@ -99,10 +99,6 @@ h1 {
 }
 
 
-
-
-
-
 h2 {
     color: #141515; /* Green color for the heading */
     /*color: #ffffff;*/
@@ -150,34 +146,34 @@ h3 {
     margin-top: 10px;
 } */
 
-.paragraph{
-    color: #141515; 
+.paragraph {
+    color: #141515;
     /*color: #ffffff; */
-    font-size: 18px; 
+    font-size: 18px;
     margin-bottom: 15px;
 }
 
-.list{
-    color: #141515; 
+.list {
+    color: #141515;
     /*color: #ffffff; */
-    font-size: 14px; 
+    font-size: 14px;
     margin-bottom: 15px;
     /* padding: 20px; */
-    list-style-type: disc; 
+    list-style-type: disc;
 }
 
-.list li{
+.list li {
     padding-bottom: 10px;
 }
 
 
 .image {
     max-width: 200%; /* Ensures the image won't exceed its original size */
-    height: auto;   /* Allows the height to adjust based on the aspect ratio */
-    width: 300px;    /* Set a fixed width or any other desired value */
- 
-    display: block; 
-    margin-left: auto; 
+    height: auto; /* Allows the height to adjust based on the aspect ratio */
+    width: 300px; /* Set a fixed width or any other desired value */
+
+    display: block;
+    margin-left: auto;
     margin-right: auto;
 
     padding: 20px;
@@ -189,27 +185,24 @@ h3 {
     width: auto; 
 } */
 
-.add-button{
-    background-color:#ffffff;
+.add-button {
+    background-color: #ffffff;
 }
 
-.delete-button{
-    background-color:#ffffff;
+.delete-button {
+    background-color: #ffffff;
     padding-left: 5px
 }
 
 
-
- #map {
+#map {
     width: 100%;
     height: 80%;
-    border: 2px solid #2f2e2e; 
+    border: 2px solid #2f2e2e;
     /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Box shadow with some transparency */
 
     box-sizing: border-box;
-  } 
-  
-
+}
 
 
 .popup-table {
@@ -233,17 +226,17 @@ h3 {
     transition: filter 0.3s ease; /* Add a smooth transition effect */
 }
 
-.record.opened{
+.record.opened {
     background-color: #acebac;
 }
 
 
-.home-pic{
+.home-pic {
     max-width: 50px; /* Adjust the max-width as needed */
-    height: auto;     /* Allows the height to adjust based on the aspect ratio */
-    width: auto; 
+    height: auto; /* Allows the height to adjust based on the aspect ratio */
+    width: auto;
 
     position: absolute; /* Sets the positioning to absolute */
-    top: 0;           /* Positions the image at the top */
+    top: 0; /* Positions the image at the top */
     left: 0;
 }
