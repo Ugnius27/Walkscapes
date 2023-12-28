@@ -1,1 +1,1 @@
-C:\Users\gerda\OneDrive\Stalinis\ kompiuteris\Naujas\ aplankas\Walkscapes\backend\target\debug\walkscapes.exe: C:\Users\gerda\OneDrive\Stalinis\ kompiuteris\Naujas\ aplankas\Walkscapes\backend\src\main.rs
+C:\Users\gerda\OneDrive\Stalinis\ kompiuteris\walkscapes-try\Walkscapes\backend\target\debug\walkscapes.exe: C:\Users\gerda\OneDrive\Stalinis\ kompiuteris\walkscapes-try\Walkscapes\backend\src\main.rs
