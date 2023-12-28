@@ -14,6 +14,7 @@ use std::env;
 use std::sync::TryLockError::Poisoned;
 use futures_util::TryStreamExt;
 use serde::de::Unexpected::Float;
+use actix_cors::Cors;///////////////////////////
 
 
 #[derive(Debug, FromRow, Serialize)]
@@ -139,6 +140,7 @@ async fn main() -> Result<(), sqlx::Error> {
 
     HttpServer::new(move || {
         App::new()
+            .wrap(Cors::permissive())////////////////////////////
             .app_data(web::Data::new(pool.clone()))
             // .service(get_image)
             // .service(get_people)
@@ -147,7 +149,9 @@ async fn main() -> Result<(), sqlx::Error> {
             .service(get_challenges)
             .service(get_record)
             .service(get_record_image)
-            .service(actix_files::Files::new("/", "../frontend")
+            // .service(actix_files::Files::new("/", "../frontend")
+            // .service(actix_files::Files::new("/", "../walkscapes/frontend")
+            .service(actix_files::Files::new("/", "../frontend/walkscapes/public")
                 .index_file("index.html"))
     })
         .bind("0.0.0.0:8080")

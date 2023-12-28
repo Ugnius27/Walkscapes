@@ -1,0 +1,242 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 40px;
+
+    margin: 0;
+    height: 90vh;
+    /*height: auto;*/
+    /*background: linear-gradient(to bottom, #aaf5a5, #ffffff);*/
+    /*background: linear-gradient(to bottom, #000000, #ffffff)*/
+    background: #d9f8d9
+
+    /*height: 100%;*/
+    /*overflow-y: hidden;*/
+}
+
+/* h1 {
+  color: #333;
+} */
+
+h1 {
+    color: #141515; /* Green color for the heading */
+    /*color: #ffffff; */
+    font-size: 2em; /* Adjust the font size as needed */
+    margin-bottom: 30px; /* Add some space below the heading */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Add a subtle text shadow */
+}
+
+#overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+#popup {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 1001;
+}
+
+#uploadForm {
+    text-align: left;
+}
+
+#uploadForm label {
+    display: block;
+    margin-top: 10px;
+}
+
+#uploadForm textarea {
+    width: 100%;
+}
+
+#description {
+    width: 100%;
+    height: 100px; /* Set the desired height */
+    resize: vertical; /* Allow vertical resizing */
+    word-wrap: break-word; /* Allow long words to break and wrap */
+}
+
+
+.popup-button {
+    display: inline-block;
+    padding: 10px 15px;
+    font-size: 15px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    color: #ffffff;
+    background-color: #4CAF50;
+    transition: background-color 0.3s ease;
+
+    margin: 5px 5px;
+    /* margin-bottom: 10px; */
+}
+
+.popup-button:hover {
+    background-color: #45a049;
+}
+
+/* .custom-popup {
+    width: 600px;
+    height: 1000px; 
+} */
+.leaflet-popup-content .custom-popup-text {
+    font-size: 18px; /* set your desired font size */
+    text-align: center;
+}
+
+
+h2 {
+    color: #141515; /* Green color for the heading */
+    /*color: #ffffff;*/
+    font-size: 20px; /* Adjust the font size as needed */
+    margin-bottom: 15px; /* Add some space below the heading */
+}
+
+h3 {
+    color: #141515; /* Green color for the heading */
+    /*color: #ffffff;*/
+    font-size: 15px; /* Adjust the font size as needed */
+    margin-bottom: 15px; /* Add some space below the heading */
+}
+
+.record {
+    padding: 30px;
+    margin: 45px;
+    border-radius: 10px;
+    border-width: 50px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+    text-align: left;
+    font-size: 24px;
+    color: #141515;
+
+    /*background-color: rgba(255, 255, 255, 0.3); /* Adjust the alpha value (last parameter) */
+    background-color: rgba(255, 255, 255, 0.35);
+
+
+    /**/
+
+    cursor: pointer;
+    transition: height 0.3s ease; /* Add a smooth transition effect */
+
+}
+
+.record.closed {
+    height: 50px; /* Set a default height when closed */
+    overflow: hidden; /* Hide overflow content when closed */
+}
+
+/* .record img {
+    max-width: 100%;
+    height: auto;
+    margin-top: 10px;
+} */
+
+.paragraph {
+    color: #141515;
+    /*color: #ffffff; */
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.list {
+    color: #141515;
+    /*color: #ffffff; */
+    font-size: 14px;
+    margin-bottom: 15px;
+    /* padding: 20px; */
+    list-style-type: disc;
+}
+
+.list li {
+    padding-bottom: 10px;
+}
+
+
+.image {
+    max-width: 200%; /* Ensures the image won't exceed its original size */
+    height: auto; /* Allows the height to adjust based on the aspect ratio */
+    width: 300px; /* Set a fixed width or any other desired value */
+
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+
+    padding: 20px;
+}
+
+/* .home-pic{
+    max-width: 1px; 
+    height: auto;     
+    width: auto; 
+} */
+
+.add-button {
+    background-color: #ffffff;
+}
+
+.delete-button {
+    background-color: #ffffff;
+    padding-left: 5px
+}
+
+
+#map {
+    width: 100%;
+    height: 80%;
+    border: 2px solid #2f2e2e;
+    /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Box shadow with some transparency */
+
+    box-sizing: border-box;
+}
+
+
+.popup-table {
+    background-color: white;
+    padding: 5px; /* Adjust this value to increase or decrease the gap */
+    /* border: 2px solid #141515; */
+    border-radius: 5px;
+    box-sizing: border-box; /* Ensure that padding is included in the element's total width and height */
+    font-size: 18px;
+}
+
+.popup-table button {
+    margin: 5px; /* Adjust this value to control the gap between buttons and the container border */
+    /* Additional button styling if needed */
+}
+
+
+.record:hover {
+    /* filter: brightness(0.8); Adjust the brightness value as needed */
+    background-color: #acebac;
+    transition: filter 0.3s ease; /* Add a smooth transition effect */
+}
+
+.record.opened {
+    background-color: #acebac;
+}
+
+
+.home-pic {
+    max-width: 50px; /* Adjust the max-width as needed */
+    height: auto; /* Allows the height to adjust based on the aspect ratio */
+    width: auto;
+
+    position: absolute; /* Sets the positioning to absolute */
+    top: 0; /* Positions the image at the top */
+    left: 0;
+}
