@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -54,6 +54,12 @@ const getArrayFromSessionStorage = (key) => {
 };
 
 function App() {
+//////////////////
+  const [username, setUsername] = useState("");
+  const [user, setUser] = useState("");
+
+
+  //////////////////
   const santaka = [54.89984180616253, 23.961551736420333];
   const mapContainer = useRef(null);
   const mapRef = useRef(null);       // mapRef.current - main map
@@ -66,7 +72,7 @@ function App() {
       var polygon = L.polygon(polygonCoordinates, {color: 'red'}).addTo(mapRef.current);
       var marker = L.marker([54.899, 23.96155], { icon: DEFAULT_ICON }).addTo(mapRef.current);
   } else {
-      console.error("Map not properly initialized");
+      console.log("Map not properly initialized");
   }
 
 //   // Example usage
@@ -80,29 +86,33 @@ function App() {
 ////////////
 //sesion:
 
-// Example usage
-const myArray = [1, 2, 3, 4, 5];
-const storageKey = 'myArrayKey';
-
-// Save the array to session storage
-saveArrayToSessionStorage(storageKey, myArray);
-
-// Retrieve the array from session storage
-const retrievedArray = getArrayFromSessionStorage(storageKey);
-
-console.log(retrievedArray); // This will print the array retrieved from session storage
-
     
-  }, []);
+  }, [user]);
 
 
-
+  console.log(user);
 
 
   return (
     <div className='App'>
-      <Challenges.ContainerOfTogglerAndTitle />
-      <div ref={mapContainer} style={{ height: '250px' }}></div>
+      {/* <p>smth</p> */}
+      {user? (
+        <>
+          <Challenges.ContainerOfTogglerAndTitle />
+          <div ref={mapContainer} style={{ height: '250px' }}></div>
+          <p>logged in as {username}</p>
+        </>
+      ) : (
+        <>
+          <input type="text" placeholder='username' onChange={(e) => setUsername(e.target.value)}/>
+          <button onClick={()=>setUser(username)}>Login</button>
+        </>
+        
+      )}
+      
+      
+      
+      
     </div>
   );
 }
