@@ -1,4 +1,4 @@
-import './style.css';
+import './offCanvas.css';
 
 export function TogglerColumn(){
 	return (
