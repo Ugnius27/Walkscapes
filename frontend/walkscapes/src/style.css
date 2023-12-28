@@ -1,0 +1,22 @@
+.custom-bg{
+	background-color: #d9f8d9;
+}
+
+.acordion-in-offCanvas{
+	background-color: #c1f7c1;
+}
+
+.acordion-in-offCanvas:hover,
+.acordion-in-offCanvas:active,
+.acordion-in-offCanvas:focus,
+.acordion-in-offCanvas:visited{
+	background-color: #acebac;
+}
+
+.acordion-in-offCanvas:not(.collapsed){
+	background: #acebac;
+}
+
+.acordion-in-offCanvas-item{
+	background-color: #c1f7c1;
+}
