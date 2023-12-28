@@ -17,106 +17,27 @@
 <button hs-swap="outerHTML" hx-get="test.html" onclick="getCoords()">
     Click Me
 </button>
-<button onclick="removeVertex(0)">remove 0</button>
 
 <div id="map" style="width: 100%; height: 500px;"></div>
 
-
 <script>
-    const santaka = [54.89984180616253, 23.961551736420333];
-    console.log("jopapa....")
-    var map = L.map('map', {editable: true}).setView(santaka, 15);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 20,
-    }).addTo(map);
-
-    L.EditControl = L.Control.extend({
-
-        options: {
-            position: 'topleft',
-            callback: null,
-            kind: '',
-            html: ''
-        },
-
-        onAdd: function (map) {
-            var container = L.DomUtil.create('div', 'leaflet-control leaflet-bar'),
-                link = L.DomUtil.create('a', '', container);
-
-            link.href = '#';
-            link.title = 'Create a new ' + this.options.kind;
-            link.innerHTML = this.options.html;
-            L.DomEvent.on(link, 'click', L.DomEvent.stop)
-                .on(link, 'click', function () {
-                    window.LAYER = this.options.callback.call(map.editTools);
-                }, this);
-
-            return container;
+    try {
+        const response = await fetch(`api/challenges`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch markers');
         }
 
-    });
+        const markers = await response.json();
 
-    L.NewPolygonControl = L.EditControl.extend({
+        console.log(markers);
+        //console.log("markers length0: " + markers.length)
 
-        options: {
-            position: 'topleft',
-            callback: map.editTools.startPolygon,
-            kind: 'polygon',
-            html: '▰'
-        }
-
-    });
-
-    map.addControl(new L.NewPolygonControl());
-
-    // Create an editable polygon
-    var polygon = L.polygon([santaka, [51.503, -0.06], [51.51, -0.047]]).addTo(map);
-    polygon.enableEdit();
-    polygon.editor.map.on('click', onMapClick)
-
-    function getCoords() {
-        let latlangs = polygon.getLatLngs()[0];
-        latlangs.forEach(function (latLng) {
-            console.log(latLng.lat + ',' + latLng.lng);
-        });
+    } catch (error) {
+        console.error(error);
     }
-
-    function removeVertex(index) {
-        polygon.disableEdit();
-        if (index >= 0 && index < polygon.getLatLngs().length) {
-            var latlngs = polygon.getLatLngs()[0];
-            latlngs.splice(index, 1);
-            polygon.setLatLngs(latlngs);
-            console.log(polygon.getLatLngs())
-            polygon.redraw(); // Redraw the polygon after editing
-            console.log('Vertex at index ' + index + ' removed.');
-        } else {
-            console.error('Invalid index.');
-        }
-        polygon.enableEdit();
-    }
-
-    // Function to handle click events on the map
-    function onMapClick(e) {
-        var clickCoords = e.latlng;
-        var clickedVertexIndex = -1;
-
-        let points = polygon.getLatLngs()[0]
-        points.forEach(function (point) {
-            for (let i = 0; i < points.length; i++) {
-                if (clickCoords.distanceTo(point) < 10) {
-                    clickedVertexIndex = i;
-                }
-            }
-        });
-
-        if (clickedVertexIndex !== -1) {
-            console.log('You clicked on vertex ' + clickedVertexIndex);
-        } else {
-            console.log('You did not click on a vertex.');
-        }
-    }
-
 </script>
+
+<script src="init.js"></script>
+<script src="polygon_editor.js"></script>
 
 </body>
