@@ -2,7 +2,7 @@ import './offCanvas.css';
 
 export function TogglerColumn(){
 	return (
-	  <div className="col-md-auto">
+	  <div className="col-2">
 		<nav className="navbar custom-bg">
 		  <button
 			className="navbar-toggler ms-auto"
@@ -126,12 +126,12 @@ export function OffCanvasBody(){
 
 export function ContainerOfTogglerAndTitle(){
 	return (
-	  <div className="container-fluid text-center custom-bg" style={{ margin: 0, padding: 0 }}>
+	  <div className="container-fluid text-center custom-bg m-3" style={{ margin: 0, padding: 0 }}>
   
 		<div className="row align-items-center justify-content-end">
   
-		  <div className="col-md-auto"></div>
-			<div className="col-10">
+		  <div className="col-2"></div>
+			<div className="col-8">
 			  <h1>Walkscapes</h1>
 			</div>
   

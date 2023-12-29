@@ -1,10 +1,23 @@
+// App.jsx
+
 import React, { useEffect, useRef, useState } from 'react';
+
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
 import * as Challenges from './Challenges.js';
 import * as Map from './Map.js';
 import * as Calculations from './Calculations.js';
+import * as Components from './ComponentsCreating.jsx';
+
+import './popupsLeaflet.css'
+
+
+import addMarkerImage from './add.png'; // Update the path accordingly
+
+export const ADD_MARKER_MODAL_ID = 'AddMarkerModal';
+export const CHOOSE_LOCATION_MESSAGE_ID = 'ChooseLocationMessage';
+export const ADD_TO_CURR_LOCATION_MESSAGE_ID = 'AddToCurrLocationMessage';
 
 const MARKERS_API_ENDPOINT = '/api/record/markers';
 const AMOUNT_OF_CLUSTERS = 0;
@@ -26,43 +39,30 @@ var polygonCoordinates = [
 	[54.885, 23.955],   // Move to the right and slightly down
 	[54.905, 23.955]    // Move to the right and slightly down
   ];
-//////////////////////////  
-// Save array to session storage
-const saveArrayToSessionStorage = (key, array) => {
-  try {
-    const arrayAsString = JSON.stringify(array);
-    sessionStorage.setItem(key, arrayAsString);
-  } catch (error) {
-    // Handle errors (e.g., storage quota exceeded)
-    console.error('Error saving array to session storage:', error);
-  }
-};
 
-// Retrieve array from session storage
-const getArrayFromSessionStorage = (key) => {
-  try {
-    const arrayAsString = sessionStorage.getItem(key);
-    if (arrayAsString) {
-      return JSON.parse(arrayAsString);
-    }
-    return null; // Return null if the key is not found
-  } catch (error) {
-    // Handle errors
-    console.error('Error retrieving array from session storage:', error);
-    return null;
-  }
-};
+
+var mapContainer;// = useRef(null);
+export var mapRef;// = useRef(null);
 
 function App() {
-//////////////////
-  const [username, setUsername] = useState("");
-  const [user, setUser] = useState("");
+  mapContainer = useRef(null);
+  mapRef = useRef(null);
+///////
+  // const addMarkerButtonRef = useRef(null);
 
+  // const handleClick = () => {
+  //   alert('Button clicked!');
+  // };
+
+//////////////////
+  // const [username, setUsername] = useState("");
+  // const [user, setUser] = useState("");
+var user = true;
+// var isOn = false;
 
   //////////////////
   const santaka = [54.89984180616253, 23.961551736420333];
-  const mapContainer = useRef(null);
-  const mapRef = useRef(null);       // mapRef.current - main map
+         // mapRef.current - main map
 
   useEffect(() => {
     Map.initializeMap(mapContainer, santaka, mapRef);
@@ -71,9 +71,11 @@ function App() {
       // var marker = L.marker([54.89984180616253, 23.96155], { icon: DEFAULT_ICON }).addTo(map);
       var polygon = L.polygon(polygonCoordinates, {color: 'red'}).addTo(mapRef.current);
       var marker = L.marker([54.899, 23.96155], { icon: DEFAULT_ICON }).addTo(mapRef.current);
-  } else {
+
+    } else {
       console.log("Map not properly initialized");
   }
+  // Components.InitializeMap2();
 
 //   // Example usage
 //   var marker = L.marker([54.895, 23.98], { icon: RED_ICON }).addTo(mapRef.current);
@@ -84,35 +86,61 @@ function App() {
 
 
 ////////////
-//sesion:
-
     
   }, [user]);
 
 
-  console.log(user);
+  // console.log(user);
+  // console.log(Components.FadeModal);
 
 
   return (
     <div className='App'>
       {/* <p>smth</p> */}
-      {user? (
+      {/* {user? ( */}
         <>
+          <Components.FadeModal/>
+          
           <Challenges.ContainerOfTogglerAndTitle />
-          <div ref={mapContainer} style={{ height: '250px' }}></div>
-          <p>logged in as {username}</p>
+          <div 
+            style={{ 
+              position: 'relative', 
+              height: '253px', 
+              // border: 'solid', 
+              marginLeft: '1.2rem'}}
+          >
+            <div 
+              className='m-3 border border-dark border-2'
+              ref={mapContainer} 
+              style={{ height: '350px', zIndex: 1000 }} 
+              id='map'>
+            </div>
+            <Components.MessageOnFadeOverlay
+              id = {CHOOSE_LOCATION_MESSAGE_ID}
+              text = {`Click on the map to choose location`}
+            />
+            {/* <div> */}
+            <Components.AddMarkerTable/>
+            {/* </div> */}
+            
+              {/* <div id="map" style="height: 400px;"></div> */}
+
+          </div>
+          {/* <p>logged in as {username}</p> */}
+          {/* <button ref={addMarkerButtonRef} onClick={handleClick}>
+            Click Me
+          </button> */}
+          {/* <CustomTable/> */}
+        <div>
+    </div>
         </>
-      ) : (
-        <>
+      {/* ) : ( */}
+        {/* <>
           <input type="text" placeholder='username' onChange={(e) => setUsername(e.target.value)}/>
           <button onClick={()=>setUser(username)}>Login</button>
-        </>
+        </> */}
         
-      )}
-      
-      
-      
-      
+      {/* )} */}
     </div>
   );
 }

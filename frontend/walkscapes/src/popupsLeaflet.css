@@ -1,0 +1,49 @@
+.add-button {
+    background-color: #ffffff;
+
+    position: absolute;
+    top: 10px;
+    right: 28px;
+    z-index: 1001;
+}
+
+.add-button img {
+    width: 24px;
+    height: 24px;
+}
+
+.popup-table {
+    background-color: white;
+    padding: 5px; /* Adjust this value to increase or decrease the gap */
+    /* border: 1px solid #141515; */
+    border-radius: 5px;
+    box-sizing: border-box; /* Ensure that padding is included in the element's total width and height */
+    font-size: 18px;
+}
+
+.popup-table button {
+    margin: 5px; /* Adjust this value to control the gap between buttons and the container border */
+    /* Additional button styling if needed */
+}
+
+.popup-button {
+    display: inline-block;
+    padding: 10px 15px;
+    font-size: 15px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    color: #ffffff;
+    background-color: #4CAF50;
+    transition: background-color 0.3s ease;
+
+    margin: 5px 5px;
+    width: 200px
+    /* margin-bottom: 10px; */
+}
+
+.popup-button:hover {
+    background-color: #45a049;
+}
