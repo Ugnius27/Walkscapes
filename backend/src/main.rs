@@ -11,6 +11,7 @@ use actix_multipart::{Multipart, Field};
 use actix_multipart::MultipartError::Payload;
 use dotenv::dotenv;
 use std::env;
+use std::sync::TryLockError::Poisoned;
 use futures_util::TryStreamExt;
 use serde::de::Unexpected::Float;
 use actix_cors::Cors;///////////////////////////
@@ -89,6 +90,42 @@ impl Record {
     }
 }
 
+#[derive(Debug, FromRow, Serialize)]
+struct Challenge {
+    id: i32,
+    title: String,
+    description: String,
+    polygon: Polygon,
+    markers: Vec::<Marker>,
+}
+
+impl Challenge {
+    fn new() -> Self {
+        Challenge {
+            id: 0,
+            title: String::new(),
+            description: String::new(),
+            markers: Vec::new(),
+            polygon: Polygon::new(),
+        }
+    }
+}
+
+#[derive(Debug, FromRow, Serialize)]
+struct Polygon {
+    id: i32,
+    vertices: serde_json::Value,
+}
+
+impl Polygon {
+    fn new() -> Self {
+        Polygon {
+            id: 0,
+            vertices: serde_json::Value::Null,
+        }
+    }
+}
+
 #[tokio::main]
 async fn main() -> Result<(), sqlx::Error> {
     dotenv::dotenv().ok();
@@ -109,11 +146,10 @@ async fn main() -> Result<(), sqlx::Error> {
             // .service(get_people)
             .service(post_record)
             .service(get_markers)
+            .service(get_challenges)
             .service(get_record)
             .service(get_record_image)
-            // .service(actix_files::Files::new("/", "../frontend")
-            // .service(actix_files::Files::new("/", "../walkscapes/frontend")
-            .service(actix_files::Files::new("/", "../frontend/walkscapes/public")
+            .service(actix_files::Files::new("/", "../frontend")
                 .index_file("index.html"))
     })
         .bind("0.0.0.0:8080")
@@ -124,28 +160,6 @@ async fn main() -> Result<(), sqlx::Error> {
 
     Ok(())
 }
-
-// #[get("api/people")]
-// async fn get_people(pool: web::Data<PgPool>) -> impl Responder {
-//     let people: Vec<Person> = sqlx::query_as!(Person, "SELECT * FROM people")
-//         .fetch_all(pool.get_ref()).await.expect("Nepavyko gauti duomenų iš DB");
-//     serde_json::to_string(&people).unwrap().to_string()
-// }
-
-// #[get("api/image/{name}")]
-// async fn get_image(name: web::Path<String>, pool: web::Data<PgPool>) -> impl Responder {
-//     let image = sqlx::query_as!(Image, "SELECT * FROM images WHERE filename = $1", name.into_inner())
-//         .fetch_one(pool.get_ref()).await;
-
-// match image {
-//     Ok(image) => {
-//         HttpResponse::Ok()
-//             .content_type("image")
-//             .body(image.image_data)
-//     }
-//     Err(_) => HttpResponse::NotFound().body("Image not found"),
-// }
-// }
 
 //TODO: sanitize
 #[post("api/record/upload")]
@@ -245,8 +259,8 @@ async fn get_markers(pool: web::Data<MySqlPool>) -> impl Responder {
     for row in rows {
         let marker = Marker {
             id: row.id,
-            latitude: row.latitude.unwrap_or_default(),
-            longitude: row.longitude.unwrap_or_default(),
+            latitude: row.latitude,
+            longitude: row.longitude,
         };
         markers.push(marker);
     }
@@ -330,6 +344,63 @@ async fn insert_marker(pool: &sqlx::MySqlPool, marker: Marker) -> Result<i32, sq
     Ok(result.last_insert_id() as i32)
 }
 
+//TODO sanitize inputs
+#[get("api/challenges")]
+async fn get_challenges(pool: web::Data<MySqlPool>) -> impl Responder {
+    let pool = pool.get_ref();
+    let rows = match sqlx::query!(
+        r#"SELECT
+        c.id, c.title, c.description,
+        p.id as polygon_id,
+        JSON_EXTRACT(ST_AsGeoJSON(p.vertices), '$.coordinates') AS vertices
+        FROM challenges as c
+        INNER JOIN polygons as p ON p.id = c.polygon_id;"#)
+        .fetch_all(pool).await {
+        Ok(rows) => rows,
+        Err(err) => {
+            eprintln!("{err}");
+            return HttpResponse::NotFound().body(err.to_string());
+        }
+    };
+
+    if rows.is_empty() {
+        return HttpResponse::NotFound().body("No challenges found");
+    }
+    let mut challenges = Vec::new();
+    for row in rows {
+        let markers = match sqlx::query_as!(
+            Marker,
+            r#"SELECT m.id, m.latitude, m.longitude FROM markers as m
+            INNER JOIN challenge_markers as c_m
+            ON m.id = c_m.marker_id
+            WHERE c_m.challenge_id = ?"#, row.id)
+            .fetch_all(pool).await {
+            Ok(markers) => markers,
+            Err(err) => {
+                eprintln!("{err}");
+                return HttpResponse::InternalServerError().body("Database error");
+            }
+        };
+
+        challenges.push(Challenge {
+            id: row.id,
+            title: row.title,
+            description: row.description,
+            markers,
+            polygon: Polygon {
+                id: row.polygon_id,
+                vertices: row.vertices.unwrap(), //TODO BAD!!
+            },
+        });
+    }
+    match serde_json::to_string(&challenges) {
+        Ok(result) => HttpResponse::Ok().body(result),
+        Err(err) => {
+            eprintln!("{err}");
+            return HttpResponse::InternalServerError().body(""); //TODO: json error? idk
+        }
+    }
+}
 
 async fn extract_bytes_from_field(mut field: Field) -> Result<Vec::<u8>, &'static str> {
     let mut bytes = Vec::new();
