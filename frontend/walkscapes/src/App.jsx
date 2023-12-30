@@ -5,15 +5,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
-import * as Challenges from './Challenges.js';
-import * as Map from './Map.js';
-import * as Calculations from './Calculations.js';
-import * as Components from './ComponentsCreating.jsx';
-
 import './popupsLeaflet.css'
+import * as Map from './Components/Map/Map.jsx';
 
-
-import addMarkerImage from './add.png'; // Update the path accordingly
+import AppFirstRow from './Components/AppFirstRow/AppFirstRow.jsx';
+import MapComponent from './Components/Map/Map.jsx';
+import FadeModal from './Components/FadeModal/FadeModal.jsx';
 
 export const ADD_MARKER_MODAL_ID = 'AddMarkerModal';
 export const CHOOSE_LOCATION_MESSAGE_ID = 'ChooseLocationMessage';
@@ -44,54 +41,51 @@ var polygonCoordinates = [
 var mapContainer;// = useRef(null);
 export var mapRef;// = useRef(null);
 
+
+
+//////////
+
+var ChallengesData =
+[
+	{
+		title: 'Challenge 1',
+		description: 'Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the first item\'s accordion body.',
+		Routes: ['Route 1', 'Route 2']
+	},
+	{
+		title: 'Challenge 2',
+		description: 'Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the first item\'s accordion body.',
+		Routes: ['Route 3', 'Route 4']
+	}
+]
+
+
+
+///////////
+
 function App() {
   mapContainer = useRef(null);
   mapRef = useRef(null);
-///////
-  // const addMarkerButtonRef = useRef(null);
-
-  // const handleClick = () => {
-  //   alert('Button clicked!');
-  // };
 
 //////////////////
   // const [username, setUsername] = useState("");
   // const [user, setUser] = useState("");
+/////////////////
 var user = true;
-// var isOn = false;
 
-  //////////////////
   const santaka = [54.89984180616253, 23.961551736420333];
-         // mapRef.current - main map
+  // mapRef.current - main map
 
   useEffect(() => {
     Map.initializeMap(mapContainer, santaka, mapRef);
-    // var polygon = L.polygon(polygonCoordinates, {color: 'red'}).addTo(map);
     if (mapRef.current) {
-      // var marker = L.marker([54.89984180616253, 23.96155], { icon: DEFAULT_ICON }).addTo(map);
       var polygon = L.polygon(polygonCoordinates, {color: 'red'}).addTo(mapRef.current);
       var marker = L.marker([54.899, 23.96155], { icon: DEFAULT_ICON }).addTo(mapRef.current);
 
     } else {
       console.log("Map not properly initialized");
-  }
-  // Components.InitializeMap2();
-
-//   // Example usage
-//   var marker = L.marker([54.895, 23.98], { icon: RED_ICON }).addTo(mapRef.current);
-// var coordinateToCheck = [54.895, 23.98];  // Replace with the coordinate you want to check
-// var isInside = Calculations.isCoordinateInsidePolygon(coordinateToCheck, polygonCoordinates);
-
-// console.log(isInside);  // This will print true if the coordinate is inside the polygon, otherwise false
-
-
-////////////
-    
+  }    
   }, [user]);
-
-
-  // console.log(user);
-  // console.log(Components.FadeModal);
 
 
   return (
@@ -99,41 +93,49 @@ var user = true;
       {/* <p>smth</p> */}
       {/* {user? ( */}
         <>
-          <Components.FadeModal/>
+        {/* <OffCanvas Challenges={ChallengesData}/> */}
+        <AppFirstRow Challenges={ChallengesData}/>
+        
+          {/* <Components.FadeModal/> */}
+          <FadeModal/>
           
-          <Challenges.ContainerOfTogglerAndTitle />
           <div 
             style={{ 
               position: 'relative', 
               height: '253px', 
-              // border: 'solid', 
               marginLeft: '1.2rem'}}
           >
-            <div 
-              className='m-3 border border-dark border-2'
-              ref={mapContainer} 
-              style={{ height: '350px', zIndex: 1000 }} 
-              id='map'>
-            </div>
+            <MapComponent mapContainer={mapContainer}/>
+           
+            {/*
             <Components.MessageOnFadeOverlay
               id = {CHOOSE_LOCATION_MESSAGE_ID}
               text = {`Click on the map to choose location`}
             />
-            {/* <div> */}
-            <Components.AddMarkerTable/>
-            {/* </div> */}
+            <Components.AddMarkerTable/>*/}
             
-              {/* <div id="map" style="height: 400px;"></div> */}
+          </div> 
 
-          </div>
+
+
+
           {/* <p>logged in as {username}</p> */}
           {/* <button ref={addMarkerButtonRef} onClick={handleClick}>
             Click Me
           </button> */}
           {/* <CustomTable/> */}
-        <div>
-    </div>
+
+
+
+
+          
+        {/* <div>
+    </div> */}
         </>
+
+
+
+
       {/* ) : ( */}
         {/* <>
           <input type="text" placeholder='username' onChange={(e) => setUsername(e.target.value)}/>
@@ -141,6 +143,10 @@ var user = true;
         </> */}
         
       {/* )} */}
+
+
+
+      
     </div>
   );
 }

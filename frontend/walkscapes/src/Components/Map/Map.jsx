@@ -1,18 +1,17 @@
-// import React, { useEffect, useRef, useState } from 'react';
-// import ReactDOM from 'react-dom';
-
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
-// import * as App from './App.jsx';
+import AddMarkerButton from '../AddMarkerButton/AddMarkerButton';
 
-import { DEFAULT_ICON, RED_ICON } from './App';
+import * as Fade from '../FadeModal/FadeModal.jsx';
 
-import addMarkerImage from './add.png'; // Update the path accordingly
+import { mapRef, DEFAULT_ICON } from '../../App.jsx';
+
+export const ADD_MARKER_MODAL_ID = 'AddMarkerModal';
+export const CHOOSE_LOCATION_MESSAGE_ID = 'ChooseLocationMessage';
+export const ADD_TO_CURR_LOCATION_MESSAGE_ID = 'AddToCurrLocationMessage';
 
 
-
-  
 export function initializeMap(mapContainer, center, mapRef) {
 	// if(mapContainer.current){
 	// 	console.log(mapContainer.current);
@@ -49,3 +48,25 @@ export function addButtonOnMap(customTableControl, map, addTableIsOnTheMap) {
 
 	return addTableIsOnTheMap;
 }
+
+const Map = ({mapContainer}) => {
+	return (
+		<>
+		<div 
+            className='m-3 border border-dark border-2'
+            ref={mapContainer} 
+            style={{ height: '350px', zIndex: 1000 }} 
+            id='map'
+		>
+        </div>
+
+		<AddMarkerButton/>
+		<Fade.MessageOnFadeOverlay
+			id = {CHOOSE_LOCATION_MESSAGE_ID}
+			text = {`Click on the map to choose location`}
+		/>
+		</>
+	);
+}
+
+export default Map;
