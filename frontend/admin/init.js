@@ -1,4 +1,5 @@
 let layers = {};
+const API_PATH = 'localhost:8080/api'
 
 const santaka = [54.89984180616253, 23.961551736420333];
 

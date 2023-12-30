@@ -19,25 +19,8 @@
 </button>
 
 <div id="map" style="width: 100%; height: 500px;"></div>
-
-<script>
-    try {
-        const response = await fetch(`api/challenges`);
-        if (!response.ok) {
-            throw new Error('Failed to fetch markers');
-        }
-
-        const markers = await response.json();
-
-        console.log(markers);
-        //console.log("markers length0: " + markers.length)
-
-    } catch (error) {
-        console.error(error);
-    }
-</script>
-
 <script src="init.js"></script>
+<script src="load_map.js"></script>
 <script src="polygon_editor.js"></script>
 
 </body>

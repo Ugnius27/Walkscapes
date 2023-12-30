@@ -29,7 +29,7 @@ async fn main() -> Result<(), sqlx::Error> {
 
     HttpServer::new(move || {
         App::new()
-            .wrap(Cors::permissive())////////////////////////////
+            .wrap(Cors::permissive())
             .app_data(web::Data::new(pool.clone()))
             .service(post_record)
             .service(get_markers)
