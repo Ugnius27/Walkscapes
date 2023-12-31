@@ -29,63 +29,51 @@ export const DEFAULT_ICON = new L.Icon({
   iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
   shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
 });
-////////////////
-var polygonCoordinates = [
-	[54.905, 23.975],   // Move to the right and slightly up
-	[54.895, 23.975],   // Move to the right and slightly up
-	[54.885, 23.955],   // Move to the right and slightly down
-	[54.905, 23.955]    // Move to the right and slightly down
-  ];
 
+// // // var mapContainer;// = useRef(null);
+// // // export var mapRef;// = useRef(null);
 
-var mapContainer;// = useRef(null);
-export var mapRef;// = useRef(null);
-
-
-
-//////////
-
-var ChallengesData =
-[
-	{
-		title: 'Challenge 1',
-		description: 'Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the first item\'s accordion body.',
-		Routes: ['Route 1', 'Route 2']
-	},
-	{
-		title: 'Challenge 2',
-		description: 'Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the first item\'s accordion body.',
-		Routes: ['Route 3', 'Route 4']
-	}
-]
-
-
-
-///////////
 
 function App() {
-  mapContainer = useRef(null);
-  mapRef = useRef(null);
 
-//////////////////
-  // const [username, setUsername] = useState("");
-  // const [user, setUser] = useState("");
-/////////////////
-var user = true;
+  var ChallengesData =
+  [
+    {
+      title: 'Challenge 1',
+      description: 'Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the first item\'s accordion body.',
+      Routes: ['Route 1', 'Route 2']
+    },
+    {
+      title: 'Challenge 2',
+      description: 'Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the first item\'s accordion body.',
+      Routes: ['Route 3', 'Route 4']
+    }
+  ]
+  // var loggedIn = true;
+// // //   mapContainer = useRef(null);
+// // //   mapRef = useRef(null);
 
-  const santaka = [54.89984180616253, 23.961551736420333];
-  // mapRef.current - main map
+  var mapContainer = useRef(null);
+  var mapRef = useRef(null);
+// // // //////////////////
+// // //   // const [username, setUsername] = useState("");
+// // //   // const [user, setUser] = useState("");
+// // // /////////////////
+// // // var user = true; 
 
-  useEffect(() => {
-    Map.initializeMap(mapContainer, santaka, mapRef);
-    if (mapRef.current) {
-      var polygon = L.polygon(polygonCoordinates, {color: 'red'}).addTo(mapRef.current);
-      var marker = L.marker([54.899, 23.96155], { icon: DEFAULT_ICON }).addTo(mapRef.current);
+// // //   const santaka = [54.89984180616253, 23.961551736420333];
+// // //   // mapRef.current - main map
 
-    } else {
-      console.log("Map not properly initialized");
-  }    
-  }, [user]);
+// // //   useEffect(() => {
+// // //     Map.initializeMap(mapContainer, santaka, mapRef);
+// // //     if (mapRef.current) {
+// // //       // var polygon = L.polygon(polygonCoordinates, {color: 'red'}).addTo(mapRef.current);
+// // //       // var marker = L.marker([54.899, 23.96155], { icon: DEFAULT_ICON }).addTo(mapRef.current);
+
+// // //     } else {
+// // //       console.log("Map not properly initialized");
+// // //     }    
+// // //   }, [user]);
 
 
   return (
@@ -105,14 +93,18 @@ var user = true;
               height: '253px', 
               marginLeft: '1.2rem'}}
           >
-            <MapComponent mapContainer={mapContainer}/>
-           
+            <MapComponent 
+              mapContainer={mapContainer}
+              mapRef={mapRef}
+            />
+        
             {/*
             <Components.MessageOnFadeOverlay
               id = {CHOOSE_LOCATION_MESSAGE_ID}
               text = {`Click on the map to choose location`}
             />
-            <Components.AddMarkerTable/>*/}
+            <Components.AddMarkerTable/>*/
+            }
             
           </div> 
 

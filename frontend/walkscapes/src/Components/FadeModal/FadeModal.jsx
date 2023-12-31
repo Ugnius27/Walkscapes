@@ -1,4 +1,5 @@
 import * as AddMarkerButton from '../AddMarkerButton/AddMarkerButton.jsx';
+import { useMarkerState } from '../Map/Map.jsx';
 
 export function toggleFadeOverlay(){
 	const fadeModalElement = document.getElementById('fadeModal');
@@ -20,14 +21,35 @@ export function toggleFadeMessage(messageId){
 	messageElement.style.display = messageElement.style.display == 'none' ? 'flex' : 'none';
 }
 
-export function hideFade(messageId){
+export function hideFade(messageId, setCanAddNewMarker, mapRef){
+
 	toggleFadeOverlay();
 	AddMarkerButton.toggleAddMarkerButton();
 	toggleFadeMessage(messageId);
+
+	// mapRef.current.off('click');
+	// canAddNewMarker = true;
+	// console.log(setCanAddNewMarker);
+	// setCanAddNewMarker(currentState => !currentState);
+
+	// // setCanAddNewMarker(currentState => {
+	// // 	return true;
+	// // });
+
+	// mapRef.current.on('click', function (e) {});
+	// console.log("HHHHHHHHH ");
+	// console.log(setCanAddNewMarker);
 }
 
-export function MessageOnFadeOverlay({ id, text }) {
+// const HideFade = ({messageId, setCanAddNewMarker}) => {
+// 	console.log("LLLLLL ");
+// 	console.log(setCanAddNewMarker);
+// }
+
+export function MessageOnFadeOverlay({ id, text, setCanAddNewMarker }) { //TODO: fix mess text: (dbckick on marker to remove it)
 	console.log("Message id (0): ", id);
+	// console.log("RRRRRRRRRR");
+	// console.log(setCanAddNewMarker);
 
 	return (
 		<>
@@ -45,29 +67,35 @@ export function MessageOnFadeOverlay({ id, text }) {
 				</h4>
 			</div>
 
-			{/* <div 
-				className='row' 
-				style={{zIndex: 985}}
-			>
-				<button
-					className='popup-button'
-					onClick={() => setFixMarkersPlace(true)}
-				>
-					Fix marker's place
-				</button>
-			</div> */}
-
 			<div 
 				className='row' 
 				style={{zIndex: 985}}
 			>
 				<button
 					className='popup-button'
-					onClick={() => hideFade(id)}
+					onClick={async () => {
+						hideFade(id, setCanAddNewMarker); 
+						setCanAddNewMarker(currentState => {
+							return false;
+						});
+					}}
+					// onClick={() => HideFade({ id, setCanAddNewMarker })}
 				>
 					Go back
 				</button>
 			</div>
+
+			{/* <div 
+				className='row' 
+				style={{zIndex: 985}}
+			>
+				<button
+					className='popup-button'
+					onClick={() => fixMarkersPlace()}
+				>
+					Fix marker's place
+				</button>
+			</div> */}
 	
 		</div>
 		</>

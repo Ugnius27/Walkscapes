@@ -1,3 +1,7 @@
+// Map.jsx
+
+import React, { useEffect, useRef, useState, useCallback } from 'react';
+
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -5,23 +9,33 @@ import AddMarkerButton from '../AddMarkerButton/AddMarkerButton';
 
 import * as Fade from '../FadeModal/FadeModal.jsx';
 
-import { mapRef, DEFAULT_ICON } from '../../App.jsx';
+// import { mapRef, DEFAULT_ICON } from '../../App.jsx';
+import { DEFAULT_ICON } from '../../App.jsx';
+
 
 export const ADD_MARKER_MODAL_ID = 'AddMarkerModal';
 export const CHOOSE_LOCATION_MESSAGE_ID = 'ChooseLocationMessage';
 export const ADD_TO_CURR_LOCATION_MESSAGE_ID = 'AddToCurrLocationMessage';
 
+// export let canAddNewMarker = true;
+
+
+
+var polygonCoordinates = [
+	[54.905, 23.975],   // Move to the right and slightly up
+	[54.895, 23.975],   // Move to the right and slightly up
+	[54.885, 23.955],   // Move to the right and slightly down
+	[54.905, 23.955]    // Move to the right and slightly down
+];
+
+export const useMarkerState = () => {
+	const [canAddNewMarker, setCanAddNewMarker] = useState(true);
+  
+	return { canAddNewMarker, setCanAddNewMarker };
+};
 
 export function initializeMap(mapContainer, center, mapRef) {
-	// if(mapContainer.current){
-	// 	console.log(mapContainer.current);
-	// }else{
-	// 	console.log("no");
-	// }
-
 	if (!mapContainer.current || mapRef.current) return;
-
-	// console.log("hih");
   
 	var map = L.map(mapContainer.current).setView(center, 15);
 	L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -49,7 +63,36 @@ export function addButtonOnMap(customTableControl, map, addTableIsOnTheMap) {
 	return addTableIsOnTheMap;
 }
 
-const Map = ({mapContainer}) => {
+const Map = ({mapContainer, mapRef}) => {
+	const { canAddNewMarker, setCanAddNewMarker } = useMarkerState();
+
+	// Memoize the functions using useCallback
+	// const memoizedCanAddNewMarker = useCallback(() => canAddNewMarker, [canAddNewMarker]);
+	// const memoizedSetCanAddNewMarker = useCallback((value) => setCanAddNewMarker(value), [setCanAddNewMarker]);
+	
+	const santaka = [54.89984180616253, 23.961551736420333];
+    // mapRef.current - main map
+
+  	useEffect(() => {
+		initializeMap(mapContainer, santaka, mapRef);
+		if (mapRef.current) {
+			var polygon = L.polygon(polygonCoordinates, {color: 'red'}).addTo(mapRef.current);
+			var marker = L.marker([54.899, 23.96155], { icon: DEFAULT_ICON }).addTo(mapRef.current);
+			// setCanAddNewMarker(5);
+			// setCanAddNewMarker(false);
+			// console.log("iiiiiiiiiiii ", canAddNewMarker);
+			// setCanAddNewMarker(currentState => !currentState);
+
+		} else {
+			console.log("Map not properly initialized");
+		}    
+  	}, []);
+
+	//   useEffect(() => {
+	// 	console.log("iiiiiiiiiiii ", canAddNewMarker);
+	// }, [canAddNewMarker]);
+	
+
 	return (
 		<>
 		<div 
@@ -60,10 +103,11 @@ const Map = ({mapContainer}) => {
 		>
         </div>
 
-		<AddMarkerButton/>
+		<AddMarkerButton mapRef={mapRef}/>
 		<Fade.MessageOnFadeOverlay
 			id = {CHOOSE_LOCATION_MESSAGE_ID}
 			text = {`Click on the map to choose location`}
+      		setCanAddNewMarker={setCanAddNewMarker}
 		/>
 		</>
 	);
