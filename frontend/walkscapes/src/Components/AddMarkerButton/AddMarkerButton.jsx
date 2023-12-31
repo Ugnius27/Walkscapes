@@ -1,11 +1,13 @@
 // AddMarkerButton.jsx
 
 import React, { useState, useEffect, useContext, createRef, createContext } from 'react';
+import $ from 'jquery';
 
 import L, { map } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import '../../popupsLeaflet.css'
 import ReactDOMServer from 'react-dom/server';
+
 // import { mapRef, RED_ICON } from '../../App.jsx';
 import { DEFAULT_ICON, RED_ICON } from '../../App.jsx';
 
@@ -156,6 +158,7 @@ const AddMarkerButton = ({mapRef}) => {
 
 	const handleOpenModal = () => {
 		setShowModal(true);
+		
 	  };
 	
 	  const handleCloseModal = () => {
@@ -195,6 +198,14 @@ const AddMarkerButton = ({mapRef}) => {
 
 		// Show the modal
 		// $(`#${UPLOAD_MODAL_ID}`).modal('show');
+		// modal.style.display = 'block';
+
+		var buttonToClick = document.getElementById('buttonToClick');
+
+		if (buttonToClick) {
+			// Trigger a click on the button
+			buttonToClick.click();
+		  }
 	}
 	
 	function bindPopupChoosePlace(marker, lat, lng, mapRef){
@@ -384,7 +395,6 @@ const AddMarkerButton = ({mapRef}) => {
 
 
 		<div>
-		<button onClick={handleOpenModal}>Open Modal</button>
 		<UploadModal/>
 		</div>
 

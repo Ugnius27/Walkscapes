@@ -34,10 +34,12 @@ const UploadModal = ({lat, lng}) => {
   return (
     <>
     {/* <!-- Button trigger modal --> */}
-{/* <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target={`#${UPLOAD_MODAL_ID}`}
-style={{display: 'flex'}}>
+<button 
+id='buttonToClick'
+type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target={`#${UPLOAD_MODAL_ID}`}
+style={{display: 'none'}}>
   Launch static backdrop modal
-</button> */}
+</button>
 
 {/* <!-- Modal --> */}
 <div 
@@ -51,7 +53,7 @@ style={{display: 'flex'}}>
   data-bs-show={true}
   data-bs-dismiss='modal'
   role='dialog'
-  // style={{display: 'block'}}
+  // style={{display: 'flex'}}
   
 >
   <div class="modal-dialog">
@@ -63,7 +65,7 @@ style={{display: 'flex'}}>
         >
           Upload information about the place
         </h1>
-        <button 
+        <button style={{display: 'flex'}}
           type="button" 
           class="btn-close"
           data-bs-dismiss="modal" 
@@ -77,7 +79,8 @@ style={{display: 'flex'}}>
       >
         Choose image
       </h3>
-      <label className="popup-button" for="images">
+      <label className="popup-button" 
+      for="images">
              Choose Files
            </label>
            <input
