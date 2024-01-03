@@ -11,7 +11,7 @@ use std::env;
 use actix_cors::Cors;
 use crate::record::{get_record, post_record};
 use crate::marker::get_markers;
-use crate::challenge::{get_challenges};
+use crate::challenge::{put_challenges, get_challenges};
 use crate::image::get_record_image;
 
 
@@ -36,6 +36,7 @@ async fn main() -> Result<(), sqlx::Error> {
             .service(get_challenges)
             .service(get_record)
             .service(get_record_image)
+            .service(put_challenges)
             .service(actix_files::Files::new("/", "../frontend")
                 .index_file("index.html"))
     })

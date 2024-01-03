@@ -1,17 +1,17 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 
-#[derive(Debug, FromRow, Serialize)]
+#[derive(Debug, FromRow, Serialize, Deserialize)]
 pub struct Polygon {
     pub id: i32,
-    pub vertices: serde_json::Value,
+    pub vertices: Vec<(f64, f64)>,
 }
 
 impl Polygon {
     pub fn new() -> Self {
         Polygon {
             id: 0,
-            vertices: serde_json::Value::Null,
+            vertices: Vec::new(),
         }
     }
 }

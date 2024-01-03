@@ -14,8 +14,11 @@
 
 <body>
 <h1>Admin panel</h1>
-<button hs-swap="outerHTML" hx-get="test.html" onclick="getCoords()">
+<button hs-swap="outerHTML" hx-get="test.html">
     Click Me
+</button>
+<button hx-post="localhost:8080/api/challenges">
+    Save changes
 </button>
 
 <div id="map" style="width: 100%; height: 500px;"></div>

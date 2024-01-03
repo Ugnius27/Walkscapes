@@ -1,8 +1,8 @@
 use actix_web::{get, HttpResponse, Responder, web};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, MySqlPool};
 
-#[derive(Debug, FromRow, Serialize)]
+#[derive(Debug, FromRow, Serialize, Deserialize)]
 pub struct Marker {
     pub id: i32,
     pub latitude: f64,

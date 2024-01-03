@@ -1,16 +1,16 @@
-use actix_web::{get, HttpResponse, Responder, web};
-use serde::Serialize;
+use actix_web::{get, post, put, HttpResponse, Responder, web};
+use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, MySqlPool};
 use crate::marker::Marker;
 use crate::polygon::Polygon;
 
-#[derive(Debug, FromRow, Serialize)]
+#[derive(Debug, FromRow, Serialize, Deserialize)]
 pub struct Challenge {
     id: i32,
     title: String,
     description: String,
     polygon: Polygon,
-    markers: Vec::<Marker>,
+    markers: Vec<Marker>,
 }
 
 impl Challenge {
@@ -32,7 +32,7 @@ pub async fn get_challenges(pool: web::Data<MySqlPool>) -> impl Responder {
         r#"SELECT
         c.id, c.title, c.description,
         p.id as polygon_id,
-        JSON_EXTRACT(ST_AsGeoJSON(p.vertices), '$.coordinates') AS vertices
+        JSON_EXTRACT(ST_AsGeoJSON(p.vertices), '$.coordinates[0]') AS vertices
         FROM challenges as c
         INNER JOIN polygons as p ON p.id = c.polygon_id;"#)
         .fetch_all(pool).await {
@@ -62,6 +62,14 @@ pub async fn get_challenges(pool: web::Data<MySqlPool>) -> impl Responder {
             }
         };
 
+        let vertices: Vec<(f64, f64)> = match serde_json::from_value(row.vertices.unwrap()) {
+            Ok(val) => val,
+            Err(err) => {
+                eprintln!("{err}");
+                return HttpResponse::InternalServerError().body("Err");
+            }
+        };
+
         challenges.push(Challenge {
             id: row.id,
             title: row.title,
@@ -69,7 +77,7 @@ pub async fn get_challenges(pool: web::Data<MySqlPool>) -> impl Responder {
             markers,
             polygon: Polygon {
                 id: row.polygon_id,
-                vertices: row.vertices.unwrap(), //TODO BAD!!
+                vertices,
             },
         });
     }
@@ -80,4 +88,12 @@ pub async fn get_challenges(pool: web::Data<MySqlPool>) -> impl Responder {
             return HttpResponse::InternalServerError().body(""); //TODO: json error? idk
         }
     }
+}
+
+#[post("api/challenges")]
+pub async fn put_challenges(challenges: web::Json<Vec<Challenge>>, pool: web::Data<MySqlPool>) -> impl Responder {
+    for challenge in challenges.0 {
+        println!("{}", challenge.title);
+    }
+    HttpResponse::Ok().body("kk")
 }
