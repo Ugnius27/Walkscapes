@@ -64,8 +64,21 @@ export function addButtonOnMap(customTableControl, map, addTableIsOnTheMap) {
 }
 
 const Map = ({mapContainer, mapRef}) => {
+	// var markerIds = [];
+	const [markerIds, setMarkerIds] = useState([]);
 	const { canAddNewMarker, setCanAddNewMarker } = useMarkerState();
 
+
+	// useEffect(() => {
+	// 	console.log('0000000000000000000000000000');
+	// 	setMarkerIds((prevMarkerIds) => [...prevMarkerIds, 6]);
+
+	// 	// console.log(markerIds);
+	//   }, []); // Add dependencies if needed
+
+	  useEffect(() => {
+		console.log(markerIds);
+	  }, [markerIds]);
 	// Memoize the functions using useCallback
 	// const memoizedCanAddNewMarker = useCallback(() => canAddNewMarker, [canAddNewMarker]);
 	// const memoizedSetCanAddNewMarker = useCallback((value) => setCanAddNewMarker(value), [setCanAddNewMarker]);
@@ -103,11 +116,19 @@ const Map = ({mapContainer, mapRef}) => {
 		>
         </div>
 
-		<AddMarkerButton mapRef={mapRef}/>
+		<AddMarkerButton 
+			mapRef={mapRef}
+			markerIds={markerIds}
+			setMarkerIds={setMarkerIds}
+		/>
+
 		<Fade.MessageOnFadeOverlay
 			id = {CHOOSE_LOCATION_MESSAGE_ID}
 			text = {`Click on the map to choose location`}
       		setCanAddNewMarker={setCanAddNewMarker}
+			mapRef={mapRef}
+			markerIds={markerIds}
+			setMarkerIds={setMarkerIds}
 		/>
 		</>
 	);

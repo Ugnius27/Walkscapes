@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useContext, createRef, createContext } from 'react';
 import $ from 'jquery';
 
-import L, { map } from 'leaflet';
+import L, { Marker, map } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import '../../popupsLeaflet.css'
 import ReactDOMServer from 'react-dom/server';
@@ -14,7 +14,7 @@ import { DEFAULT_ICON, RED_ICON } from '../../App.jsx';
 import { ADD_MARKER_MODAL_ID, CHOOSE_LOCATION_MESSAGE_ID,
 		 ADD_TO_CURR_LOCATION_MESSAGE_ID, useMarkerState} from '../Map/Map.jsx';
 
-import { UPLOAD_MODAL_ID } from '../UploadModal/UploadModal.jsx';
+import { UPLOAD_MODAL_ID, BUTTON_TO_SHOW_UPLOAD_MODAL } from '../UploadModal/UploadModal.jsx';
 
 import * as Fade from '../FadeModal/FadeModal.jsx';
 import UploadModal from '../UploadModal/UploadModal.jsx';
@@ -152,18 +152,14 @@ function bindCasualPopup(marker, lat, lng, mapRef){
 	marker.bindPopup(`Coordinates: (${lat.toFixed(5)}, ${lng.toFixed(5)})`);
 }
 
-const AddMarkerButton = ({mapRef}) => {
+const AddMarkerButton = ({mapRef, markerIds, setMarkerIds}) => {
 	const { canAddNewMarker, setCanAddNewMarker } = useMarkerState();
-	const [showModal, setShowModal] = useState(false);
 
-	const handleOpenModal = () => {
-		setShowModal(true);
-		
-	  };
-	
-	  const handleCloseModal = () => {
-		setShowModal(false);
-	  };
+	useEffect(() => {
+		console.log('Effect: 7777777777777777777777');
+		console.log(markerIds);
+	  }, [markerIds]);
+
 
 	window.fixMarkersPlace = function(markerId) {
 		console.log("Fixing marker's place ", markerId);
@@ -179,7 +175,7 @@ const AddMarkerButton = ({mapRef}) => {
 		marker.closePopup();
 		bindCasualPopup(marker, coordinates.lat, coordinates.lng, mapRef);
 
-		Fade.hideFade(CHOOSE_LOCATION_MESSAGE_ID, setCanAddNewMarker, mapRef);
+		Fade.hideFade(CHOOSE_LOCATION_MESSAGE_ID, setCanAddNewMarker, mapRef, markerIds, setMarkerIds);
 		// marker.setIcon(DEFAULT_ICON); /////////////////////////
 		marker.off('dblclick'); 
 		// canAddNewMarker = true;
@@ -188,23 +184,35 @@ const AddMarkerButton = ({mapRef}) => {
 		console.log("MODAL: ");
 		console.log(modal);
 
-		 // Show the modal
-		//  var modal2 = new bootstrap.Modal(document.getElementById(UPLOAD_MODAL_ID));
-		//  modal2.show();
-
-		// $(document).ready(function(){
-		// 	$(`#${UPLOAD_MODAL_ID}`).modal('show');
-		// });
-
-		// Show the modal
-		// $(`#${UPLOAD_MODAL_ID}`).modal('show');
-		// modal.style.display = 'block';
-
-		var buttonToClick = document.getElementById('buttonToClick');
+		var buttonToClick = document.getElementById(BUTTON_TO_SHOW_UPLOAD_MODAL);
 
 		if (buttonToClick) {
 			// Trigger a click on the button
 			buttonToClick.click();
+
+			
+			const myValue = buttonToClick.dataset.lat;
+			
+			// console.log('my value (lat):');
+			// console.log(myValue); // Outputs: "42"
+
+			buttonToClick.dataset.lat = coordinates.lat;
+			buttonToClick.dataset.lng = coordinates.lng;
+			buttonToClick.dataset.markerId = marker._leaflet_id;
+			console.log(buttonToClick.dataset.markerId);
+
+			var variable = buttonToClick.dataset.markerId;
+
+			if (typeof variable === 'number' && Number.isInteger(variable)) {
+				console.log( 'integer');
+			} else if (typeof variable === 'string') {
+				console.log( 'string');
+			} else {
+				console.log( 'unknown');
+			}
+
+			// ReactDOMServer.renderToString(buttonToClick.dataset.marker).setIcon(DEFAULT_ICON);
+			// console.log(buttonToClick.dataset.lat);
 		  }
 	}
 	
@@ -248,7 +256,8 @@ const AddMarkerButton = ({mapRef}) => {
 			
 			var pressedAtCoords = [lat, lng];
 			console.log(pressedAtCoords);
-		
+
+
 			// var marker = L.marker(pressedAtCoords, { icon: RED_ICON }).addTo(mapRef.current);
 			// marker.bindPopup(`Coordinates: (${lat.toFixed(5)}, ${lng.toFixed(5)})`);
 
@@ -279,6 +288,11 @@ const AddMarkerButton = ({mapRef}) => {
 					console.log("elsee ", count);
 				var newMarker = L.marker([lat, lng], { icon: RED_ICON, draggable: true }).addTo(mapRef.current);
 				bindPopupChoosePlace(newMarker, lat, lng, mapRef);
+				// setMarkerIds((markerIds) => [...markerIds, newMarker._leaflet_id]);
+				setMarkerIds((prevMarkerIds) => [...prevMarkerIds, newMarker._leaflet_id]);
+
+				
+
 
 				newMarker.on('dragend', function (event) {
 					var marker = event.target;
@@ -299,8 +313,21 @@ const AddMarkerButton = ({mapRef}) => {
 				
 				});
 
-				newMarker.on('dblclick', function () { // TODO: hideFade
+				newMarker.on('dblclick', function () { // TODO: hideFade sometimes appears instead of dissapearing 
 					newMarker.removeFrom(mapRef.current)
+
+					Fade.hideFade(CHOOSE_LOCATION_MESSAGE_ID, setCanAddNewMarker, mapRef, markerIds);
+					setMarkerIds((prevMarkerIds) => prevMarkerIds.slice(0, -1));
+
+					// setMarkerIds((prevMarkerIds) => {
+					// 	var markersIds = [];
+					  
+					// 	for (let i = 0; i < prevMarkerIds.length - 1; i++) {
+					// 	  markersIds = [...markersIds, prevMarkerIds[i]];
+					// 	}
+					  
+					// 	return markersIds;
+					// });
 
 					console.log("DOUBLE-CL");
 				})
@@ -395,7 +422,7 @@ const AddMarkerButton = ({mapRef}) => {
 
 
 		<div>
-		<UploadModal/>
+		<UploadModal map={mapRef.current}/>
 		</div>
 
 

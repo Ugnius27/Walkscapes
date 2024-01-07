@@ -1,3 +1,4 @@
+import { marker } from 'leaflet';
 import * as AddMarkerButton from '../AddMarkerButton/AddMarkerButton.jsx';
 import { useMarkerState } from '../Map/Map.jsx';
 
@@ -21,13 +22,22 @@ export function toggleFadeMessage(messageId){
 	messageElement.style.display = messageElement.style.display == 'none' ? 'flex' : 'none';
 }
 
-export function hideFade(messageId, setCanAddNewMarker, mapRef){
+export function hideFade(messageId, setCanAddNewMarker, mapRef, markerIds){
 
 	toggleFadeOverlay();
 	AddMarkerButton.toggleAddMarkerButton();
 	toggleFadeMessage(messageId);
 
-	// mapRef.current.off('click');
+	mapRef.current.off('click');
+	// if (markerIds) console.log('in hidefade markersIds: ', markerIds);
+
+	if (markerIds && markerIds.length > 0){
+		var lastMarkerId = markerIds[markerIds.length - 1];
+		// console.log('last: ', lastMarkerId);
+		var lastMarker = mapRef.current._layers[lastMarkerId];
+		// console.log(lastMarker);
+		lastMarker.off('dblclick')
+	}
 	// canAddNewMarker = true;
 	// console.log(setCanAddNewMarker);
 	// setCanAddNewMarker(currentState => !currentState);
@@ -46,7 +56,7 @@ export function hideFade(messageId, setCanAddNewMarker, mapRef){
 // 	console.log(setCanAddNewMarker);
 // }
 
-export function MessageOnFadeOverlay({ id, text, setCanAddNewMarker }) { //TODO: fix mess text: (dbckick on marker to remove it)
+export function MessageOnFadeOverlay({ id, text, setCanAddNewMarker, mapRef, markerIds }) { //TODO: fix mess text: (dbckick on marker to remove it)
 	console.log("Message id (0): ", id);
 	// console.log("RRRRRRRRRR");
 	// console.log(setCanAddNewMarker);
@@ -74,7 +84,7 @@ export function MessageOnFadeOverlay({ id, text, setCanAddNewMarker }) { //TODO:
 				<button
 					className='popup-button'
 					onClick={async () => {
-						hideFade(id, setCanAddNewMarker); 
+						hideFade(id, setCanAddNewMarker, mapRef, markerIds); 
 						setCanAddNewMarker(currentState => {
 							return false;
 						});
