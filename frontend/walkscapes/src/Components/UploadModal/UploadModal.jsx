@@ -107,6 +107,7 @@ const DescriptionOfModal = ({description, setDescription}) => {
 const UploadModal = ({map, lastSubmittedMarkerId}) => {
   const [selectedImages, setSelectedImages] = useState([]);
   const [description, setDescription] = useState('');
+  const [showAlert, setShowAlert] = useState(false);
 
   var buttonToShowUploadModal = document.getElementById(BUTTON_TO_SHOW_UPLOAD_MODAL);
 
@@ -131,18 +132,34 @@ const UploadModal = ({map, lastSubmittedMarkerId}) => {
     console.log(lastSubmittedMarker);
     lastSubmittedMarker.setIcon(DEFAULT_ICON);
     lastSubmittedMarker.openPopup();
+
+    setShowAlert(true);
+  };
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+  const showAlertWithDelay = async () => {
+    await sleep(100);
+    window.alert('The marker was successfully submitted!');
+    setShowAlert(false);
   };
 
-useEffect(() => {
-  console.log('BBBBBBBBBB');
-  if (!buttonToShowUploadModal)
-    return; 
+  useEffect(() => {
+    if (showAlert) {
+      showAlertWithDelay();
+    }
+  }, [showAlert]);
 
-  var markerId = parseInt(buttonToShowUploadModal.dataset.markerId);
+  useEffect(() => {
+    console.log('BBBBBBBBBB');
+    if (!buttonToShowUploadModal)
+      return; 
 
-  console.log(markerId);
-  // }
-}, []);
+    var markerId = parseInt(buttonToShowUploadModal.dataset.markerId);
+
+    console.log(markerId);
+    // }
+  }, []);
 
 const handleDelete = (index) => {
   const newImages = [...selectedImages];

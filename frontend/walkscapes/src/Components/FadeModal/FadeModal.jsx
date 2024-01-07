@@ -60,7 +60,7 @@ export function hideFade(messageId, setCanAddNewMarker, mapRef, markerIds){
 // 	console.log(setCanAddNewMarker);
 // }
 
-export function MessageOnFadeOverlay({ id, text, setCanAddNewMarker, mapRef, markerIds }) { //TODO: fix mess text: (dbckick on marker to remove it)
+export function MessageOnFadeOverlay({ id, text, setCanAddNewMarker, mapRef, markerIds, setMarkerIds }) { //TODO: fix mess text: (dbckick on marker to remove it)
 	console.log("Message id (0): ", id);
 	// console.log("RRRRRRRRRR");
 	// console.log(setCanAddNewMarker);
@@ -92,6 +92,14 @@ export function MessageOnFadeOverlay({ id, text, setCanAddNewMarker, mapRef, mar
 						setCanAddNewMarker(currentState => {
 							return false;
 						});
+
+						if (markerIds.length == 0)
+							return;
+
+						var marker = mapRef.current._layers[markerIds[markerIds.length - 1]];
+						await mapRef.current.removeLayer(marker);
+						setMarkerIds((prevMarkerIds) => prevMarkerIds.slice(0, -1));
+						window.alert('The marker you placed has been removed.');
 					}}
 					// onClick={() => HideFade({ id, setCanAddNewMarker })}
 				>
