@@ -10,7 +10,7 @@ import AddMarkerButton from '../AddMarkerButton/AddMarkerButton';
 import * as Fade from '../FadeModal/FadeModal.jsx';
 
 // import { mapRef, DEFAULT_ICON } from '../../App.jsx';
-import { DEFAULT_ICON } from '../../App.jsx';
+import { DEFAULT_ICON, RED_ICON } from '../../App.jsx';
 
 
 export const ADD_MARKER_MODAL_ID = 'AddMarkerModal';
@@ -68,6 +68,10 @@ const Map = ({mapContainer, mapRef}) => {
 	const [markerIds, setMarkerIds] = useState([]);
 	const { canAddNewMarker, setCanAddNewMarker } = useMarkerState();
 
+	const [currentLocationMarker, setCurrentLocationMarker] = useState(null);
+	const [currentLocationCoords, setCurrentLocationCoords] = useState([0, 0])
+
+
 
 	// useEffect(() => {
 	// 	console.log('0000000000000000000000000000');
@@ -76,15 +80,19 @@ const Map = ({mapContainer, mapRef}) => {
 	// 	// console.log(markerIds);
 	//   }, []); // Add dependencies if needed
 
-	  useEffect(() => {
+	useEffect(() => {
 		console.log(markerIds);
-	  }, [markerIds]);
+	}, [markerIds]);
 	// Memoize the functions using useCallback
 	// const memoizedCanAddNewMarker = useCallback(() => canAddNewMarker, [canAddNewMarker]);
 	// const memoizedSetCanAddNewMarker = useCallback((value) => setCanAddNewMarker(value), [setCanAddNewMarker]);
 	
 	const santaka = [54.89984180616253, 23.961551736420333];
     // mapRef.current - main map
+
+	useEffect(() => {
+		console.log('New coords: ', currentLocationCoords);
+	}, [currentLocationCoords])
 
   	useEffect(() => {
 		initializeMap(mapContainer, santaka, mapRef);
@@ -96,6 +104,25 @@ const Map = ({mapContainer, mapRef}) => {
 			// console.log("iiiiiiiiiiii ", canAddNewMarker);
 			// setCanAddNewMarker(currentState => !currentState);
 
+		
+			// Create a marker for the user
+			const currLocationMarker = L.marker([0, 0], { icon: RED_ICON }).addTo(mapRef.current);
+			setCurrentLocationMarker(currLocationMarker);
+			navigator.geolocation.watchPosition(
+				(position) => {
+				  const { latitude, longitude } = position.coords;
+				  currLocationMarker.setLatLng([latitude, longitude]);
+				  mapRef.current.panTo([latitude, longitude]); 
+				  console.log('Curr position: ', [latitude, longitude]);
+				  setCurrentLocationCoords([latitude, longitude]);
+				},
+				(error) => console.error(error),
+				{ enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+
+				
+			);
+		
+			
 		} else {
 			console.log("Map not properly initialized");
 		}    
@@ -120,6 +147,8 @@ const Map = ({mapContainer, mapRef}) => {
 			mapRef={mapRef}
 			markerIds={markerIds}
 			setMarkerIds={setMarkerIds}
+			currentLocationMarker={currentLocationMarker}
+			currLocationCoords={currentLocationCoords}
 		/>
 
 		<Fade.MessageOnFadeOverlay

@@ -1,6 +1,9 @@
 import { marker } from 'leaflet';
 import * as AddMarkerButton from '../AddMarkerButton/AddMarkerButton.jsx';
 import { useMarkerState } from '../Map/Map.jsx';
+import { DEFAULT_ICON } from '../../App.jsx';
+import 'leaflet/dist/leaflet.css';
+
 
 export function toggleFadeOverlay(){
 	const fadeModalElement = document.getElementById('fadeModal');
@@ -37,6 +40,7 @@ export function hideFade(messageId, setCanAddNewMarker, mapRef, markerIds){
 		var lastMarker = mapRef.current._layers[lastMarkerId];
 		// console.log(lastMarker);
 		lastMarker.off('dblclick')
+		lastMarker.setIcon(DEFAULT_ICON);
 	}
 	// canAddNewMarker = true;
 	// console.log(setCanAddNewMarker);

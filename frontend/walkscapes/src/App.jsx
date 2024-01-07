@@ -74,6 +74,36 @@ function App() {
 // // //       console.log("Map not properly initialized");
 // // //     }    
 // // //   }, [user]);
+const [a, setA] = useState([-1, -1])
+function requestLocation() {
+  if ("geolocation" in navigator) {
+    navigator.geolocation.getCurrentPosition(
+      function (position) {
+        var coordinates = position.coords;
+        var latitude = coordinates.latitude;
+        var longitude = coordinates.longitude;
+
+        console.log("!!!!!!!!!!!!!Latitude: " + latitude + ", Longitude: " + longitude);
+        setA([coordinates.latitude, coordinates.longitude])
+
+        // Now you can use the obtained coordinates as needed
+      },
+      function (error) {
+        console.error("!!!!!!!!Error getting location:", error.message);
+        // Handle the error, e.g., show a message to the user
+      }
+    );
+  } else {
+    console.log("!!!!!!!!!!!!Geolocation is not supported by this browser.");
+    // Handle the case where geolocation is not supported, e.g., show a message to the user
+  }
+}
+
+  useEffect(() => {
+    requestLocation();
+
+    console.log('requested');
+  })
 
 
   return (
@@ -97,6 +127,7 @@ function App() {
               mapContainer={mapContainer}
               mapRef={mapRef}
             />
+            <p className='m-5'>{a[0]}  {a[1]}</p>
         
             {/*
             <Components.MessageOnFadeOverlay

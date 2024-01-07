@@ -25,84 +25,9 @@ const ADD_MARKER_BUTTON_ID = 'addMarkerButton';
 const CHOOSE_LOCATION_BUTTON_ID = 'ChooseLocationButton';
 const ADD_TO_CURR_LOCATION_BUTTON_ID = 'AddToCurrLocationButton';
 
-// const addMarkerModalRef = createRef();
-// var canAddNewMarker = true;
-
 function addToCurrentLocation() { // TODO
 	console.log('Add to current location clicked');
 }
-
-// export function A() {
-//     // Your implementation here
-//     console.log("Fixing marker's place");
-//     // Additional logic to fix the marker's place
-// };
-
-// Example: Define A in the global scope
-// // window.fixMarkersPlace = function(markerId, mapRef) {
-// //     console.log("Fixing marker's place ", markerId);
-// // 	// console.log(mar);
-// //     // Additional logic to fix the marker's place
-// // 	// console.log(markerId);
-// // 	// markerId = parseInt(markerId, 10);
-// // 	// console.log(markerId);
-// // 	// var marker = mapRef.current._layers[markerId];
-// //     // if (marker) {
-// //     //     marker.dragging.disable();
-// //     // }
-
-// //     // return -1;
-// //     // marker.closePopup();
-// // };
-
-// // // function FixMarkersPlaceButton(markerId, mapRef){
-// // // 	return (
-// // // 		`<div class="d-flex justify-content-center">
-// // // 			<button 
-// // // 				onclick="fixMarkersPlace('${markerId}', '${mapRef}')" 
-// // // 				class="popup-button"
-// // // 			>
-// // // 				Fix marker\'s place
-// // // 			</button>
-// // // 		</div>`
-// // // 	)
-// // // }
-
-
-
-
-// const FixMarkersPlaceButton = () => {
-// 	return (
-// 		// <button>A</button>
-// 		<div 
-// 			className='row justify-content-center' 
-// 			style={{zIndex: 985}}
-// 		>
-// 			<button
-// 				// id="fixMarkersPlace"
-// 				className='popup-button'
-// 				onClick={() => fixMarkersPlace()}
-// 			>
-// 				Fix marker's place
-// 			</button>
-// 		</div>
-// 	);
-// }
-
-// function A(){
-// 	{/* <div 
-// 			className='row' 
-// 			style={{zIndex: 985}}
-// 		>
-// 			<button
-// 				className='popup-button'
-// 				onClick={() => fixMarkersPlace(marker)}
-// 			>
-// 				Fix marker's place
-// 			</button>
-// 		</div> */}
-// }
-
 
 export function toggleAddMarkerButton(){
 	const addMarkerButtonElement = document.getElementById(ADD_MARKER_BUTTON_ID);
@@ -116,10 +41,7 @@ export function toggleAddMarkerButton(){
 
 const ModalButton = ({ id, text, align, sizeOfColumn, func, mapRef }) => {
 	const handleClick = (event) => {
-	//   const buttonId = event.target.id;
-	//   console.log(`Button with id ${buttonId} clicked.`);
-	// Rest of your code...
-	func(event, mapRef); // Call the original func passed as a prop
+		func(event, mapRef); // Call the original func passed as a prop
 	};
 
 	return (
@@ -152,7 +74,7 @@ function bindCasualPopup(marker, lat, lng, mapRef){
 	marker.bindPopup(`Coordinates: (${lat.toFixed(5)}, ${lng.toFixed(5)})`);
 }
 
-const AddMarkerButton = ({mapRef, markerIds, setMarkerIds}) => {
+const AddMarkerButton = ({mapRef, markerIds, setMarkerIds, currLocationCoords}) => {
 	// var lastMarkerId = -1;
 	const [lastMarkerId, setLastMarkerId] = useState(-1);
 
@@ -308,7 +230,7 @@ const AddMarkerButton = ({mapRef, markerIds, setMarkerIds}) => {
 	const AddMarkerModalBody = ({mapRef}) => {
 		return (
 			<div className="modal-body">
-
+				<p>{currLocationCoords[0]} {currLocationCoords[1]}</p>
 				<div className="row align-items-center justify-content-end">
 					<div className="col-1"></div>
 					<div className="col-10 text-center mb-2">
