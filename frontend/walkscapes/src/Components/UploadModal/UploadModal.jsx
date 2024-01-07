@@ -3,8 +3,11 @@ import 'leaflet/dist/leaflet.css';
 import '../../popupsLeaflet.css'
 
 import React, { useState, useEffect } from 'react';
+import { DEFAULT_ICON, RED_ICON } from '../../App.jsx';
+
 export const UPLOAD_MODAL_ID = 'uploadModal';
 export const BUTTON_TO_SHOW_UPLOAD_MODAL = 'showUploadModalButton';
+
 
 
 const HeaderOfModal = () => {
@@ -101,7 +104,7 @@ const DescriptionOfModal = ({description, setDescription}) => {
   );
 }
 
-const UploadModal = () => {
+const UploadModal = ({map, lastSubmittedMarkerId}) => {
   const [selectedImages, setSelectedImages] = useState([]);
   const [description, setDescription] = useState('');
 
@@ -121,6 +124,13 @@ const UploadModal = () => {
     // Reset form fields
     setSelectedImages([]);
     setDescription('');
+
+    console.log('submitted marker: ', lastSubmittedMarkerId);
+    var lastSubmittedMarker = map._layers[lastSubmittedMarkerId];
+
+    console.log(lastSubmittedMarker);
+    lastSubmittedMarker.setIcon(DEFAULT_ICON);
+    lastSubmittedMarker.openPopup();
   };
 
 useEffect(() => {

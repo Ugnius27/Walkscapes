@@ -153,11 +153,20 @@ function bindCasualPopup(marker, lat, lng, mapRef){
 }
 
 const AddMarkerButton = ({mapRef, markerIds, setMarkerIds}) => {
+	// var lastMarkerId = -1;
+	const [lastMarkerId, setLastMarkerId] = useState(-1);
+
 	const { canAddNewMarker, setCanAddNewMarker } = useMarkerState();
 
 	useEffect(() => {
 		console.log('Effect: 7777777777777777777777');
 		console.log(markerIds);
+		// lastMarkerId = markerIds[markerIds.length - 1];
+		// console.log('AddMarkerButton last: ', lastMarkerId);
+		const newLastMarkerId = markerIds.length > 0 ? markerIds[markerIds.length - 1] : -1;
+		setLastMarkerId(newLastMarkerId);
+		console.log('AddMarkerButton last: ', newLastMarkerId);
+
 	  }, [markerIds]);
 
 
@@ -233,19 +242,11 @@ const AddMarkerButton = ({mapRef, markerIds, setMarkerIds}) => {
 			return true;
 		});
 
-		// if (addMarkerModalRef.current) {
-		// 	console.log(addMarkerModalRef.current);
-		// }
-
 		toggleAddMarkerButton();                         	  // hide
 		Fade.toggleFadeOverlay();                             // show
 		Fade.toggleFadeMessage(CHOOSE_LOCATION_MESSAGE_ID);   // show
-		// setCanAddNewMarker(false);
 		mapRef.current.off('click');
-		// setCanAddNewMarker(currentState => {
-		// 	console.log('set to true', currentState, canAddNewMarker);
-		// 	return true;
-		// });
+
 
 		mapRef.current.on('click', function (e) {
 			var count = 0;
@@ -256,30 +257,11 @@ const AddMarkerButton = ({mapRef, markerIds, setMarkerIds}) => {
 			
 			var pressedAtCoords = [lat, lng];
 			console.log(pressedAtCoords);
-
-
-			// var marker = L.marker(pressedAtCoords, { icon: RED_ICON }).addTo(mapRef.current);
-			// marker.bindPopup(`Coordinates: (${lat.toFixed(5)}, ${lng.toFixed(5)})`);
-
-			// toggleAddMarkerButton();                              // show
-			// Fade.toggleFadeOverlay();                             // hide
-			// Fade.toggleFadeMessage(CHOOSE_LOCATION_MESSAGE_ID);   // hide
-			// if (!canAddNewMarker){
-			// 	console.log("Can't add new marker");
-			// 	return;
-			// }
-			// console.log("uuuuuuuuuuu");
-
-			
-			// setCanAddNewMarker(false);
-
-			// console.log("TTTTTTTTTT  ", canAddNewMarker);
 			
 			console.log(setCanAddNewMarker);
 			setCanAddNewMarker(currentState => {
 				count++;
 				console.log("1. Checking curent state before deciding: ", currentState, ' ', canAddNewMarker, ' ', count);
-				// console.log("can add new marker: ", currentState);
 
 				if (!currentState || count > 1){
 					console.log("Can't add new marker");
@@ -288,11 +270,7 @@ const AddMarkerButton = ({mapRef, markerIds, setMarkerIds}) => {
 					console.log("elsee ", count);
 				var newMarker = L.marker([lat, lng], { icon: RED_ICON, draggable: true }).addTo(mapRef.current);
 				bindPopupChoosePlace(newMarker, lat, lng, mapRef);
-				// setMarkerIds((markerIds) => [...markerIds, newMarker._leaflet_id]);
 				setMarkerIds((prevMarkerIds) => [...prevMarkerIds, newMarker._leaflet_id]);
-
-				
-
 
 				newMarker.on('dragend', function (event) {
 					var marker = event.target;
@@ -303,9 +281,6 @@ const AddMarkerButton = ({mapRef, markerIds, setMarkerIds}) => {
 					
 					pressedAtCoords = [position.lat, position.lng];
 					
-					// newMarker.bindPopup(`Coordinates: (${lat.toFixed(5)}, ${lng.toFixed(5)}) 
-					// 						${FixMarkersPlaceButton(newMarker._leaflet_id)}`).addTo(mapRef.current);
-					// newMarker.openPopup();
 					bindPopupChoosePlace(newMarker, lat, lng, mapRef);
 					console.log("Marker dragged to: " + position.lat + ", " + position.lng);
 					console.log("m id: ", newMarker._leaflet_id);
@@ -319,41 +294,17 @@ const AddMarkerButton = ({mapRef, markerIds, setMarkerIds}) => {
 					Fade.hideFade(CHOOSE_LOCATION_MESSAGE_ID, setCanAddNewMarker, mapRef, markerIds);
 					setMarkerIds((prevMarkerIds) => prevMarkerIds.slice(0, -1));
 
-					// setMarkerIds((prevMarkerIds) => {
-					// 	var markersIds = [];
-					  
-					// 	for (let i = 0; i < prevMarkerIds.length - 1; i++) {
-					// 	  markersIds = [...markersIds, prevMarkerIds[i]];
-					// 	}
-					  
-					// 	return markersIds;
-					// });
-
 					console.log("DOUBLE-CL");
 				})
 				return false; // Update the state
 			
 			});
 			
-
-			// setCanAddNewMarker(currentState => {
-			// 	console.log("iiiiiiiiiiii ", currentState);
-			// 	return false; // Update the state
-			// });
-			// console.log("can add new marker 2: ", canAddNewMarker);
-			
-		
-			
 		});
 
 		
 	}
-
-	// useEffect(() => {
-	// 	console.log("iiiiiiiiiiii ", canAddNewMarker);
-	// }, [canAddNewMarker]);
 	
-
 	const AddMarkerModalBody = ({mapRef}) => {
 		return (
 			<div className="modal-body">
@@ -422,7 +373,16 @@ const AddMarkerButton = ({mapRef, markerIds, setMarkerIds}) => {
 
 
 		<div>
-		<UploadModal map={mapRef.current}/>
+		<UploadModal 
+			map={mapRef.current}
+			lastSubmittedMarkerId={lastMarkerId}
+			// submittedMarkerId={markerIds.length > 0 ? markerIds[markerIds.length - 1] : -1}
+			// submittedMarkerId={() => {
+			// 	if (markerIds)
+			// 		return markerIds[markerIds[markerIds.length - 1]]
+			// 	else return -1; // it indicates an error
+			// }}
+		/>
 		</div>
 
 
