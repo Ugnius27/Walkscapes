@@ -1,0 +1,28 @@
+<li class="button">
+    <script>
+        enable_form_open()
+        set_polygon_id_in_form();
+    </script>
+    <form hx-post="../api/challenges" hx-swap="innerHTML" hx-target="#challenges" id="form">
+        <div>
+            <label>Title</label>
+            <input name="title" required type="text">
+        </div>
+        <div>
+            <label>Description</label>
+            <input name="description" required type="text">
+        </div>
+        <div>
+            <label>Polygon</label>
+            <input class="readonly" id="polygonId" name="polygon_id" readonly type="text"
+                   value="Please select a polygon">
+        </div>
+
+        <button class="btn" id="submit_button" onclick="updateForm(); disable_form_open()">Submit
+        </button>
+        <button class="btn" hx-get="../api/challenges" hx-swap="innerHTML" hx-target="#challenges"
+                onclick="disable_form_open()"
+                type="button">Cancel
+        </button>
+    </form>
+</li>
