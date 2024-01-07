@@ -69,6 +69,8 @@ export function addButtonOnMap(customTableControl, map, addTableIsOnTheMap) {
 
 const Map = ({mapContainer, mapRef}) => {
 	// var markerIds = [];
+	const [challengesData, setChallengesData] = useState(null);
+	const [polygonIds, setPolygonIds] = useState([]);
 	const [markerIds, setMarkerIds] = useState([]);
 	const { canAddNewMarker, setCanAddNewMarker } = useMarkerState();
 
@@ -132,6 +134,12 @@ const Map = ({mapContainer, mapRef}) => {
 
 		<AddMarkerButton 
 			mapRef={mapRef}
+			polygonIds={polygonIds}
+			setPolygonIds={setPolygonIds}
+			activePolygons={
+				challengesData?.filter(challenge => challenge.is_active)
+				.map(challenge => challenge.polygon) || []
+			}
 			markerIds={markerIds}
 			setMarkerIds={setMarkerIds}
 		/>
@@ -145,15 +153,23 @@ const Map = ({mapContainer, mapRef}) => {
 			setMarkerIds={setMarkerIds}
 		/>
 
-		{/* <Challenges /> */}
-		<Polygons />
+		<Challenges 
+			mapRef={mapRef}
+			challengesData={challengesData}
+			setChallengesData={setChallengesData}
+			polygonIds={polygonIds}
+			setPolygonIds={setPolygonIds}
+			markerIds={markerIds}
+			setMarkerIds={setMarkerIds}
+		/>
+		{/* <Polygons /> */}
 		{/* Putting marker of activated challenge on the map */}
-		<Markers 
+		{/* <Markers 
 			mapRef={mapRef}
 			polygonVerticles={polygonCoordinates}
 			markersIds={markerIds}
 			setMarkerIds={setMarkerIds}
-		/>
+		/> */}
 		</>
 	);
 }
