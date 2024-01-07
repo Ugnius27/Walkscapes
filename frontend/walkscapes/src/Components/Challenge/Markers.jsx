@@ -13,7 +13,7 @@ export function FixedMarkersPopup(markerId, lat, lng) {
 		`<div>
 			Coordinates: (${lat.toFixed(5)}, ${lng.toFixed(5)})
 		</div>
-		<div>
+		<div style="text-align: center">
 			<button class='popup-button'> 
 				View suggestions
 			</button>
@@ -70,7 +70,7 @@ const Markers = ({mapRef, markersIds, setMarkerIds, polygonVerticles}) => {
 			// console.log('p: ', markersIds);
 			// setMarkerIds((prevMarkerIds) => [...prevMarkerIds, newMarker._leaflet_id]);
 			ids.push(newMarker._leaflet_id)
-			console.log('added ', newMarker._leaflet_id);
+			console.log('added ', newMarker._leaflet_id, ' coords: ', coords);
 		}
 
 		setMarkerIds((prevMarkerIds) => [...prevMarkerIds, ...ids]);

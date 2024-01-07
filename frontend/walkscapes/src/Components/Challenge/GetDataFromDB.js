@@ -22,7 +22,7 @@ export async function fetchMarkers() {
     }
 }
 
-export async function fetchRecordsForMarker(markerId) {
+export async function fetchRecordsForMarker(markerId) { // not used
 	try {
 		const response = await fetch(`${BASE_URL}/api/record/marker=${markerId}`);
 		if (!response.ok) {
