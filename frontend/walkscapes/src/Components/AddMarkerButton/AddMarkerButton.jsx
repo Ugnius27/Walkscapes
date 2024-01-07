@@ -17,6 +17,7 @@ import { ADD_MARKER_MODAL_ID, CHOOSE_LOCATION_MESSAGE_ID,
 import { UPLOAD_MODAL_ID, BUTTON_TO_SHOW_UPLOAD_MODAL } from '../UploadModal/UploadModal.jsx';
 
 import * as Fade from '../FadeModal/FadeModal.jsx';
+import * as Markers from '../Challenge/Markers.jsx'
 import UploadModal from '../UploadModal/UploadModal.jsx';
 
 import addMarkerImage from './add.png'; // Update the path accordingly
@@ -70,6 +71,30 @@ export function toggleAddMarkerButton(){
 // 	);
 // }
 
+// // export function FixedMarkersPopup(markerId, lat, lng) {
+// // 	return (
+// // 		`<div>
+// // 			Coordinates: (${lat.toFixed(5)}, ${lng.toFixed(5)})
+// // 		</div>
+// // 		<div>
+// // 			<button class='popup-button'> 
+// // 				View suggestions
+// // 			</button>
+
+// // 			<button class='popup-button'> 
+// // 				Add new suggestion
+// // 			</button>
+// // 		</div>
+
+// // 		`
+// // 	)
+// // }
+
+// // export function bindFixedMarkersPopup(marker, lat, lng){
+// // 	// marker.bindPopup(`Coordinates: (${lat.toFixed(5)}, ${lng.toFixed(5)})`);
+// // 	marker.bindPopup(FixedMarkersPopup(marker._leaflet_id, lat, lng));
+// // }
+
 
 
 const AddMarkerButton = ({mapRef, markerIds, setMarkerIds}) => {
@@ -102,7 +127,7 @@ const AddMarkerButton = ({mapRef, markerIds, setMarkerIds}) => {
 		var coordinates = marker.getLatLng();
 		marker.dragging.disable();
 		marker.closePopup();
-		bindFixedMarkersPopup(marker, coordinates.lat, coordinates.lng, mapRef);
+		Markers.bindFixedMarkersPopup(marker, coordinates.lat, coordinates.lng, mapRef);
 
 		Fade.hideFade(CHOOSE_LOCATION_MESSAGE_ID, setCanAddNewMarker, mapRef, markerIds, setMarkerIds);
 		marker.off('dblclick'); 
@@ -141,10 +166,10 @@ const AddMarkerButton = ({mapRef, markerIds, setMarkerIds}) => {
 		marker.openPopup();
 	}
 
-	function bindFixedMarkersPopup(marker, lat, lng, mapRef){
-		// marker.bindPopup(`Coordinates: (${lat.toFixed(5)}, ${lng.toFixed(5)})`);
-		marker.bindPopup(FixedMarkersPopup(marker._leaflet_id, lat, lng));
-	}
+	// function bindFixedMarkersPopup(marker, lat, lng, mapRef){
+	// 	// marker.bindPopup(`Coordinates: (${lat.toFixed(5)}, ${lng.toFixed(5)})`);
+	// 	marker.bindPopup(FixedMarkersPopup(marker._leaflet_id, lat, lng));
+	// }
 
 
 	// function chooseLocation(event, mapRef) {  // TODO: finish
@@ -234,24 +259,24 @@ const AddMarkerButton = ({mapRef, markerIds, setMarkerIds}) => {
 		)
 	}
 
-	function FixedMarkersPopup(markerId, lat, lng) {
-		return (
-			`<div>
-				Coordinates: (${lat.toFixed(5)}, ${lng.toFixed(5)})
-			</div>
-			<div>
-				<button class='popup-button'> 
-					View suggestions
-				</button>
+	// function FixedMarkersPopup(markerId, lat, lng) {
+	// 	return (
+	// 		`<div>
+	// 			Coordinates: (${lat.toFixed(5)}, ${lng.toFixed(5)})
+	// 		</div>
+	// 		<div>
+	// 			<button class='popup-button'> 
+	// 				View suggestions
+	// 			</button>
 
-				<button class='popup-button'> 
-					Add new suggestion
-				</button>
-			</div>
+	// 			<button class='popup-button'> 
+	// 				Add new suggestion
+	// 			</button>
+	// 		</div>
 
-			`
-		)
-	}
+	// 		`
+	// 	)
+	// }
 
 	return (
 		<>

@@ -144,7 +144,12 @@ const Map = ({mapContainer, mapRef}) => {
 		/>
 
 		{/* Putting marker of activated challenge on the map */}
-		<Markers />
+		<Markers 
+			mapRef={mapRef}
+			polygonVerticles={polygonCoordinates}
+			markersIds={markerIds}
+			setMarkerIds={setMarkerIds}
+		/>
 		</>
 	);
 }

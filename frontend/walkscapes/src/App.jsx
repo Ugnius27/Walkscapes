@@ -16,10 +16,6 @@ export const ADD_MARKER_MODAL_ID = 'AddMarkerModal';
 export const CHOOSE_LOCATION_MESSAGE_ID = 'ChooseLocationMessage';
 export const ADD_TO_CURR_LOCATION_MESSAGE_ID = 'AddToCurrLocationMessage';
 
-const MARKERS_API_ENDPOINT = '/api/record/markers';
-const AMOUNT_OF_CLUSTERS = 0;
-const RADIUS_OF_A_CLUSTER = 0.0050;
-
 export const RED_ICON = new L.Icon({
   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
   shadowUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png'
