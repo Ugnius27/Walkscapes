@@ -1,4 +1,7 @@
 let focused = null;
+let polygons = {};
+let markers = {};
+let polygon_markers = {};
 
 L.NewPolygonControl = L.EditControl.extend({
 
