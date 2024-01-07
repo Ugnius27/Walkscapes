@@ -1,0 +1,32 @@
+li.button {
+    display: block;
+    padding: 10px;
+    margin: 5px;
+    background-color: #3498db;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    user-select: none;
+    cursor: pointer;
+}
+
+li.button:hover {
+    background-color: #2980b9;
+}
+
+.readonly {
+    background-color: #aaaaaaaa;
+}
+
+.htmx-indicator {
+    opacity: 0;
+    transition: opacity 500ms ease-in;
+}
+
+.htmx-request .htmx-indicator {
+    opacity: 1
+}
+
+.htmx-request.htmx-indicator {
+    opacity: 1
+}

@@ -11,8 +11,9 @@ use std::env;
 use actix_cors::Cors;
 use crate::record::{get_record, post_record};
 use crate::marker::get_markers;
-use crate::challenge::{put_challenges, get_challenges};
+use crate::challenge::{post_challenge, get_challenges};
 use crate::image::get_record_image;
+use crate::polygon::{get_polygons, post_polygon};
 
 
 #[tokio::main]
@@ -26,7 +27,7 @@ async fn main() -> Result<(), sqlx::Error> {
             panic!();
         }
     };
-
+    
     HttpServer::new(move || {
         App::new()
             .wrap(Cors::permissive())
@@ -36,7 +37,9 @@ async fn main() -> Result<(), sqlx::Error> {
             .service(get_challenges)
             .service(get_record)
             .service(get_record_image)
-            .service(put_challenges)
+            .service(post_challenge)
+            .service(post_polygon)
+            .service(get_polygons)
             .service(actix_files::Files::new("/", "../frontend")
                 .index_file("index.html"))
     })

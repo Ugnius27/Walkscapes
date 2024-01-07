@@ -1,7 +1,9 @@
-let challenges = null;
-
 async function fetch_from_db() {
-    data = await fetch(`${API_PATH}/challenges`)
+    data = await fetch(`${API_PATH}/challenges`, {
+        headers: {
+            "Accept": "application/json"
+        }
+    })
         .then(response => {
             // Check if the request was successful (status code 200)
             if (!response.ok) {
@@ -20,10 +22,14 @@ async function fetch_from_db() {
 }
 
 async function load_map_data() {
-    let challenges = await fetch_from_db();
+    challenges = await fetch_from_db();
+    if (challenges == null) {
+        console.error("Could not fetch challenges");
+        return;
+    }
     challenges.forEach(challenge => {
         let polygon = L.polygon(challenge.polygon.vertices).addTo(map);
-        polygons[polygon._leaflet_id] = [challenge.polygon.id];
+        polygons[polygon._leaflet_id] = challenge.polygon.id;
         polygon.on('click', on_polygon_click);
 
         map.fitBounds(polygon.getBounds());
@@ -34,28 +40,8 @@ async function load_map_data() {
             polygon_markers[marker.id] = polygon._leaflet_id;
         })
     })
-    console.log(polygons)
-    console.log(polygon_markers)
-
-    const requestOptions = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json' // Set the appropriate content type
-        },
-        body: JSON.stringify(challenges) // Convert data to JSON format if needed
-    };
-
-    // Perform the POST request using fetch
-    fetch(`${API_PATH}/challenges`, requestOptions)
-        .then(response => response)
-        .then(data => {
-            console.log('Response:', data);
-            // Handle the response as needed
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            // Handle errors
-        });
+    // console.log(polygons)
+    // console.log(polygon_markers)
 }
 
 document.addEventListener('DOMContentLoaded', load_map_data);
