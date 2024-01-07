@@ -6,13 +6,15 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
 import AddMarkerButton from '../AddMarkerButton/AddMarkerButton';
-import Markers from '../Challenge/Markers.jsx'
+import Markers from '../Challenges/Markers.jsx'
 
-import * as Database from '../Challenge/GetDataFromDB.js'
+import * as Database from '../Challenges/GetDataFromDB.js'
 import * as Fade from '../FadeModal/FadeModal.jsx';
 
 // import { mapRef, DEFAULT_ICON } from '../../App.jsx';
 import { DEFAULT_ICON, RED_ICON } from '../../App.jsx';
+import Polygons from '../Challenges/Polygons.jsx';
+import Challenges from '../Challenges/Challenges.jsx';
 
 
 export const ADD_MARKER_MODAL_ID = 'AddMarkerModal';
@@ -143,6 +145,8 @@ const Map = ({mapContainer, mapRef}) => {
 			setMarkerIds={setMarkerIds}
 		/>
 
+		{/* <Challenges /> */}
+		<Polygons />
 		{/* Putting marker of activated challenge on the map */}
 		<Markers 
 			mapRef={mapRef}

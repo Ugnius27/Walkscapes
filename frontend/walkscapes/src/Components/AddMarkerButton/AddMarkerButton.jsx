@@ -17,7 +17,7 @@ import { ADD_MARKER_MODAL_ID, CHOOSE_LOCATION_MESSAGE_ID,
 import { UPLOAD_MODAL_ID, BUTTON_TO_SHOW_UPLOAD_MODAL } from '../UploadModal/UploadModal.jsx';
 
 import * as Fade from '../FadeModal/FadeModal.jsx';
-import * as Markers from '../Challenge/Markers.jsx'
+import * as Markers from '../Challenges/Markers.jsx'
 import UploadModal from '../UploadModal/UploadModal.jsx';
 
 import addMarkerImage from './add.png'; // Update the path accordingly
