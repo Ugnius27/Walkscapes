@@ -1,5 +1,5 @@
-async function fetch_from_db() {
-    data = await fetch(`${API_PATH}/challenges`, {
+async function fetch_json(endpoint) {
+    data = await fetch(`${API_PATH}/${endpoint}`, {
         headers: {
             "Accept": "application/json"
         }
@@ -21,27 +21,39 @@ async function fetch_from_db() {
     return data;
 }
 
-async function load_map_data() {
-    challenges = await fetch_from_db();
+
+async function load_polygons() {
+    let polys = await fetch_json('polygons');
+    if (polys == null) {
+        console.error("Could not fetch polygons");
+        return;
+    }
+    polys.forEach(poly => {
+        let polygon = L.polygon(poly.vertices).addTo(map);
+
+        polygons[polygon._leaflet_id] = poly.id;
+        polygon.on('click', on_polygon_click);
+        
+        map.fitBounds(polygon.getBounds());
+    })
+}
+
+async function load_markers() {
+    let challenges = await fetch_json('challenges');
     if (challenges == null) {
         console.error("Could not fetch challenges");
         return;
     }
     challenges.forEach(challenge => {
-        let polygon = L.polygon(challenge.polygon.vertices).addTo(map);
-        polygons[polygon._leaflet_id] = challenge.polygon.id;
-        polygon.on('click', on_polygon_click);
-
-        map.fitBounds(polygon.getBounds());
-
         challenge.markers.forEach(marker => {
-            let mark = L.marker([marker.latitude, marker.longitude]).addTo(map);
-            markers[marker.id] = mark
-            polygon_markers[marker.id] = polygon._leaflet_id;
+            markers[marker.id] = L.marker([marker.latitude, marker.longitude]).addTo(map)
         })
     })
-    // console.log(polygons)
-    // console.log(polygon_markers)
+}
+
+async function load_map_data() {
+    await load_polygons();
+    await load_markers();
 }
 
 document.addEventListener('DOMContentLoaded', load_map_data);

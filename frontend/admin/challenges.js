@@ -1,5 +1,3 @@
-let challenges = null;
-
 function updateForm() {
     let form = document.getElementById('form')
 

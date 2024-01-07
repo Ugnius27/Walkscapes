@@ -42,7 +42,7 @@ async fn post_polygon(polygon: web::Json<Polygon>, pool: web::Data<MySqlPool>) -
             return HttpResponse::InternalServerError().body(format!("{err}"));
         }
     };
-    HttpResponse::Ok().body(format!("{polygon_id}"))
+    HttpResponse::Ok().json(polygon_id)
 }
 
 async fn read_polygons(pool: &MySqlPool) -> Result<Vec<Polygon>, Box<dyn std::error::Error>> {

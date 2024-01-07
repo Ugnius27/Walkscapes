@@ -2,7 +2,6 @@ let focused = null;
 let form_open = false;
 let polygons = {};
 let markers = {};
-let polygon_markers = {};
 
 L.NewPolygonControl = L.EditControl.extend({
 
@@ -91,11 +90,9 @@ map.on('editable:drawing:commit', function (event) {
         return;
     }
     console.log(poly._leaflet_id);
-    focus(poly);
-    poly.on('click', on_polygon_click);
 
-    let polygonCoordinates = poly.getLatLngs()[0];
-    console.log('Polygon Coordinates:', polygonCoordinates);
+    // let polygonCoordinates = poly.getLatLngs()[0];
+    // console.log('Polygon Coordinates:', polygonCoordinates);
 });
 
 function polygon_to_json(polygon) {
@@ -110,15 +107,8 @@ function polygon_to_json(polygon) {
     return JSON.stringify(polygonJson);
 }
 
-function showPolygonPopup(polygon) {
-    let result = window.confirm("Do you want to save the polygon? Click Ok to save, Cancel to delete");
-
-    if (!result) {
-        map.removeLayer(polygon);
-        return false;
-    }
-
-    fetch('../api/polygons', {
+async function post_polygon(polygon) {
+    return await fetch('../api/polygons', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -126,11 +116,25 @@ function showPolygonPopup(polygon) {
         body: polygon_to_json(polygon)
     })
         .then(response => {
-            polygons[polygon._leaflet_id] = response;
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json(); // Parse the JSON from the response
         })
         .catch(error => {
             console.error('Error making POST request:', error);
         });
+}
 
+async function showPolygonPopup(polygon) {
+    let result = window.confirm("Do you want to save the polygon? Click Ok to save, Cancel to delete");
+
+    if (!result) {
+        map.removeLayer(polygon);
+        return false;
+    }
+    polygon.on('click', on_polygon_click);
+    polygons[polygon._leaflet_id] = await post_polygon(polygon);
+    focus(polygon);
     return true
 }
