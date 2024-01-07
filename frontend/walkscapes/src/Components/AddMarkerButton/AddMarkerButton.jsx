@@ -39,42 +39,40 @@ export function toggleAddMarkerButton(){
 	addMarkerButtonElement.style.display = (addMarkerButtonElement.style.display == 'none') ? 'flex' : 'none';
 }
 
-const ModalButton = ({ id, text, align, sizeOfColumn, func, mapRef }) => {
-	const handleClick = (event) => {
-		func(event, mapRef); // Call the original func passed as a prop
-	};
+// const ModalButton = ({ id, text, align, sizeOfColumn, func, mapRef }) => {
+// 	const handleClick = (event) => {
+// 		func(event, mapRef); // Call the original func passed as a prop
+// 	};
 
-	return (
-	<div className={`col-${sizeOfColumn} d-flex justify-content-${align}`}>
-		<button 
-		id={id}
-		onClick={handleClick}
-		className="popup-button"
-		>
-		{text}
-		</button>
-	</div>
-	);
-}
+// 	return (
+// 	<div className={`col-${sizeOfColumn} d-flex justify-content-${align}`}>
+// 		<button 
+// 		id={id}
+// 		onClick={handleClick}
+// 		className="popup-button"
+// 		>
+// 		{text}
+// 		</button>
+// 	</div>
+// 	);
+// }
 
-const CloseButton = ({mbSize}) => {
-	return (
-		<div className={`col-1`}>
-			<button
-				type="button"
-				className={`btn-close mb-${mbSize}`}
-				data-bs-dismiss="modal"
-				aria-label="Close"
-			></button>
-		</div>
-	);
-}
+// const CloseButton = ({mbSize}) => {
+// 	return (
+// 		<div className={`col-1`}>
+// 			<button
+// 				type="button"
+// 				className={`btn-close mb-${mbSize}`}
+// 				data-bs-dismiss="modal"
+// 				aria-label="Close"
+// 			></button>
+// 		</div>
+// 	);
+// }
 
-function bindCasualPopup(marker, lat, lng, mapRef){
-	marker.bindPopup(`Coordinates: (${lat.toFixed(5)}, ${lng.toFixed(5)})`);
-}
 
-const AddMarkerButton = ({mapRef, markerIds, setMarkerIds, currLocationCoords}) => {
+
+const AddMarkerButton = ({mapRef, markerIds, setMarkerIds}) => {
 	// var lastMarkerId = -1;
 	const [lastMarkerId, setLastMarkerId] = useState(-1);
 
@@ -104,12 +102,10 @@ const AddMarkerButton = ({mapRef, markerIds, setMarkerIds, currLocationCoords}) 
 		var coordinates = marker.getLatLng();
 		marker.dragging.disable();
 		marker.closePopup();
-		bindCasualPopup(marker, coordinates.lat, coordinates.lng, mapRef);
+		bindFixedMarkersPopup(marker, coordinates.lat, coordinates.lng, mapRef);
 
 		Fade.hideFade(CHOOSE_LOCATION_MESSAGE_ID, setCanAddNewMarker, mapRef, markerIds, setMarkerIds);
-		// marker.setIcon(DEFAULT_ICON); /////////////////////////
 		marker.off('dblclick'); 
-		// canAddNewMarker = true;
 		
 		var modal = document.getElementById(UPLOAD_MODAL_ID);
 		console.log("MODAL: ");
@@ -118,14 +114,7 @@ const AddMarkerButton = ({mapRef, markerIds, setMarkerIds, currLocationCoords}) 
 		var buttonToClick = document.getElementById(BUTTON_TO_SHOW_UPLOAD_MODAL);
 
 		if (buttonToClick) {
-			// Trigger a click on the button
-			buttonToClick.click();
-
-			
-			const myValue = buttonToClick.dataset.lat;
-			
-			// console.log('my value (lat):');
-			// console.log(myValue); // Outputs: "42"
+			buttonToClick.click();			
 
 			buttonToClick.dataset.lat = coordinates.lat;
 			buttonToClick.dataset.lng = coordinates.lng;
@@ -134,16 +123,14 @@ const AddMarkerButton = ({mapRef, markerIds, setMarkerIds, currLocationCoords}) 
 
 			var variable = buttonToClick.dataset.markerId;
 
-			if (typeof variable === 'number' && Number.isInteger(variable)) {
-				console.log( 'integer');
-			} else if (typeof variable === 'string') {
-				console.log( 'string');
-			} else {
-				console.log( 'unknown');
-			}
+			// if (typeof variable === 'number' && Number.isInteger(variable)) {
+			// 	console.log( 'integer');
+			// } else if (typeof variable === 'string') {
+			// 	console.log( 'string');
+			// } else {
+			// 	console.log( 'unknown');
+			// }
 
-			// ReactDOMServer.renderToString(buttonToClick.dataset.marker).setIcon(DEFAULT_ICON);
-			// console.log(buttonToClick.dataset.lat);
 		  }
 	}
 	
@@ -154,10 +141,15 @@ const AddMarkerButton = ({mapRef, markerIds, setMarkerIds, currLocationCoords}) 
 		marker.openPopup();
 	}
 
+	function bindFixedMarkersPopup(marker, lat, lng, mapRef){
+		// marker.bindPopup(`Coordinates: (${lat.toFixed(5)}, ${lng.toFixed(5)})`);
+		marker.bindPopup(FixedMarkersPopup(marker._leaflet_id, lat, lng));
+	}
 
-	function chooseLocation(event, mapRef) {  // TODO: finish
+
+	// function chooseLocation(event, mapRef) {  // TODO: finish
+	function chooseLocation(mapRef) {  // TODO: finish
 		console.log('Choose location clicked');
-		console.log('id: ', event.target.id);
 
 		setCanAddNewMarker(currentState => {
 			console.log("Marker can be added");
@@ -226,40 +218,6 @@ const AddMarkerButton = ({mapRef, markerIds, setMarkerIds, currLocationCoords}) 
 
 		
 	}
-	
-	const AddMarkerModalBody = ({mapRef}) => {
-		return (
-			<div className="modal-body">
-				<p>{currLocationCoords[0]} {currLocationCoords[1]}</p>
-				<div className="row align-items-center justify-content-end">
-					<div className="col-1"></div>
-					<div className="col-10 text-center mb-2">
-						<h5>Choose where to put new marker</h5>
-					</div>
-						<CloseButton mbSize={3} />
-				</div>
-
-				<div className="row">
-					<ModalButton
-						id={ADD_TO_CURR_LOCATION_BUTTON_ID}
-						text='Add to Current Location'
-						align='end'
-						sizeOfColumn={6}
-						func={addToCurrentLocation}
-						mapRef={mapRef}
-					/>
-					<ModalButton
-						id={CHOOSE_LOCATION_BUTTON_ID}
-						text='Choose location'
-						align='start'
-						sizeOfColumn={6}
-						func={chooseLocation}
-						mapRef={mapRef}
-					/>
-				</div>
-			</div>
-		);
-	}
 
 	function FixMarkersPlaceButton(markerId){
 		return (
@@ -276,14 +234,32 @@ const AddMarkerButton = ({mapRef, markerIds, setMarkerIds, currLocationCoords}) 
 		)
 	}
 
+	function FixedMarkersPopup(markerId, lat, lng) {
+		return (
+			`<div>
+				Coordinates: (${lat.toFixed(5)}, ${lng.toFixed(5)})
+			</div>
+			<div>
+				<button class='popup-button'> 
+					View suggestions
+				</button>
+
+				<button class='popup-button'> 
+					Add new suggestion
+				</button>
+			</div>
+
+			`
+		)
+	}
+
 	return (
 		<>
 		<button
 			id={ADD_MARKER_BUTTON_ID}
 			type="button"
 			className="add-button rounded-1"
-			data-bs-toggle="modal"
-			data-bs-target={`#${ADD_MARKER_MODAL_ID}`}
+			onClick={() => chooseLocation(mapRef)}
 			style={{display: 'flex'}}
 		>
 		<img className='img-fluid'
@@ -292,41 +268,13 @@ const AddMarkerButton = ({mapRef, markerIds, setMarkerIds, currLocationCoords}) 
 		/>
 		</button>
 		
-
-
 		<div>
 		<UploadModal 
 			map={mapRef.current}
 			lastSubmittedMarkerId={lastMarkerId}
-			// submittedMarkerId={markerIds.length > 0 ? markerIds[markerIds.length - 1] : -1}
-			// submittedMarkerId={() => {
-			// 	if (markerIds)
-			// 		return markerIds[markerIds[markerIds.length - 1]]
-			// 	else return -1; // it indicates an error
-			// }}
 		/>
 		</div>
-
-
-
-
-		<div
-			className="modal fade"
-			id={`${ADD_MARKER_MODAL_ID}`}
-			// ref={addMarkerModalRef}
-			tabIndex="-1"
-			aria-labelledby={`#${ADD_MARKER_MODAL_ID}Label`} // "exampleModalLabel"
-			aria-hidden="false"
-			data-bs-show={true}
-			data-bs-dismiss='modal'
-			style={{ position: 'absolute', top: '10px', right: '10px'}}
-		>
-			<div className="modal-dialog">
-				<div className="modal-content">
-					<AddMarkerModalBody mapRef={mapRef}/>
-				</div>
-			</div>
-		</div>
+		
 		</>
 	);
 }

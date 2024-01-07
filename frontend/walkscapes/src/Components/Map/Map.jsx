@@ -6,7 +6,9 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
 import AddMarkerButton from '../AddMarkerButton/AddMarkerButton';
+import Markers from '../Challenge/Markers.jsx'
 
+import * as Database from '../Challenge/GetDataFromDB.js'
 import * as Fade from '../FadeModal/FadeModal.jsx';
 
 // import { mapRef, DEFAULT_ICON } from '../../App.jsx';
@@ -68,8 +70,6 @@ const Map = ({mapContainer, mapRef}) => {
 	const [markerIds, setMarkerIds] = useState([]);
 	const { canAddNewMarker, setCanAddNewMarker } = useMarkerState();
 
-	const [currentLocationMarker, setCurrentLocationMarker] = useState(null);
-	const [currentLocationCoords, setCurrentLocationCoords] = useState([0, 0])
 
 
 
@@ -90,37 +90,12 @@ const Map = ({mapContainer, mapRef}) => {
 	const santaka = [54.89984180616253, 23.961551736420333];
     // mapRef.current - main map
 
-	useEffect(() => {
-		console.log('New coords: ', currentLocationCoords);
-	}, [currentLocationCoords])
 
   	useEffect(() => {
 		initializeMap(mapContainer, santaka, mapRef);
 		if (mapRef.current) {
 			var polygon = L.polygon(polygonCoordinates, {color: 'red'}).addTo(mapRef.current);
 			var marker = L.marker([54.899, 23.96155], { icon: DEFAULT_ICON }).addTo(mapRef.current);
-			// setCanAddNewMarker(5);
-			// setCanAddNewMarker(false);
-			// console.log("iiiiiiiiiiii ", canAddNewMarker);
-			// setCanAddNewMarker(currentState => !currentState);
-
-		
-			// Create a marker for the user
-			const currLocationMarker = L.marker([0, 0], { icon: RED_ICON }).addTo(mapRef.current);
-			setCurrentLocationMarker(currLocationMarker);
-			navigator.geolocation.watchPosition(
-				(position) => {
-				  const { latitude, longitude } = position.coords;
-				  currLocationMarker.setLatLng([latitude, longitude]);
-				  mapRef.current.panTo([latitude, longitude]); 
-				  console.log('Curr position: ', [latitude, longitude]);
-				  setCurrentLocationCoords([latitude, longitude]);
-				},
-				(error) => console.error(error),
-				{ enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
-
-				
-			);
 		
 			
 		} else {
@@ -131,6 +106,16 @@ const Map = ({mapContainer, mapRef}) => {
 	//   useEffect(() => {
 	// 	console.log("iiiiiiiiiiii ", canAddNewMarker);
 	// }, [canAddNewMarker]);
+
+	// useEffect(() => {
+	// 	var r = Database.fetchRecordsForMarker(8);
+	// 	console.log('8th marker: ');
+	// 	console.log(r);
+
+	// 	Database.fetchMarkers();
+	// })
+
+	
 	
 
 	return (
@@ -147,8 +132,6 @@ const Map = ({mapContainer, mapRef}) => {
 			mapRef={mapRef}
 			markerIds={markerIds}
 			setMarkerIds={setMarkerIds}
-			currentLocationMarker={currentLocationMarker}
-			currLocationCoords={currentLocationCoords}
 		/>
 
 		<Fade.MessageOnFadeOverlay
@@ -159,6 +142,9 @@ const Map = ({mapContainer, mapRef}) => {
 			markerIds={markerIds}
 			setMarkerIds={setMarkerIds}
 		/>
+
+		{/* Putting marker of activated challenge on the map */}
+		<Markers />
 		</>
 	);
 }
