@@ -42,23 +42,8 @@ export function hideFade(messageId, setCanAddNewMarker, mapRef, markerIds){
 		lastMarker.off('dblclick')
 		lastMarker.setIcon(DEFAULT_ICON);
 	}
-	// canAddNewMarker = true;
-	// console.log(setCanAddNewMarker);
-	// setCanAddNewMarker(currentState => !currentState);
 
-	// // setCanAddNewMarker(currentState => {
-	// // 	return true;
-	// // });
-
-	// mapRef.current.on('click', function (e) {});
-	// console.log("HHHHHHHHH ");
-	// console.log(setCanAddNewMarker);
 }
-
-// const HideFade = ({messageId, setCanAddNewMarker}) => {
-// 	console.log("LLLLLL ");
-// 	console.log(setCanAddNewMarker);
-// }
 
 export function MessageOnFadeOverlay({ id, text, setCanAddNewMarker, mapRef, markerIds, setMarkerIds }) { //TODO: fix mess text: (dbckick on marker to remove it)
 	console.log("Message id (0): ", id);

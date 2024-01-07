@@ -98,8 +98,8 @@ const Map = ({mapContainer, mapRef}) => {
   	useEffect(() => {
 		initializeMap(mapContainer, santaka, mapRef);
 		if (mapRef.current) {
-			var polygon = L.polygon(polygonCoordinates, {color: 'red'}).addTo(mapRef.current);
-			var marker = L.marker([54.899, 23.96155], { icon: DEFAULT_ICON }).addTo(mapRef.current);
+			// var polygon = L.polygon(polygonCoordinates, {color: 'red'}).addTo(mapRef.current);
+			// var marker = L.marker([54.899, 23.96155], { icon: DEFAULT_ICON }).addTo(mapRef.current);
 		
 			
 		} else {

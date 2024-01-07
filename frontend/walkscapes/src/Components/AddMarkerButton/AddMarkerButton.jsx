@@ -21,6 +21,7 @@ import * as Markers from '../Challenges/Markers.jsx'
 import UploadModal from '../UploadModal/UploadModal.jsx';
 
 import addMarkerImage from './add.png'; // Update the path accordingly
+import { uploadRecord } from '../UploadModal/UploadDataToDB.js';
 
 const ADD_MARKER_BUTTON_ID = 'addMarkerButton';
 const CHOOSE_LOCATION_BUTTON_ID = 'ChooseLocationButton';
@@ -182,7 +183,6 @@ const AddMarkerButton = ({mapRef, activePolygons, polygonIds, markerIds, setMark
 	// function chooseLocation(event, mapRef) {  // TODO: finish
 	function chooseLocation(mapRef) {  // TODO: finish
 		console.log('Choose location clicked');
-
 		setCanAddNewMarker(currentState => {
 			// console.log("Marker can be added");
 			return true;

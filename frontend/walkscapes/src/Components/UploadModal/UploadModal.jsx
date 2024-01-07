@@ -3,6 +3,9 @@ import 'leaflet/dist/leaflet.css';
 import '../../popupsLeaflet.css'
 
 import React, { useState, useEffect } from 'react';
+
+import * as UploadToDB from '../UploadModal/UploadDataToDB.js'
+
 import { DEFAULT_ICON, RED_ICON } from '../../App.jsx';
 
 export const UPLOAD_MODAL_ID = 'uploadModal';
@@ -128,6 +131,9 @@ const UploadModal = ({map, lastSubmittedMarkerId}) => {
 
     console.log('submitted marker: ', lastSubmittedMarkerId);
     var lastSubmittedMarker = map._layers[lastSubmittedMarkerId];
+    var coordinates = lastSubmittedMarker.getLatLng();
+
+    UploadToDB.uploadRecord(coordinates.lat, coordinates.lng, selectedImages, description);
 
     console.log(lastSubmittedMarker);
     lastSubmittedMarker.setIcon(DEFAULT_ICON);
