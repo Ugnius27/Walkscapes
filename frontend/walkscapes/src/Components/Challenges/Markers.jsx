@@ -109,7 +109,7 @@ const Markers = ({mapRef, markersIds, setMarkerIds, activePolygons}) => {
 			// console.log('p: ', markersIds);
 			// setMarkerIds((prevMarkerIds) => [...prevMarkerIds, newMarker._leaflet_id]);
 			ids.push(newMarker._leaflet_id)
-			console.log('added ', newMarker._leaflet_id, ' coords: ', coords);
+			// console.log('added ', newMarker._leaflet_id, ' coords: ', coords);
 		}
 
 		setMarkerIds((prevMarkerIds) => [...prevMarkerIds, ...ids]);
@@ -135,29 +135,29 @@ const Markers = ({mapRef, markersIds, setMarkerIds, activePolygons}) => {
 		// if (activePolygon && activePolygon.vertices)
 		// console.log('in marks: ', activePolygons.vertices);
 
-		console.log('active pols');
-		console.log(activePolygons);
+		// console.log('active pols');
+		// console.log(activePolygons);
 
 
 	}, [activePolygons])
 
-	useEffect(() => {
-		console.log('markers data');
-		console.log(markersData);
+	// useEffect(() => {
+	// 	// console.log('markers data');
+	// 	// console.log(markersData);
 
-		if (markersData && markersData.length > 0){
-			console.log('0000000000');
-			console.log(markersData[0])
+	// 	if (markersData && markersData.length > 0){
+	// 		// console.log('0000000000');
+	// 		// console.log(markersData[0])
 
 			
 		
-			// console.log(activePolygon.vertices[0]);
-			// TODO: delete all before adding new ones again
-			// putMarkersOnMap(markersData, activePolygon.vertices[0])
-			// // putMarkersOnMap(markersData, polygonVerticles)
-		}
+	// 		// console.log(activePolygon.vertices[0]);
+	// 		// TODO: delete all before adding new ones again
+	// 		// putMarkersOnMap(markersData, activePolygon.vertices[0])
+	// 		// // putMarkersOnMap(markersData, polygonVerticles)
+	// 	}
 
-	}, [markersData])
+	// }, [markersData])
 }
 
 export default Markers;

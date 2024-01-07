@@ -118,24 +118,24 @@ const UploadModal = ({map, lastSubmittedMarkerId}) => {
     const files = Array.from(e.target.files);
     setSelectedImages(files);
 
-    console.log("Images:");
-    console.log(files);
+    // console.log("Images:");
+    // console.log(files);
   };
 
   const handleSubmit = () => {
-    console.log('Images:', selectedImages);
-    console.log('Description:', description);
-    // Reset form fields
+    // console.log('Images:', selectedImages);
+    // console.log('Description:', description);
+
     setSelectedImages([]);
     setDescription('');
 
-    console.log('submitted marker: ', lastSubmittedMarkerId);
+    // console.log('submitted marker: ', lastSubmittedMarkerId);
     var lastSubmittedMarker = map._layers[lastSubmittedMarkerId];
     var coordinates = lastSubmittedMarker.getLatLng();
 
     UploadToDB.uploadRecord(coordinates.lat, coordinates.lng, selectedImages, description);
 
-    console.log(lastSubmittedMarker);
+    // console.log(lastSubmittedMarker);
     lastSubmittedMarker.setIcon(DEFAULT_ICON);
     lastSubmittedMarker.openPopup();
 
@@ -157,13 +157,13 @@ const UploadModal = ({map, lastSubmittedMarkerId}) => {
   }, [showAlert]);
 
   useEffect(() => {
-    console.log('BBBBBBBBBB');
+    // console.log('BBBBBBBBBB');
     if (!buttonToShowUploadModal)
       return; 
 
     var markerId = parseInt(buttonToShowUploadModal.dataset.markerId);
 
-    console.log(markerId);
+    // console.log(markerId);
     // }
   }, []);
 
@@ -173,9 +173,9 @@ const handleDelete = (index) => {
   setSelectedImages(newImages);
 };
 
-function A (){
-  console.log("AAAAAAAAAAA");
-}
+// function A (){
+//   console.log("AAAAAAAAAAA");
+// }
 
 return (
   <>

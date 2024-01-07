@@ -46,7 +46,7 @@ export function hideFade(messageId, setCanAddNewMarker, mapRef, markerIds){
 }
 
 export function MessageOnFadeOverlay({ id, text, setCanAddNewMarker, mapRef, markerIds, setMarkerIds }) { //TODO: fix mess text: (dbckick on marker to remove it)
-	console.log("Message id (0): ", id);
+	// console.log("Message id (0): ", id);
 	// console.log("RRRRRRRRRR");
 	// console.log(setCanAddNewMarker);
 

@@ -30,7 +30,7 @@ const Challenges = ({mapRef, challengesData, setChallengesData, polygonIds, setP
 
 	useEffect(() => {
 		Database.fetchChallenges().then((challengesInJson) => {
-			console.log('challenges:', challengesInJson);
+			// console.log('challenges:', challengesInJson);
 			setChallengesData(challengesInJson);
 			// Now you can use the challenges array
 		}).catch((error) => {
@@ -40,7 +40,7 @@ const Challenges = ({mapRef, challengesData, setChallengesData, polygonIds, setP
 
 	
 	useEffect(() => {
-		console.log('ch: ', challengesData);
+		// console.log('ch: ', challengesData);
 
 		// console.log('pppp ', challengesData?.find(challenge => challenge.is_active) || null);
 		setActiveChallenges(challengesData?.filter(challenge => challenge.is_active) || []);
@@ -49,18 +49,18 @@ const Challenges = ({mapRef, challengesData, setChallengesData, polygonIds, setP
 		
 	}, [challengesData])
 
-	useEffect(() => {
-		// console.log('active chall id: ', activeChallengeId);
-		// if (challengesData && activeChallengeId == null){
-		// 	console.log('No active challenges');
-		// }
-		// if (activeChallenges.l)
-		// 	return;
+	// useEffect(() => {
+	// 	// console.log('active chall id: ', activeChallengeId);
+	// 	// if (challengesData && activeChallengeId == null){
+	// 	// 	console.log('No active challenges');
+	// 	// }
+	// 	// if (activeChallenges.l)
+	// 	// 	return;
 
-		console.log(activeChallenges);
+	// 	// console.log(activeChallenges);
 
 
-	}, [activeChallenges])
+	// }, [activeChallenges])
 
 
 	return (

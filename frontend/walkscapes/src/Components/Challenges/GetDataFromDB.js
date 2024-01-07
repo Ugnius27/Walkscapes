@@ -12,7 +12,7 @@ export async function fetchMarkers() {
 
         const markers = await response.json();
 
-        console.log(markers);
+        // console.log(markers);
         //console.log("markers length0: " + markers.length)
         return markers;
 
@@ -85,7 +85,7 @@ export async function fetchChallenges() {
         }
 
         const challenges = await response.json();
-        console.log('challenges: ', challenges);
+        // console.log('challenges: ', challenges);
         return challenges;
 
     } catch (error) {

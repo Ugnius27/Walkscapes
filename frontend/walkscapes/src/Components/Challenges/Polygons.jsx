@@ -14,7 +14,7 @@ const Polygons = ({mapRef, polygonIds, setPolygonIds, activeChallenges}) => {
 
 	function createPolygon(map, vertices, color) {
 		var polygon = L.polygon(vertices, {color: color}).addTo(map);
-		console.log('pol id: ', polygon._leaflet_id);
+		// console.log('pol id: ', polygon._leaflet_id);
 		polygon.on('click', (e) => {
 			console.log('clicked on polygon ', e,  '  id: ', e.target._leaflet_id);
 		})
@@ -60,8 +60,8 @@ const Polygons = ({mapRef, polygonIds, setPolygonIds, activeChallenges}) => {
 		if (!polygons)
 			return;
 
-		console.log('pols: ', polygons);
-		console.log('active challs: ', activeChallenges);
+		// console.log('pols: ', polygons);
+		// console.log('active challs: ', activeChallenges);
 		removePolygons(polygonIds);
 		putPolygonsOnMap(mapRef, activeChallenges)
 

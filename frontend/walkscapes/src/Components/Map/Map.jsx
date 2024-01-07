@@ -62,7 +62,7 @@ export function addButtonOnMap(customTableControl, map, addTableIsOnTheMap) {
 		addTableIsOnTheMap = false;
 	}
   
-	console.log('clicked');
+	// console.log('clicked');
 
 	return addTableIsOnTheMap;
 }
@@ -84,9 +84,9 @@ const Map = ({mapContainer, mapRef}) => {
 	// 	// console.log(markerIds);
 	//   }, []); // Add dependencies if needed
 
-	useEffect(() => {
-		console.log(markerIds);
-	}, [markerIds]);
+	// // // useEffect(() => {
+	// // // 	console.log(markerIds);
+	// // // }, [markerIds]);
 	// Memoize the functions using useCallback
 	// const memoizedCanAddNewMarker = useCallback(() => canAddNewMarker, [canAddNewMarker]);
 	// const memoizedSetCanAddNewMarker = useCallback((value) => setCanAddNewMarker(value), [setCanAddNewMarker]);

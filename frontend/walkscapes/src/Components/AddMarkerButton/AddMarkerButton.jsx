@@ -27,9 +27,9 @@ const ADD_MARKER_BUTTON_ID = 'addMarkerButton';
 const CHOOSE_LOCATION_BUTTON_ID = 'ChooseLocationButton';
 const ADD_TO_CURR_LOCATION_BUTTON_ID = 'AddToCurrLocationButton';
 
-function addToCurrentLocation() { // TODO
-	console.log('Add to current location clicked');
-}
+// function addToCurrentLocation() { // TODO
+// 	console.log('Add to current location clicked');
+// }
 
 export function toggleAddMarkerButton(){
 	const addMarkerButtonElement = document.getElementById(ADD_MARKER_BUTTON_ID);
@@ -141,8 +141,8 @@ const AddMarkerButton = ({mapRef, activePolygons, polygonIds, markerIds, setMark
 		marker.off('dblclick'); 
 		
 		var modal = document.getElementById(UPLOAD_MODAL_ID);
-		console.log("MODAL: ");
-		console.log(modal);
+		// console.log("MODAL: ");
+		// console.log(modal);
 
 		var buttonToClick = document.getElementById(BUTTON_TO_SHOW_UPLOAD_MODAL);
 
@@ -152,9 +152,9 @@ const AddMarkerButton = ({mapRef, activePolygons, polygonIds, markerIds, setMark
 			buttonToClick.dataset.lat = coordinates.lat;
 			buttonToClick.dataset.lng = coordinates.lng;
 			buttonToClick.dataset.markerId = marker._leaflet_id;
-			console.log(buttonToClick.dataset.markerId);
+			// console.log(buttonToClick.dataset.markerId);
 
-			var variable = buttonToClick.dataset.markerId;
+			// var variable = buttonToClick.dataset.markerId;
 
 			// if (typeof variable === 'number' && Number.isInteger(variable)) {
 			// 	console.log( 'integer');
@@ -182,7 +182,7 @@ const AddMarkerButton = ({mapRef, activePolygons, polygonIds, markerIds, setMark
 
 	// function chooseLocation(event, mapRef) {  // TODO: finish
 	function chooseLocation(mapRef) {  // TODO: finish
-		console.log('Choose location clicked');
+		// console.log('Choose location clicked');
 		setCanAddNewMarker(currentState => {
 			// console.log("Marker can be added");
 			return true;
@@ -204,9 +204,9 @@ const AddMarkerButton = ({mapRef, activePolygons, polygonIds, markerIds, setMark
 			var pressedAtCoords = [lat, lng];
 
 			// Markers.isMarkerInThePolygon()
-			console.log(pressedAtCoords);
+			// console.log(pressedAtCoords);
 			
-			console.log(setCanAddNewMarker);
+			// console.log(setCanAddNewMarker);
 			setCanAddNewMarker(currentState => {
 				count++;
 				// console.log("1. Checking curent state before deciding: ", currentState, ' ', canAddNewMarker, ' ', count);
