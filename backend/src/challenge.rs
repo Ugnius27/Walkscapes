@@ -12,6 +12,7 @@ pub struct Challenge {
     description: String,
     polygon: Polygon,
     markers: Vec<Marker>,
+    is_active: bool,
 }
 
 impl From<ChallengePostForm> for Challenge {
@@ -25,6 +26,7 @@ impl From<ChallengePostForm> for Challenge {
                 vertices: None,
             },
             markers: Vec::new(),
+            is_active: if value.is_active == "on" { true } else { false },
         }
     }
 }
@@ -34,6 +36,7 @@ struct ChallengePostForm {
     title: String,
     description: String,
     polygon_id: i32,
+    is_active: String,
 }
 
 // impl Challenge {
@@ -51,7 +54,7 @@ struct ChallengePostForm {
 async fn get_challenges_from_db(pool: &MySqlPool) -> Result<Vec<Challenge>, Box<dyn std::error::Error>> {
     let rows = sqlx::query!(
         r#"SELECT
-        c.id, c.title, c.description,
+        c.id, c.title, c.description, c.is_active,
         p.id as polygon_id,
         JSON_EXTRACT(ST_AsGeoJSON(p.vertices), '$.coordinates[0]') AS vertices
         FROM challenges as c
@@ -79,6 +82,7 @@ async fn get_challenges_from_db(pool: &MySqlPool) -> Result<Vec<Challenge>, Box<
                 id: Some(row.polygon_id),
                 vertices: Some(vertices),
             },
+            is_active: if row.is_active == 0 { false } else { true }, //todo bandaid
         });
     }
     Ok(challenges)
@@ -87,11 +91,12 @@ async fn get_challenges_from_db(pool: &MySqlPool) -> Result<Vec<Challenge>, Box<
 async fn add_challenge_to_db(challenge: Challenge, pool: &MySqlPool) -> Result<i32, Box<dyn std::error::Error>> {
     let result = sqlx::query!(
         r#"INSERT INTO
-           challenges (title, description, polygon_id)
-           values (?, ?, ?);"#,
+           challenges (title, description, polygon_id, is_active)
+           values (?, ?, ?, ?);"#,
         challenge.title,
         challenge.description,
-        challenge.polygon.id
+        challenge.polygon.id,
+        challenge.is_active
     ).execute(pool).await?;
     Ok(result.last_insert_id() as i32)
 }
@@ -124,7 +129,7 @@ pub async fn post_challenge(web::Form(form): web::Form<ChallengePostForm>, pool:
     let challenge: Challenge = form.into();
 
     match add_challenge_to_db(challenge, pool).await {
-        Ok(_) => {},
+        Ok(_) => {}
         Err(err) => {
             eprintln!("{err}");
             return HttpResponse::InternalServerError().body(format!("{err}"));
