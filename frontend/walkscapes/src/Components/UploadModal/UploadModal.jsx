@@ -139,6 +139,7 @@ const UploadModal = ({map, lastSubmittedMarkerId}) => {
 
     setShowAlert(true);
   };
+  
   function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }

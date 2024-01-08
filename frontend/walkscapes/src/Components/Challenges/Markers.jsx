@@ -7,6 +7,8 @@ import * as Database from './GetDataFromDB.js'
 
 import { DEFAULT_ICON, RED_ICON } from '../../App.jsx';
 
+const VIEW_SUGGESTIONS_BUTTON_ID = 'viewSuggestionsButton';
+
 export function createMarker(mapRef, lat, lng) {
 	var marker = L.marker([lat, lng], { icon: DEFAULT_ICON, draggable: false }).addTo(mapRef.current);
 	bindFixedMarkersPopup(marker, lat, lng, mapRef);
@@ -14,13 +16,15 @@ export function createMarker(mapRef, lat, lng) {
 	return marker._leaflet_id
 }
 
-export function FixedMarkersPopup(markerId, lat, lng) {
+function FixedMarkersPopup(markerId, lat, lng) {
 	return (
 		`<div style="text-align: center;">
 			Coordinates: (${lat.toFixed(5)}, ${lng.toFixed(5)})
 		</div>
 		<div style="text-align: center">
 			<button 
+				id="${VIEW_SUGGESTIONS_BUTTON_ID}"
+				onclick="viewSuggestions('${markerId}')"  
 				class="popup-button"
 			> 
 				View suggestions
@@ -69,8 +73,8 @@ export function isMarkerAtLeastInOnePolygon(markerCoords, polygons){
 	return false;
 }
 
-const Markers = ({mapRef, markersIds, setMarkerIds, activePolygons, challengesData}) => {
-	const [markersData, setMarkersData] = useState(null);
+const Markers = ({mapRef, markersData, setMarkersData, markersIds, setMarkerIds, activePolygons, challengesData}) => {
+	// const [markersData, setMarkersData] = useState(null);
 	const [challenges, setChallenges] = useState([]);
 
 	function putMarkersOnMap(markersData, polygons) {
@@ -94,7 +98,6 @@ const Markers = ({mapRef, markersIds, setMarkerIds, activePolygons, challengesDa
 
 		setMarkerIds((prevMarkerIds) => [...prevMarkerIds, ...ids]);
 	}
-
 
 	useEffect(() => {
 		Database.fetchMarkers().then(markersInJson => {
