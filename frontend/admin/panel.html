@@ -18,7 +18,7 @@
 <script>
     document.body.addEventListener("htmx:responseError", function (event) {
         let errorMessage = event.detail.message || 'An error occurred during the request.';
-        document.getElementById('result').innerHTML = errorMessage; // Clear previous results
+        document.getElementById('result').innerHTML = errorMessage;
     });
 </script>
 

@@ -2,7 +2,7 @@ use actix_web::{get, HttpResponse, post, Responder, web};
 use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, MySqlPool};
 
-#[derive(Debug, FromRow, Serialize, Deserialize)]
+#[derive(Debug, FromRow, Serialize, Deserialize, Clone)]
 pub struct Polygon {
     #[serde(default)]
     pub id: Option<i32>,

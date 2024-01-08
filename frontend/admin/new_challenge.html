@@ -1,8 +1,4 @@
 <li class="button">
-    <script>
-        enable_form_open()
-        set_polygon_id_in_form();
-    </script>
     <form hx-post="../api/challenges" hx-swap="innerHTML" hx-target="#challenges" id="form">
         <div>
             <label>Title</label>
@@ -10,7 +6,7 @@
         </div>
         <div>
             <label>Description</label>
-            <input name="description" required type="text">
+            <textarea name="description" required type="text"></textarea>
         </div>
         <div>
             <label>Polygon</label>
@@ -22,11 +18,17 @@
             <input id="checkmark" name="is_active" type="checkbox">
         </div>
 
-        <button class="btn" id="submit_button" onclick="updateForm(); disable_form_open()">Submit
+        <button class="btn" id="submit_button">Submit
         </button>
         <button class="btn" hx-get="../api/challenges" hx-swap="innerHTML" hx-target="#challenges"
                 onclick="disable_form_open()"
                 type="button">Cancel
         </button>
     </form>
+    <script>
+        enable_form_open()
+        document.addEventListener('htmx:afterSwap', function (event) {
+            disable_form_open();
+        });
+    </script>
 </li>

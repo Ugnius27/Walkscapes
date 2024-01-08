@@ -1,6 +1,8 @@
 let focused = null;
 let form_open = false;
-let polygons = {};
+let polygons_layer = L.layerGroup().addTo(map);
+let polygons_to_ids = {};
+let ids_to_polygons = {};
 let markers = {};
 
 L.NewPolygonControl = L.EditControl.extend({
@@ -134,7 +136,29 @@ async function showPolygonPopup(polygon) {
         return false;
     }
     polygon.on('click', on_polygon_click);
-    polygons[polygon._leaflet_id] = await post_polygon(polygon);
+    let polygon_id = await post_polygon(polygon);
+
+    polygons_layer.addLayer(polygon)
+    polygons_to_ids[polygon._leaflet_id] = polygon_id;
+    ids_to_polygons[polygon_id] = polygon._leaflet_id;
     focus(polygon);
     return true
+}
+
+function polyByDbId(id) {
+    let poly_id = ids_to_polygons[id]
+    return polygons_layer.getLayer(poly_id);
+}
+
+function setViewOnPoly(id) {
+    let poly = polyByDbId(id);
+    remove_focus();
+    focus(poly);
+    map.fitBounds(poly.getBounds());
+}
+
+function focusPolyByDbId(id) {
+    let poly = polyByDbId(id);
+    remove_focus();
+    focus(poly);
 }
