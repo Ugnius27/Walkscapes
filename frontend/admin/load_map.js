@@ -29,9 +29,11 @@ async function load_polygons() {
         return;
     }
     polys.forEach(poly => {
-        let polygon = L.polygon(poly.vertices).addTo(map);
+        let polygon = L.polygon(poly.vertices);
 
-        polygons[polygon._leaflet_id] = poly.id;
+        polygons_layer.addLayer(polygon);
+        polygons_to_ids[polygon._leaflet_id] = poly.id;
+        ids_to_polygons[poly.id] = polygon._leaflet_id;
         polygon.on('click', on_polygon_click);
 
         map.fitBounds(polygon.getBounds());
