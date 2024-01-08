@@ -75,8 +75,13 @@ export function isMarkerAtLeastInOnePolygon(markerCoords, polygons){
 
 function doesCoordsMatch(coordsArray, targetCoords){
 	for (var i = 0; i < coordsArray.length; i++){
-		if (coordsArray[i] === targetCoords)
+		// console.log('eq? : ', coordsArray[i], targetCoords, coordsArray[i][0] == targetCoords[0] && coordsArray[i][1] == targetCoords[1]);
+		if (
+			coordsArray[i][0] == targetCoords[0] &&
+			coordsArray[i][1] == targetCoords[1]
+		  ) {
 			return true;
+		  }
 	}
 
 	return false;
@@ -107,6 +112,7 @@ isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 			for (var j = 0; j < polygons.length; j++){
 				if (isMarkerInThePolygon(coords, polygons[j].vertices) && !doesCoordsMatch(usedCoords, coords)){
 					// console.log(coords);
+					// console.log(doesCoordsMatch(usedCoords, coords), ' ', usedCoords, coords);
 					ids.push(createMarker(mapRef, coords[0], coords[1]))
 					usedCoords.push(coords);
 
@@ -115,7 +121,11 @@ isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 			}
 		}
 
-		setMarkerIds((prevMarkerIds) => [...prevMarkerIds, ...ids]);
+		// console.log(usedCoords);
+		// console.log(ids.length, ' llll');
+
+		// setMarkerIds((prevMarkerIds) => [...prevMarkerIds, ...ids]);
+		setMarkerIds(ids);
 	}
 
 	useEffect(() => {
@@ -124,17 +134,21 @@ isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 			setMarkersData(markersInJson);
 		});
 
-		console.log('markersDataUpdated');
+		// console.log('markersDataUpdated');
 
-	}, [challengesData, isNewSuggestionAdded])
+	}, [challengesData])
 
 	useEffect(() => {
 		// console.log('markersData changed ', markersData);
 		removeMarkersFromMap(markersIds)
 		putMarkersOnMap(markersData, activePolygons);
 
-		console.log('new markers put on map');
-	}, [markersData, isNewSuggestionAdded])
+		// console.log('new markers put on map');
+	}, [markersData])
+
+	useEffect(() => {
+		// console.log('markers ids: ', markersIds);
+	}, [markersIds])
 
 	// useEffect(() => {
 	// 	// console.log('markers data');
