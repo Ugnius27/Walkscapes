@@ -7,10 +7,16 @@ import * as Database from './GetDataFromDB.js'
 
 import { DEFAULT_ICON, RED_ICON } from '../../App.jsx';
 
+export function createMarker(mapRef, lat, lng) {
+	var marker = L.marker([lat, lng], { icon: DEFAULT_ICON, draggable: false }).addTo(mapRef.current);
+	bindFixedMarkersPopup(marker, lat, lng, mapRef);
+
+	return marker._leaflet_id
+}
 
 export function FixedMarkersPopup(markerId, lat, lng) {
 	return (
-		`<div>
+		`<div style="text-align: center;">
 			Coordinates: (${lat.toFixed(5)}, ${lng.toFixed(5)})
 		</div>
 		<div style="text-align: center">
@@ -58,58 +64,30 @@ export function isMarkerAtLeastInOnePolygon(markerCoords, polygons){
 	return false;
 }
 
-const Markers = ({mapRef, markersIds, setMarkerIds, activePolygons}) => {
+const Markers = ({mapRef, markersIds, setMarkerIds, activePolygons, challengesData}) => {
 	const [markersData, setMarkersData] = useState(null);
 	const [challenges, setChallenges] = useState([]);
 
-	// useEffect(() => {
-	//   const fetchChallenges = async () => {
-	// 	try {
-	// 	  const response = await fetch('/api/challenges'); // Replace with your actual API endpoint
-	// 	  if (!response.ok) {
-	// 		throw new Error('Failed to fetch challenges');
-	// 	  }
-  
-	// 	  const data = await response.json();
-	// 	  setChallenges(data);
-	// 	} catch (error) {
-	// 	  console.error(error);
-	// 	}
-	//   };
-  
-	//   fetchChallenges();
-	// }, []); // Empty dependency array to run the effect once on mount
-
-
-
-
-
-
-
-
-
-
-	
-
-	function putMarkersOnMap(markersData, polygonVerticles) {
+	function putMarkersOnMap(markersData, polygons) {
 		var ids = []
+
+		if (!markersData || !polygons)
+			return;
+		// else{
+		// 	console.log(markersData.length, ' ', polygons.length);
+		// }
 
 		for (var i = 0; i < markersData.length; i++){
 			var coords = [markersData[i].latitude, markersData[i].longitude]
 
-			if (!isMarkerInThePolygon(coords, polygonVerticles)){
-				// console.log('not', coords);
-				continue;
+			for (var j = 0; j < polygons.length; j++){
+				if (isMarkerInThePolygon(coords, polygons[j].vertices)){
+					// console.log(coords);
+					ids.push(createMarker(mapRef, coords[0], coords[1]))
+
+					break
+				}
 			}
-				
-
-			var newMarker = L.marker(coords, { icon: DEFAULT_ICON, draggable: false }).addTo(mapRef.current);
-			bindFixedMarkersPopup(newMarker, coords[0], coords[1]);
-
-			// console.log('p: ', markersIds);
-			// setMarkerIds((prevMarkerIds) => [...prevMarkerIds, newMarker._leaflet_id]);
-			ids.push(newMarker._leaflet_id)
-			// console.log('added ', newMarker._leaflet_id, ' coords: ', coords);
 		}
 
 		setMarkerIds((prevMarkerIds) => [...prevMarkerIds, ...ids]);
@@ -117,29 +95,16 @@ const Markers = ({mapRef, markersIds, setMarkerIds, activePolygons}) => {
 
 
 	useEffect(() => {
-		// var r = Database.fetchRecordsForMarker(8);
-		// console.log('8th marker: ');
-		// console.log(r);
-
-		// Database.fetchMarkers();
-		// setMarkersData(Database.fetchMarkers());
-
-
-
 		Database.fetchMarkers().then(markersInJson => {
+			// console.log('a');
 			setMarkersData(markersInJson);
-		}); 
+		});
+	}, [challengesData])
 
-		// console.log('yyyyyyyyyyyy  ', activePolygon);
-
-		// if (activePolygon && activePolygon.vertices)
-		// console.log('in marks: ', activePolygons.vertices);
-
-		// console.log('active pols');
-		// console.log(activePolygons);
-
-
-	}, [activePolygons])
+	useEffect(() => {
+		// console.log('markersData changed ', markersData);
+		putMarkersOnMap(markersData, activePolygons);
+	}, [markersData])
 
 	// useEffect(() => {
 	// 	// console.log('markers data');

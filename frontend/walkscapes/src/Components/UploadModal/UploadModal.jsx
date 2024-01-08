@@ -6,12 +6,10 @@ import React, { useState, useEffect } from 'react';
 
 import * as UploadToDB from '../UploadModal/UploadDataToDB.js'
 
-import { DEFAULT_ICON, RED_ICON } from '../../App.jsx';
+import { DEFAULT_ICON } from '../../App.jsx';
 
 export const UPLOAD_MODAL_ID = 'uploadModal';
 export const BUTTON_TO_SHOW_UPLOAD_MODAL = 'showUploadModalButton';
-
-
 
 const HeaderOfModal = () => {
   return (
@@ -156,86 +154,68 @@ const UploadModal = ({map, lastSubmittedMarkerId}) => {
     }
   }, [showAlert]);
 
-  useEffect(() => {
-    // console.log('BBBBBBBBBB');
-    if (!buttonToShowUploadModal)
-      return; 
+  const handleDelete = (index) => {
+    const newImages = [...selectedImages];
+    newImages.splice(index, 1);
+    setSelectedImages(newImages);
+  };
 
-    var markerId = parseInt(buttonToShowUploadModal.dataset.markerId);
+  return (
+    <>
+    <button 
+      id={BUTTON_TO_SHOW_UPLOAD_MODAL}
+      data-lat={0}
+      data-lng={0}
+      type="button" 
+      class="btn btn-primary" 
+      data-bs-toggle="modal" 
+      data-bs-target={`#${UPLOAD_MODAL_ID}`}
+      style={{display: 'none'}}
+    >
+    </button>
 
-    // console.log(markerId);
-    // }
-  }, []);
+    <div 
+      class="modal fade" 
+      id={UPLOAD_MODAL_ID} 
+      data-bs-keyboard="false" 
+      tabindex="-1" 
+      aria-labelledby={`${UPLOAD_MODAL_ID}Label`}
+      aria-hidden="true"
+      data-bs-show={true}
+      data-bs-dismiss='modalC'
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <HeaderOfModal />
 
-const handleDelete = (index) => {
-  const newImages = [...selectedImages];
-  newImages.splice(index, 1);
-  setSelectedImages(newImages);
-};
+          <ImagesOfModal 
+            handleDelete={handleDelete}
+            handleImageChange={handleImageChange}
+            selectedImages={selectedImages}
+          />
 
-// function A (){
-//   console.log("AAAAAAAAAAA");
-// }
+          <hr></hr>
 
-return (
-  <>
-  <button 
-    id={BUTTON_TO_SHOW_UPLOAD_MODAL}
-    data-lat={0}
-    data-lng={0}
-    type="button" 
-    class="btn btn-primary" 
-    data-bs-toggle="modal" 
-    data-bs-target={`#${UPLOAD_MODAL_ID}`}
-    style={{display: 'none'}}
-  >
-  </button>
-
-  <div 
-    class="modal fade" 
-    id={UPLOAD_MODAL_ID} 
-    // data-bs-backdrop="static" 
-    data-bs-keyboard="false" 
-    tabindex="-1" 
-    aria-labelledby={`${UPLOAD_MODAL_ID}Label`}
-    aria-hidden="true"
-    data-bs-show={true}
-    data-bs-dismiss='modalC'
-    // role='dialog'
-    // style={{display: 'flex'}}
-  >
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <HeaderOfModal />
-
-        <ImagesOfModal 
-          handleDelete={handleDelete}
-          handleImageChange={handleImageChange}
-          selectedImages={selectedImages}
-        />
-
-        <hr></hr>
-
-        <DescriptionOfModal 
-          description={description}
-          setDescription={setDescription}  
-        />
-        
-        <div class="modal-footer">
-          <button
-            className="popup-button"
-            data-bs-dismiss="modal"
-            id="submit"
-            onClick={handleSubmit} // TODO: po submit paspaudus kryziuka turi pasinaikinti markeris
-            type="button"
-          >
-            Submit
-          </button>
+          <DescriptionOfModal 
+            description={description}
+            setDescription={setDescription}  
+          />
+          
+          <div class="modal-footer">
+            <button
+              className="popup-button"
+              data-bs-dismiss="modal"
+              id="submit"
+              onClick={handleSubmit} // TODO: po submit paspaudus kryziuka turi pasinaikinti markeris
+              type="button"
+            >
+              Submit
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  </>
+    </>
   );
 }
 

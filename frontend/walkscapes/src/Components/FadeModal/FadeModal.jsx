@@ -1,6 +1,4 @@
-import { marker } from 'leaflet';
 import * as AddMarkerButton from '../AddMarkerButton/AddMarkerButton.jsx';
-import { useMarkerState } from '../Map/Map.jsx';
 import { DEFAULT_ICON } from '../../App.jsx';
 import 'leaflet/dist/leaflet.css';
 
@@ -32,13 +30,10 @@ export function hideFade(messageId, setCanAddNewMarker, mapRef, markerIds){
 	toggleFadeMessage(messageId);
 
 	mapRef.current.off('click');
-	// if (markerIds) console.log('in hidefade markersIds: ', markerIds);
 
 	if (markerIds && markerIds.length > 0){
 		var lastMarkerId = markerIds[markerIds.length - 1];
-		// console.log('last: ', lastMarkerId);
 		var lastMarker = mapRef.current._layers[lastMarkerId];
-		// console.log(lastMarker);
 		lastMarker.off('dblclick')
 		lastMarker.setIcon(DEFAULT_ICON);
 	}
@@ -46,16 +41,11 @@ export function hideFade(messageId, setCanAddNewMarker, mapRef, markerIds){
 }
 
 export function MessageOnFadeOverlay({ id, text, setCanAddNewMarker, mapRef, markerIds, setMarkerIds }) { //TODO: fix mess text: (dbckick on marker to remove it)
-	// console.log("Message id (0): ", id);
-	// console.log("RRRRRRRRRR");
-	// console.log(setCanAddNewMarker);
-
 	return (
 		<>
 		<div 
 			className='mt-5 flex-column justify-content-center align-items-center'
 			style={{zIndex: 985, display: 'none'}}
-			// id='ChooseLocationMessage'
 			id={id}
 		>
 			<div className='row'>
@@ -86,23 +76,10 @@ export function MessageOnFadeOverlay({ id, text, setCanAddNewMarker, mapRef, mar
 						setMarkerIds((prevMarkerIds) => prevMarkerIds.slice(0, -1));
 						window.alert('The marker you placed has been removed.');
 					}}
-					// onClick={() => HideFade({ id, setCanAddNewMarker })}
 				>
 					Go back
 				</button>
 			</div>
-
-			{/* <div 
-				className='row' 
-				style={{zIndex: 985}}
-			>
-				<button
-					className='popup-button'
-					onClick={() => fixMarkersPlace()}
-				>
-					Fix marker's place
-				</button>
-			</div> */}
 	
 		</div>
 		</>
@@ -112,7 +89,7 @@ export function MessageOnFadeOverlay({ id, text, setCanAddNewMarker, mapRef, mar
 const FadeModal = () => {
 	return (
     	<div
-			className='modal-overlay'//{`modal-overlay${isFadeModalVisible ? ' visible' : ''}`}
+			className='modal-overlay'
 			id='fadeModal'
 			style={{
 			position: 'fixed',
@@ -120,8 +97,8 @@ const FadeModal = () => {
 			left: 0,
 			width: '100%',
 			height: '100%',
-			background: 'rgba(0, 0, 0, 0.5)', // Adjust the alpha value for transparency
-			zIndex: 980, // Ensure the overlay is above other content
+			background: 'rgba(0, 0, 0, 0.5)',
+			zIndex: 980,
 			display: 'none'
         }}
       >

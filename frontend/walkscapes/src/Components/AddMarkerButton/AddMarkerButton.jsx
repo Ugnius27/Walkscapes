@@ -25,11 +25,6 @@ import { uploadRecord } from '../UploadModal/UploadDataToDB.js';
 
 const ADD_MARKER_BUTTON_ID = 'addMarkerButton';
 const CHOOSE_LOCATION_BUTTON_ID = 'ChooseLocationButton';
-const ADD_TO_CURR_LOCATION_BUTTON_ID = 'AddToCurrLocationButton';
-
-// function addToCurrentLocation() { // TODO
-// 	console.log('Add to current location clicked');
-// }
 
 export function toggleAddMarkerButton(){
 	const addMarkerButtonElement = document.getElementById(ADD_MARKER_BUTTON_ID);
@@ -40,63 +35,6 @@ export function toggleAddMarkerButton(){
 
 	addMarkerButtonElement.style.display = (addMarkerButtonElement.style.display == 'none') ? 'flex' : 'none';
 }
-
-// const ModalButton = ({ id, text, align, sizeOfColumn, func, mapRef }) => {
-// 	const handleClick = (event) => {
-// 		func(event, mapRef); // Call the original func passed as a prop
-// 	};
-
-// 	return (
-// 	<div className={`col-${sizeOfColumn} d-flex justify-content-${align}`}>
-// 		<button 
-// 		id={id}
-// 		onClick={handleClick}
-// 		className="popup-button"
-// 		>
-// 		{text}
-// 		</button>
-// 	</div>
-// 	);
-// }
-
-// const CloseButton = ({mbSize}) => {
-// 	return (
-// 		<div className={`col-1`}>
-// 			<button
-// 				type="button"
-// 				className={`btn-close mb-${mbSize}`}
-// 				data-bs-dismiss="modal"
-// 				aria-label="Close"
-// 			></button>
-// 		</div>
-// 	);
-// }
-
-// // export function FixedMarkersPopup(markerId, lat, lng) {
-// // 	return (
-// // 		`<div>
-// // 			Coordinates: (${lat.toFixed(5)}, ${lng.toFixed(5)})
-// // 		</div>
-// // 		<div>
-// // 			<button class='popup-button'> 
-// // 				View suggestions
-// // 			</button>
-
-// // 			<button class='popup-button'> 
-// // 				Add new suggestion
-// // 			</button>
-// // 		</div>
-
-// // 		`
-// // 	)
-// // }
-
-// // export function bindFixedMarkersPopup(marker, lat, lng){
-// // 	// marker.bindPopup(`Coordinates: (${lat.toFixed(5)}, ${lng.toFixed(5)})`);
-// // 	marker.bindPopup(FixedMarkersPopup(marker._leaflet_id, lat, lng));
-// // }
-
-
 
 const AddMarkerButton = ({mapRef, activePolygons, polygonIds, markerIds, setMarkerIds}) => {
 	// var lastMarkerId = -1;
@@ -139,10 +77,6 @@ const AddMarkerButton = ({mapRef, activePolygons, polygonIds, markerIds, setMark
 
 		Fade.hideFade(CHOOSE_LOCATION_MESSAGE_ID, setCanAddNewMarker, mapRef, markerIds, setMarkerIds);
 		marker.off('dblclick'); 
-		
-		var modal = document.getElementById(UPLOAD_MODAL_ID);
-		// console.log("MODAL: ");
-		// console.log(modal);
 
 		var buttonToClick = document.getElementById(BUTTON_TO_SHOW_UPLOAD_MODAL);
 
@@ -152,18 +86,6 @@ const AddMarkerButton = ({mapRef, activePolygons, polygonIds, markerIds, setMark
 			buttonToClick.dataset.lat = coordinates.lat;
 			buttonToClick.dataset.lng = coordinates.lng;
 			buttonToClick.dataset.markerId = marker._leaflet_id;
-			// console.log(buttonToClick.dataset.markerId);
-
-			// var variable = buttonToClick.dataset.markerId;
-
-			// if (typeof variable === 'number' && Number.isInteger(variable)) {
-			// 	console.log( 'integer');
-			// } else if (typeof variable === 'string') {
-			// 	console.log( 'string');
-			// } else {
-			// 	console.log( 'unknown');
-			// }
-
 		  }
 	}
 	
@@ -173,12 +95,6 @@ const AddMarkerButton = ({mapRef, activePolygons, polygonIds, markerIds, setMark
 										${FixMarkersPlaceButton(marker._leaflet_id, mapRef)}`).addTo(mapRef.current);
 		marker.openPopup();
 	}
-
-	// function bindFixedMarkersPopup(marker, lat, lng, mapRef){
-	// 	// marker.bindPopup(`Coordinates: (${lat.toFixed(5)}, ${lng.toFixed(5)})`);
-	// 	marker.bindPopup(FixedMarkersPopup(marker._leaflet_id, lat, lng));
-	// }
-
 
 	// function chooseLocation(event, mapRef) {  // TODO: finish
 	function chooseLocation(mapRef) {  // TODO: finish
@@ -267,25 +183,6 @@ const AddMarkerButton = ({mapRef, activePolygons, polygonIds, markerIds, setMark
 			</div>`
 		)
 	}
-
-	// function FixedMarkersPopup(markerId, lat, lng) {
-	// 	return (
-	// 		`<div>
-	// 			Coordinates: (${lat.toFixed(5)}, ${lng.toFixed(5)})
-	// 		</div>
-	// 		<div>
-	// 			<button class='popup-button'> 
-	// 				View suggestions
-	// 			</button>
-
-	// 			<button class='popup-button'> 
-	// 				Add new suggestion
-	// 			</button>
-	// 		</div>
-
-	// 		`
-	// 	)
-	// }
 
 	return (
 		<>
