@@ -106,7 +106,7 @@ const Map = ({mapContainer, mapRef}) => {
 		markersToDisplay = SuggestionsList.markerIdsWithSameCoords(markersData, marker.getLatLng().lat, marker.getLatLng().lng);
 		SuggestionsList.markersRecords(markersToDisplay).then(updatedMarkers => {
 		markersToDisplay = updatedMarkers;
-		console.log('last: ', markersToDisplay);
+		// console.log('last: ', markersToDisplay);
 		setMarkers(markersToDisplay);
 
 

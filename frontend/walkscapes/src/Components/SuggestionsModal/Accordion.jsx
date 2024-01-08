@@ -18,7 +18,7 @@ const ImageDisplay = ({ blobData }) => {
   };
 
 export const Photos = ({ photos }) => {
-	console.log('ph: ', ' ', photos);
+	// console.log('ph: ', ' ', photos);
   
 	return (
 		<>

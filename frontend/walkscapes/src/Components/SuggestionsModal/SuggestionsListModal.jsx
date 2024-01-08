@@ -9,23 +9,9 @@ import Accordion from './Accordion.jsx';
 export const BUTTON_TO_SHOW_SUGGESTIONS_MODAL = 'suggestionsModalButton';
 const SUGGESTIONS_MODAL = 'suggestionsModal';
 
-// const ImageDisplay = ({ blobData }) => {
-//   if (!blobData) {
-//     return <p>No image available</p>;
-//   }
-
-//   const imageUrl = URL.createObjectURL(blobData);
-
-//   return (
-//     <div className='m-3'>
-//       <img src={imageUrl} alt="Image" />
-//     </div>
-//   );
-// };
-
 // Function that finds markers ids (of database) that has the coordinates [lat, lng]
 export function markerIdsWithSameCoords(markersData, lat, lng){
-  console.log(markersData);
+  // console.log(markersData);
   var markers = []
 
   // return markersData.filter()
@@ -43,7 +29,7 @@ export function markerIdsWithSameCoords(markersData, lat, lng){
     }
   }
 
-  console.log(markers)
+  // console.log(markers)
   return markers;
 }
 
@@ -80,45 +66,12 @@ export async function markersRecords(markers) {
     }
   }
 
-  // console.log('bbb', markers)
   return markers;
 }
 
-// export const Suggestion = ({ description, photos }) => {
-//   console.log('ph: ', description, ' ', photos);
-
-//   return (
-//     <div className='modal-body'>
-//       {/* <h3 className='fs-5' htmlFor="description">
-//         Description:
-//       </h3>
-//       <p>{description}</p> */}
-
-//       <h3 className='fs-5' htmlFor="photos">
-//         Photos:
-//       </h3>
-//       {/* Render photos here */}
-//       {photos && photos.length > 0 && (
-//         <div>
-//           {/* {photos.map((photo, index) => (
-//             <img key={index} src={photo} alt={`Photo ${index}`} />
-//           ))} */}
-
-//           {photos.map((photo, index) => (
-//             <ImageDisplay blobData={photo}/>
-//           ))}
-          
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
 
 
 const SuggestionsListModal = ({mapRef, markersData, markers}) => {
-  // const [markers, setMarkers] = useState([]); 
-  // var markersToDisplay = []
-
   const handleClose = () => {
     var clickedButton = document.getElementById(BUTTON_TO_SHOW_SUGGESTIONS_MODAL);
 
@@ -129,16 +82,6 @@ const SuggestionsListModal = ({mapRef, markersData, markers}) => {
     var marker = mapRef.current._layers[markerId];
 
     marker.setIcon(DEFAULT_ICON);
-/////////////////
-    // // // markersToDisplay = markerIdsWithSameCoords(markersData, marker.getLatLng().lat, marker.getLatLng().lng);
-    // // // markersRecords(markersToDisplay).then(updatedMarkers => {
-    // // //   markersToDisplay = updatedMarkers;
-    // // //   console.log('last: ', markersToDisplay);
-    // // //   setMarkers(markersToDisplay);
-    // // //   // Continue with other code after markers are updated
-    // // //   // marker.closePopup();
-    // // // });
-    // marker.closePopup();
   };
 
   const HeaderOfModal = () => {
@@ -166,8 +109,6 @@ const SuggestionsListModal = ({mapRef, markersData, markers}) => {
 		<>
 		<button 
       id={BUTTON_TO_SHOW_SUGGESTIONS_MODAL}
-      // data-lat={0}
-      // data-lng={0}
       data-markerId={-1} // markers id that was pressed
       type="button" 
       class="btn btn-primary" 
