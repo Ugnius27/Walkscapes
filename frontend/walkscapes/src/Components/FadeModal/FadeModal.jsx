@@ -1,4 +1,7 @@
 import * as AddMarkerButton from '../AddMarkerButton/AddMarkerButton.jsx';
+import { DEFAULT_ICON } from '../../App.jsx';
+import 'leaflet/dist/leaflet.css';
+
 
 export function toggleFadeOverlay(){
 	const fadeModalElement = document.getElementById('fadeModal');
@@ -20,21 +23,29 @@ export function toggleFadeMessage(messageId){
 	messageElement.style.display = messageElement.style.display == 'none' ? 'flex' : 'none';
 }
 
-export function hideFade(messageId){
+export function hideFade(messageId, setCanAddNewMarker, mapRef, markerIds){
+
 	toggleFadeOverlay();
 	AddMarkerButton.toggleAddMarkerButton();
 	toggleFadeMessage(messageId);
+
+	mapRef.current.off('click');
+
+	if (markerIds && markerIds.length > 0){
+		var lastMarkerId = markerIds[markerIds.length - 1];
+		var lastMarker = mapRef.current._layers[lastMarkerId];
+		lastMarker.off('dblclick')
+		lastMarker.setIcon(DEFAULT_ICON);
+	}
+
 }
 
-export function MessageOnFadeOverlay({ id, text }) {
-	console.log("Message id (0): ", id);
-
+export function MessageOnFadeOverlay({ id, text, setCanAddNewMarker, mapRef, markerIds, setMarkerIds }) { //TODO: fix mess text: (dbckick on marker to remove it)
 	return (
 		<>
 		<div 
 			className='mt-5 flex-column justify-content-center align-items-center'
 			style={{zIndex: 985, display: 'none'}}
-			// id='ChooseLocationMessage'
 			id={id}
 		>
 			<div className='row'>
@@ -45,25 +56,26 @@ export function MessageOnFadeOverlay({ id, text }) {
 				</h4>
 			</div>
 
-			{/* <div 
-				className='row' 
-				style={{zIndex: 985}}
-			>
-				<button
-					className='popup-button'
-					onClick={() => setFixMarkersPlace(true)}
-				>
-					Fix marker's place
-				</button>
-			</div> */}
-
 			<div 
 				className='row' 
 				style={{zIndex: 985}}
 			>
 				<button
 					className='popup-button'
-					onClick={() => hideFade(id)}
+					onClick={async () => {
+						hideFade(id, setCanAddNewMarker, mapRef, markerIds); 
+						setCanAddNewMarker(currentState => {
+							return false;
+						});
+
+						if (markerIds.length == 0)
+							return;
+
+						var marker = mapRef.current._layers[markerIds[markerIds.length - 1]];
+						await mapRef.current.removeLayer(marker);
+						setMarkerIds((prevMarkerIds) => prevMarkerIds.slice(0, -1));
+						window.alert('The marker you placed has been removed.');
+					}}
 				>
 					Go back
 				</button>
@@ -77,7 +89,7 @@ export function MessageOnFadeOverlay({ id, text }) {
 const FadeModal = () => {
 	return (
     	<div
-			className='modal-overlay'//{`modal-overlay${isFadeModalVisible ? ' visible' : ''}`}
+			className='modal-overlay'
 			id='fadeModal'
 			style={{
 			position: 'fixed',
@@ -85,8 +97,8 @@ const FadeModal = () => {
 			left: 0,
 			width: '100%',
 			height: '100%',
-			background: 'rgba(0, 0, 0, 0.5)', // Adjust the alpha value for transparency
-			zIndex: 980, // Ensure the overlay is above other content
+			background: 'rgba(0, 0, 0, 0.5)',
+			zIndex: 980,
 			display: 'none'
         }}
       >
