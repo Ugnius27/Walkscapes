@@ -8,8 +8,10 @@ import 'leaflet/dist/leaflet.css';
 import AddMarkerButton from '../AddMarkerButton/AddMarkerButton';
 
 import * as Fade from '../FadeModal/FadeModal.jsx';
+import * as Markers from '../Challenges/Markers.jsx'
 
 import { DEFAULT_ICON } from '../../App.jsx';
+import { BUTTON_TO_SHOW_UPLOAD_MODAL } from '../UploadModal/UploadModal.jsx';
 import Challenges from '../Challenges/Challenges.jsx';
 
 export const ADD_MARKER_MODAL_ID = 'AddMarkerModal';
@@ -69,6 +71,47 @@ const Map = ({mapContainer, mapRef}) => {
   	useEffect(() => {
 		initializeMap(mapContainer, santaka, mapRef);   
   	}, []);
+
+	window.fixMarkersPlace = function(markerId) {
+		var activePolygons=
+			challengesData?.filter(challenge => challenge.is_active)
+			.map(challenge => challenge.polygon) || [];
+		
+
+		// console.log("Fixing marker's place ", markerId, ' ', mapRef, activePolygons);
+		
+		
+		var marker = mapRef.current._layers[markerId];
+		if (!marker) {
+			console.log("Can't find marker to make in undragable");
+			return;
+		}
+	
+		var coordinates = marker.getLatLng();
+		// console.log('f coord: ', coordinates);
+		if (!Markers.isMarkerAtLeastInOnePolygon([coordinates.lat, coordinates.lng], activePolygons)){
+			window.alert('Marker must be in an active polygon!');
+			return;
+		}
+	
+		marker.dragging.disable();
+		marker.closePopup();
+		Markers.bindFixedMarkersPopup(marker, coordinates.lat, coordinates.lng, mapRef);
+	
+		Fade.hideFade(CHOOSE_LOCATION_MESSAGE_ID, setCanAddNewMarker, mapRef, markerIds, setMarkerIds);
+		marker.off('dblclick'); 
+	
+		var buttonToClick = document.getElementById(BUTTON_TO_SHOW_UPLOAD_MODAL);
+	
+		if (buttonToClick) {
+			buttonToClick.click();			
+	
+			buttonToClick.dataset.lat = coordinates.lat;
+			buttonToClick.dataset.lng = coordinates.lng;
+			buttonToClick.dataset.markerId = marker._leaflet_id;
+		}
+	}
+	
 
 	return (
 		<>

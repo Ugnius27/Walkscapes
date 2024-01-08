@@ -20,11 +20,16 @@ export function FixedMarkersPopup(markerId, lat, lng) {
 			Coordinates: (${lat.toFixed(5)}, ${lng.toFixed(5)})
 		</div>
 		<div style="text-align: center">
-			<button class='popup-button'> 
+			<button 
+				class="popup-button"
+			> 
 				View suggestions
 			</button>
 
-			<button class='popup-button'> 
+			<button 
+				onclick="fixMarkersPlace('${markerId}')"  
+				class="popup-button"
+			> 
 				Add new suggestion
 			</button>
 		</div>
@@ -73,9 +78,6 @@ const Markers = ({mapRef, markersIds, setMarkerIds, activePolygons, challengesDa
 
 		if (!markersData || !polygons)
 			return;
-		// else{
-		// 	console.log(markersData.length, ' ', polygons.length);
-		// }
 
 		for (var i = 0; i < markersData.length; i++){
 			var coords = [markersData[i].latitude, markersData[i].longitude]
