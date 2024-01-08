@@ -59,6 +59,11 @@ export function addButtonOnMap(customTableControl, map, addTableIsOnTheMap) {
 
 const Map = ({mapContainer, mapRef}) => {
 	// var markerIds = [];
+
+	// The value of this variable is not important. The effects have to be activated when the value
+	// of the variable changes
+	const [isNewSuggestionAdded, setIsNewSuggestionAdded] = useState(true);
+
 	const [challengesData, setChallengesData] = useState(null);
 	const [polygonIds, setPolygonIds] = useState([]);
 
@@ -88,6 +93,26 @@ const Map = ({mapContainer, mapRef}) => {
 	// 	return new Promise(resolve => setTimeout(resolve, ms));
 	//   }
 
+	// // // useEffect(() => {
+	// // // 	var markersToDisplay = [];
+
+	// // // 	markersToDisplay = SuggestionsList.markerIdsWithSameCoords(markersData, marker.getLatLng().lat, marker.getLatLng().lng);
+	// // // 	SuggestionsList.markersRecords(markersToDisplay).then(updatedMarkers => {
+	// // // 		markersToDisplay = updatedMarkers;
+	// // // 		// console.log('last: ', markersToDisplay);
+	// // // 		setMarkers(markersToDisplay);
+
+
+	// // // 		// sleep(1000);
+	// // // 		// setSuggestionsViewed(true); // Set suggestionsViewed to true
+
+
+	// // // 		// // // buttonToClick.click();
+	// // // 	// Continue with other code after markers are updated
+	// // // 	// marker.closePopup();
+    // // // 	});
+	// // // }, [isNewSuggestionAdded])
+
 	window.viewSuggestions = function(markerId) {
 		console.log('pressed on view', markerId);
 
@@ -108,19 +133,20 @@ const Map = ({mapContainer, mapRef}) => {
 
 		markersToDisplay = SuggestionsList.markerIdsWithSameCoords(markersData, marker.getLatLng().lat, marker.getLatLng().lng);
 		SuggestionsList.markersRecords(markersToDisplay).then(updatedMarkers => {
-		markersToDisplay = updatedMarkers;
-		// console.log('last: ', markersToDisplay);
-		setMarkers(markersToDisplay);
+			// console.log('GETTING NEW RECORDS');
+			markersToDisplay = updatedMarkers;
+			// console.log('last: ', markersToDisplay);
+			setMarkers(markersToDisplay);
 
 
-		// sleep(1000);
-		// setSuggestionsViewed(true); // Set suggestionsViewed to true
+			// sleep(1000);
+			// setSuggestionsViewed(true); // Set suggestionsViewed to true
 
 
-		buttonToClick.click();
+			buttonToClick.click();
 		// Continue with other code after markers are updated
 		// marker.closePopup();
-    });
+    	});
 
 
 
@@ -128,7 +154,7 @@ const Map = ({mapContainer, mapRef}) => {
 		
 	}
 
-	window.fixMarkersPlace = function(markerId) {
+	window.fixMarkersPlace = function(markerId, toggleFade) {
 		setLastMarkerId(markerId);
 		var activePolygons=
 			challengesData?.filter(challenge => challenge.is_active)
@@ -155,7 +181,8 @@ const Map = ({mapContainer, mapRef}) => {
 		marker.closePopup();
 		Markers.bindFixedMarkersPopup(marker, coordinates.lat, coordinates.lng, mapRef);
 	
-		Fade.hideFade(CHOOSE_LOCATION_MESSAGE_ID, setCanAddNewMarker, mapRef, markerIds, setMarkerIds);
+		if (toggleFade === '1')
+			Fade.hideFade(CHOOSE_LOCATION_MESSAGE_ID, setCanAddNewMarker, mapRef, markerIds, setMarkerIds);
 		marker.off('dblclick'); 
 	
 		var buttonToClick = document.getElementById(BUTTON_TO_SHOW_UPLOAD_MODAL);
@@ -192,6 +219,9 @@ const Map = ({mapContainer, mapRef}) => {
 			setMarkerIds={setMarkerIds}
 			lastMarkerId={lastMarkerId}
 			setLastMarkerId={setLastMarkerId}
+
+			isNewSuggestionAdded={isNewSuggestionAdded}
+			setIsNewSuggestionAdded={setIsNewSuggestionAdded}
 		/>
 
 		<Fade.MessageOnFadeOverlay
@@ -220,6 +250,8 @@ const Map = ({mapContainer, mapRef}) => {
 			setMarkersData={setMarkersData}
 			markerIds={markerIds}
 			setMarkerIds={setMarkerIds}
+			isNewSuggestionAdded={isNewSuggestionAdded}
+			setIsNewSuggestionAdded={setIsNewSuggestionAdded}
 		/>
 		</>
 	);

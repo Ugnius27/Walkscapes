@@ -31,7 +31,7 @@ function FixedMarkersPopup(markerId, lat, lng) {
 			</button>
 
 			<button 
-				onclick="fixMarkersPlace('${markerId}')"  
+				onclick="fixMarkersPlace('${markerId}', '0')"  
 				class="popup-button"
 			> 
 				Add new suggestion
@@ -73,12 +73,30 @@ export function isMarkerAtLeastInOnePolygon(markerCoords, polygons){
 	return false;
 }
 
-const Markers = ({mapRef, markersData, setMarkersData, markersIds, setMarkerIds, activePolygons, challengesData}) => {
+function doesCoordsMatch(coordsArray, targetCoords){
+	for (var i = 0; i < coordsArray.length; i++){
+		if (coordsArray[i] === targetCoords)
+			return true;
+	}
+
+	return false;
+}
+
+const Markers = ({mapRef, markersData, setMarkersData, markersIds, setMarkerIds, activePolygons, challengesData, 
+isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 	// const [markersData, setMarkersData] = useState(null);
 	const [challenges, setChallenges] = useState([]);
 
+	function removeMarkersFromMap(markersIds) {
+		for (let i = 0; i < markersIds.length; i++){
+			var marker = mapRef.current._layers[markersIds[i]];
+			mapRef.current.removeLayer(marker);
+		}
+	}
+
 	function putMarkersOnMap(markersData, polygons) {
 		var ids = []
+		var usedCoords = [];
 
 		if (!markersData || !polygons)
 			return;
@@ -87,9 +105,10 @@ const Markers = ({mapRef, markersData, setMarkersData, markersIds, setMarkerIds,
 			var coords = [markersData[i].latitude, markersData[i].longitude]
 
 			for (var j = 0; j < polygons.length; j++){
-				if (isMarkerInThePolygon(coords, polygons[j].vertices)){
+				if (isMarkerInThePolygon(coords, polygons[j].vertices) && !doesCoordsMatch(usedCoords, coords)){
 					// console.log(coords);
 					ids.push(createMarker(mapRef, coords[0], coords[1]))
+					usedCoords.push(coords);
 
 					break
 				}
@@ -104,12 +123,18 @@ const Markers = ({mapRef, markersData, setMarkersData, markersIds, setMarkerIds,
 			// console.log('a');
 			setMarkersData(markersInJson);
 		});
-	}, [challengesData])
+
+		console.log('markersDataUpdated');
+
+	}, [challengesData, isNewSuggestionAdded])
 
 	useEffect(() => {
 		// console.log('markersData changed ', markersData);
+		removeMarkersFromMap(markersIds)
 		putMarkersOnMap(markersData, activePolygons);
-	}, [markersData])
+
+		console.log('new markers put on map');
+	}, [markersData, isNewSuggestionAdded])
 
 	// useEffect(() => {
 	// 	// console.log('markers data');

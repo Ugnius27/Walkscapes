@@ -36,7 +36,8 @@ export function toggleAddMarkerButton(){
 	addMarkerButtonElement.style.display = (addMarkerButtonElement.style.display == 'none') ? 'flex' : 'none';
 }
 
-const AddMarkerButton = ({mapRef, activePolygons, polygonIds, markerIds, setMarkerIds, lastMarkerId, setLastMarkerId}) => {
+const AddMarkerButton = ({mapRef, activePolygons, polygonIds, markerIds, setMarkerIds, lastMarkerId, setLastMarkerId,
+isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 	// var lastMarkerId = -1;
 	// const [lastMarkerId, setLastMarkerId] = useState(-1);
 
@@ -54,42 +55,6 @@ const AddMarkerButton = ({mapRef, activePolygons, polygonIds, markerIds, setMark
 
 	  }, [markerIds]);
 
-
-	// // // window.fixMarkersPlace = function(markerId) {
-	// // // 	// // console.log("Fixing marker's place ", markerId);
-		
-
-	// // // 	var marker = mapRef.current._layers[markerId];
-	// // // 	if (!marker) {
-	// // // 		console.log("Can't find marker to make in undragable");
-	// // // 		return;
-	// // // 	}
-
-	// // // 	var coordinates = marker.getLatLng();
-	// // // 	// console.log('f coord: ', coordinates);
-	// // // 	if (!Markers.isMarkerAtLeastInOnePolygon([coordinates.lat, coordinates.lng], activePolygons)){
-	// // // 		window.alert('Marker must be in an active polygon!');
-	// // // 		return;
-	// // // 	}
-
-	// // // 	marker.dragging.disable();
-	// // // 	marker.closePopup();
-	// // // 	Markers.bindFixedMarkersPopup(marker, coordinates.lat, coordinates.lng, mapRef);
-
-	// // // 	Fade.hideFade(CHOOSE_LOCATION_MESSAGE_ID, setCanAddNewMarker, mapRef, markerIds, setMarkerIds);
-	// // // 	marker.off('dblclick'); 
-
-	// // // 	var buttonToClick = document.getElementById(BUTTON_TO_SHOW_UPLOAD_MODAL);
-
-	// // // 	if (buttonToClick) {
-	// // // 		buttonToClick.click();			
-
-	// // // 		buttonToClick.dataset.lat = coordinates.lat;
-	// // // 		buttonToClick.dataset.lng = coordinates.lng;
-	// // // 		buttonToClick.dataset.markerId = marker._leaflet_id;
-	// // // 	  }
-	// // // }
-	
 	function bindPopupChoosePlace(marker, lat, lng, mapRef){
 
 		marker.bindPopup(`Coordinates: (${lat.toFixed(5)}, ${lng.toFixed(5)}) 
@@ -174,7 +139,7 @@ const AddMarkerButton = ({mapRef, activePolygons, polygonIds, markerIds, setMark
 		return (
 			`<div class="d-flex justify-content-center">
 				<button 
-					onclick="fixMarkersPlace('${markerId}')"  
+					onclick="fixMarkersPlace('${markerId}', '1')"  
 					class="popup-button"
 					data-toggle="modal"
 					data-target="#${UPLOAD_MODAL_ID}"
@@ -204,6 +169,8 @@ const AddMarkerButton = ({mapRef, activePolygons, polygonIds, markerIds, setMark
 		<UploadModal 
 			map={mapRef.current}
 			lastSubmittedMarkerId={lastMarkerId}
+			isNewSuggestionAdded={isNewSuggestionAdded}
+			setIsNewSuggestionAdded={setIsNewSuggestionAdded}
 		/>
 		</div>
 		

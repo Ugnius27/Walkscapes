@@ -4,7 +4,8 @@ import * as Database from './GetDataFromDB.js'
 import Polygons from './Polygons.jsx'
 import Markers from './Markers.jsx'
 
-const Challenges = ({mapRef, challengesData, setChallengesData, polygonIds, setPolygonIds, markersData, setMarkersData, markerIds, setMarkerIds}) => {
+const Challenges = ({mapRef, challengesData, setChallengesData, polygonIds, setPolygonIds, markersData, setMarkersData, 
+markerIds, setMarkerIds, isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 	const [activeChallenges, setActiveChallenges] = useState([]);
 
 	useEffect(() => {
@@ -48,6 +49,8 @@ const Challenges = ({mapRef, challengesData, setChallengesData, polygonIds, setP
 			setMarkersData={setMarkersData}
 			markersIds={markerIds}
 			setMarkerIds={setMarkerIds}
+			isNewSuggestionAdded={isNewSuggestionAdded}
+			setIsNewSuggestionAdded={setIsNewSuggestionAdded}
 		/>
 		</>
 	);

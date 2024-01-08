@@ -105,7 +105,7 @@ const DescriptionOfModal = ({description, setDescription}) => {
   );
 }
 
-const UploadModal = ({map, lastSubmittedMarkerId}) => {
+const UploadModal = ({map, lastSubmittedMarkerId, isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
   const [selectedImages, setSelectedImages] = useState([]);
   const [description, setDescription] = useState('');
   const [showAlert, setShowAlert] = useState(false);
@@ -134,6 +134,7 @@ const UploadModal = ({map, lastSubmittedMarkerId}) => {
     var coordinates = lastSubmittedMarker.getLatLng();
 
     UploadToDB.uploadRecord(coordinates.lat, coordinates.lng, selectedImages, description);
+    setIsNewSuggestionAdded((previous) => !previous);
 
     // console.log(lastSubmittedMarker);
     lastSubmittedMarker.setIcon(DEFAULT_ICON);

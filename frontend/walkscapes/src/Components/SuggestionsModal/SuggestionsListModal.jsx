@@ -121,6 +121,7 @@ const SuggestionsListModal = ({mapRef, markersData, markers}) => {
     <div 
       class="modal fade" 
       id={SUGGESTIONS_MODAL} 
+      data-bs-backdrop="static"
       data-bs-keyboard="false" 
       tabindex="-1" 
       aria-labelledby={`${SUGGESTIONS_MODAL}Label`}
