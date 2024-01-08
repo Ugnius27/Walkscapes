@@ -17,5 +17,5 @@ futures-util = "0.3.29"
 actix-rt = "2.9.0"
 actix-multipart = "0.6.1"
 dotenv = "0.15.0"
-maud = "0.25.0"
+maud = { version = "0.25.0", features = ["actix-web"] }
 serde_urlencoded = "0.7.1"

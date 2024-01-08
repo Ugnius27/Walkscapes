@@ -4,6 +4,7 @@ mod image;
 mod field_extractors;
 mod challenge;
 mod polygon;
+mod challenge_templates;
 
 use sqlx::{MySqlPool};
 use actix_web::{web, App, HttpServer};
@@ -11,7 +12,7 @@ use std::env;
 use actix_cors::Cors;
 use crate::record::{get_record, post_record};
 use crate::marker::get_markers;
-use crate::challenge::{post_challenge, get_challenges};
+use crate::challenge::{post_challenge, get_challenges, get_challenge, delete_challenge};
 use crate::image::get_record_image;
 use crate::polygon::{get_polygons, post_polygon};
 
@@ -27,7 +28,7 @@ async fn main() -> Result<(), sqlx::Error> {
             panic!();
         }
     };
-    
+
     HttpServer::new(move || {
         App::new()
             .wrap(Cors::permissive())
@@ -35,6 +36,8 @@ async fn main() -> Result<(), sqlx::Error> {
             .service(post_record)
             .service(get_markers)
             .service(get_challenges)
+            .service(delete_challenge)
+            .service(get_challenge)
             .service(get_record)
             .service(get_record_image)
             .service(post_challenge)

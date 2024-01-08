@@ -21,7 +21,7 @@ function remove_focus() {
         return;
     }
 
-    focused.setStyle({color: 'blue'});
+    focused.setStyle({color: '#3388ff'});
     focused.disableEdit();
     focused = null;
 
@@ -33,7 +33,7 @@ function remove_focus() {
 function focus(target) {
     focused = target;
     focused.setStyle({color: 'red'});
-    target.enableEdit(map);
+    // target.enableEdit(map);
     if (form_open) {
         set_polygon_id_in_form()
     }
