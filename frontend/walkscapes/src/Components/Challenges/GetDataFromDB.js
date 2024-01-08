@@ -22,7 +22,7 @@ export async function fetchMarkers() {
     }
 }
 
-export async function fetchRecordsForMarker(markerId) { // not used
+export async function fetchRecordsForMarker(markerId) {
 	try {
 		const response = await fetch(`${BASE_URL}/api/record/marker=${markerId}`);
 		if (!response.ok) {
@@ -40,7 +40,7 @@ export async function fetchRecordsForMarker(markerId) { // not used
 
 export async function fetchRecordImage(markerId, photoId) {
     try {
-        console.log("marker id: " + markerId + "   photo id:  " + photoId);
+        // console.log("marker id: " + markerId + "   photo id:  " + photoId);
 
         const response = await fetch(`${BASE_URL}/api/record/marker=${markerId}/photo=${photoId}`);
         if (!response.ok) {

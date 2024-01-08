@@ -36,9 +36,9 @@ export function toggleAddMarkerButton(){
 	addMarkerButtonElement.style.display = (addMarkerButtonElement.style.display == 'none') ? 'flex' : 'none';
 }
 
-const AddMarkerButton = ({mapRef, activePolygons, polygonIds, markerIds, setMarkerIds}) => {
+const AddMarkerButton = ({mapRef, activePolygons, polygonIds, markerIds, setMarkerIds, lastMarkerId, setLastMarkerId}) => {
 	// var lastMarkerId = -1;
-	const [lastMarkerId, setLastMarkerId] = useState(-1);
+	// const [lastMarkerId, setLastMarkerId] = useState(-1);
 
 	const { canAddNewMarker, setCanAddNewMarker } = useMarkerState();
 
@@ -50,44 +50,45 @@ const AddMarkerButton = ({mapRef, activePolygons, polygonIds, markerIds, setMark
 		const newLastMarkerId = markerIds.length > 0 ? markerIds[markerIds.length - 1] : -1;
 		setLastMarkerId(newLastMarkerId);
 		// console.log('AddMarkerButton last: ', newLastMarkerId);
+		// // console.log('mapRef in another func: ', mapRef);
 
 	  }, [markerIds]);
 
 
-	window.fixMarkersPlace = function(markerId) {
-		// // console.log("Fixing marker's place ", markerId);
+	// // // window.fixMarkersPlace = function(markerId) {
+	// // // 	// // console.log("Fixing marker's place ", markerId);
 		
 
-		var marker = mapRef.current._layers[markerId];
-		if (!marker) {
-			console.log("Can't find marker to make in undragable");
-			return;
-		}
+	// // // 	var marker = mapRef.current._layers[markerId];
+	// // // 	if (!marker) {
+	// // // 		console.log("Can't find marker to make in undragable");
+	// // // 		return;
+	// // // 	}
 
-		var coordinates = marker.getLatLng();
-		// console.log('f coord: ', coordinates);
-		if (!Markers.isMarkerAtLeastInOnePolygon([coordinates.lat, coordinates.lng], activePolygons)){
-			window.alert('Marker must be in an active polygon!');
-			return;
-		}
+	// // // 	var coordinates = marker.getLatLng();
+	// // // 	// console.log('f coord: ', coordinates);
+	// // // 	if (!Markers.isMarkerAtLeastInOnePolygon([coordinates.lat, coordinates.lng], activePolygons)){
+	// // // 		window.alert('Marker must be in an active polygon!');
+	// // // 		return;
+	// // // 	}
 
-		marker.dragging.disable();
-		marker.closePopup();
-		Markers.bindFixedMarkersPopup(marker, coordinates.lat, coordinates.lng, mapRef);
+	// // // 	marker.dragging.disable();
+	// // // 	marker.closePopup();
+	// // // 	Markers.bindFixedMarkersPopup(marker, coordinates.lat, coordinates.lng, mapRef);
 
-		Fade.hideFade(CHOOSE_LOCATION_MESSAGE_ID, setCanAddNewMarker, mapRef, markerIds, setMarkerIds);
-		marker.off('dblclick'); 
+	// // // 	Fade.hideFade(CHOOSE_LOCATION_MESSAGE_ID, setCanAddNewMarker, mapRef, markerIds, setMarkerIds);
+	// // // 	marker.off('dblclick'); 
 
-		var buttonToClick = document.getElementById(BUTTON_TO_SHOW_UPLOAD_MODAL);
+	// // // 	var buttonToClick = document.getElementById(BUTTON_TO_SHOW_UPLOAD_MODAL);
 
-		if (buttonToClick) {
-			buttonToClick.click();			
+	// // // 	if (buttonToClick) {
+	// // // 		buttonToClick.click();			
 
-			buttonToClick.dataset.lat = coordinates.lat;
-			buttonToClick.dataset.lng = coordinates.lng;
-			buttonToClick.dataset.markerId = marker._leaflet_id;
-		  }
-	}
+	// // // 		buttonToClick.dataset.lat = coordinates.lat;
+	// // // 		buttonToClick.dataset.lng = coordinates.lng;
+	// // // 		buttonToClick.dataset.markerId = marker._leaflet_id;
+	// // // 	  }
+	// // // }
 	
 	function bindPopupChoosePlace(marker, lat, lng, mapRef){
 
@@ -96,9 +97,8 @@ const AddMarkerButton = ({mapRef, activePolygons, polygonIds, markerIds, setMark
 		marker.openPopup();
 	}
 
-	// function chooseLocation(event, mapRef) {  // TODO: finish
 	function chooseLocation(mapRef) {  // TODO: finish
-		// console.log('Choose location clicked');
+		console.log('Choose location clicked');
 		setCanAddNewMarker(currentState => {
 			// console.log("Marker can be added");
 			return true;
@@ -135,6 +135,7 @@ const AddMarkerButton = ({mapRef, activePolygons, polygonIds, markerIds, setMark
 				var newMarker = L.marker([lat, lng], { icon: RED_ICON, draggable: true }).addTo(mapRef.current);
 				bindPopupChoosePlace(newMarker, lat, lng, mapRef);
 				setMarkerIds((prevMarkerIds) => [...prevMarkerIds, newMarker._leaflet_id]);
+				console.log('its id: ', newMarker._leaflet_id);
 
 				newMarker.on('dragend', function (event) {
 					var marker = event.target;
@@ -173,7 +174,7 @@ const AddMarkerButton = ({mapRef, activePolygons, polygonIds, markerIds, setMark
 		return (
 			`<div class="d-flex justify-content-center">
 				<button 
-					onclick="fixMarkersPlace('${markerId}')" 
+					onclick="fixMarkersPlace('${markerId}')"  
 					class="popup-button"
 					data-toggle="modal"
 					data-target="#${UPLOAD_MODAL_ID}"

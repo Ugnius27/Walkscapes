@@ -127,7 +127,9 @@ const UploadModal = ({map, lastSubmittedMarkerId}) => {
     setSelectedImages([]);
     setDescription('');
 
-    // console.log('submitted marker: ', lastSubmittedMarkerId);
+    console.log('submitted marker: ', lastSubmittedMarkerId);
+
+
     var lastSubmittedMarker = map._layers[lastSubmittedMarkerId];
     var coordinates = lastSubmittedMarker.getLatLng();
 
@@ -139,6 +141,7 @@ const UploadModal = ({map, lastSubmittedMarkerId}) => {
 
     setShowAlert(true);
   };
+  
   function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
