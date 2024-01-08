@@ -36,9 +36,9 @@ export function toggleAddMarkerButton(){
 	addMarkerButtonElement.style.display = (addMarkerButtonElement.style.display == 'none') ? 'flex' : 'none';
 }
 
-const AddMarkerButton = ({mapRef, activePolygons, polygonIds, markerIds, setMarkerIds}) => {
+const AddMarkerButton = ({mapRef, activePolygons, polygonIds, markerIds, setMarkerIds, lastMarkerId, setLastMarkerId}) => {
 	// var lastMarkerId = -1;
-	const [lastMarkerId, setLastMarkerId] = useState(-1);
+	// const [lastMarkerId, setLastMarkerId] = useState(-1);
 
 	const { canAddNewMarker, setCanAddNewMarker } = useMarkerState();
 
@@ -98,7 +98,7 @@ const AddMarkerButton = ({mapRef, activePolygons, polygonIds, markerIds, setMark
 	}
 
 	function chooseLocation(mapRef) {  // TODO: finish
-		// console.log('Choose location clicked');
+		console.log('Choose location clicked');
 		setCanAddNewMarker(currentState => {
 			// console.log("Marker can be added");
 			return true;
@@ -135,6 +135,7 @@ const AddMarkerButton = ({mapRef, activePolygons, polygonIds, markerIds, setMark
 				var newMarker = L.marker([lat, lng], { icon: RED_ICON, draggable: true }).addTo(mapRef.current);
 				bindPopupChoosePlace(newMarker, lat, lng, mapRef);
 				setMarkerIds((prevMarkerIds) => [...prevMarkerIds, newMarker._leaflet_id]);
+				console.log('its id: ', newMarker._leaflet_id);
 
 				newMarker.on('dragend', function (event) {
 					var marker = event.target;

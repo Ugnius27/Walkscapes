@@ -11,8 +11,9 @@ const ImageDisplay = ({ blobData }) => {
 	const imageUrl = URL.createObjectURL(blobData);
   
 	return (
-	  <div className='m-3 d-flex justify-content-center align-items-center'>
-		<img src={imageUrl} alt="Image" />
+	  <div className='m-3 d-flex justify-content-center align-items-center'
+	  >
+		<img src={imageUrl} alt="Image" style={{maxWidth: '100%', maxHeight: '20%'}} />
 	  </div>
 	);
   };

@@ -66,6 +66,9 @@ const Map = ({mapContainer, mapRef}) => {
 	const [markersData, setMarkersData] = useState(null);
 	const [markerIds, setMarkerIds] = useState([]);
 	const { canAddNewMarker, setCanAddNewMarker } = useMarkerState();
+
+	const [lastMarkerId, setLastMarkerId] = useState(-1);
+
 	// const [suggestionsViewed, setSuggestionsViewed] = useState(false);
 
 
@@ -126,6 +129,7 @@ const Map = ({mapContainer, mapRef}) => {
 	}
 
 	window.fixMarkersPlace = function(markerId) {
+		setLastMarkerId(markerId);
 		var activePolygons=
 			challengesData?.filter(challenge => challenge.is_active)
 			.map(challenge => challenge.polygon) || [];
@@ -186,6 +190,8 @@ const Map = ({mapContainer, mapRef}) => {
 			}
 			markerIds={markerIds}
 			setMarkerIds={setMarkerIds}
+			lastMarkerId={lastMarkerId}
+			setLastMarkerId={setLastMarkerId}
 		/>
 
 		<Fade.MessageOnFadeOverlay
