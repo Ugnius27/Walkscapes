@@ -100,7 +100,7 @@ isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 				var newMarker = L.marker([lat, lng], { icon: RED_ICON, draggable: true }).addTo(mapRef.current);
 				bindPopupChoosePlace(newMarker, lat, lng, mapRef);
 				setMarkerIds((prevMarkerIds) => [...prevMarkerIds, newMarker._leaflet_id]);
-				console.log('its id: ', newMarker._leaflet_id);
+				// console.log('its id: ', newMarker._leaflet_id, ' coords: ', [lat, lng]);
 
 				newMarker.on('dragend', function (event) {
 					var marker = event.target;

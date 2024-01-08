@@ -57,14 +57,14 @@ export function addButtonOnMap(customTableControl, map, addTableIsOnTheMap) {
 }
 
 
-const Map = ({mapContainer, mapRef}) => {
+const Map = ({mapContainer, mapRef, challengesData, setChallengesData}) => {
 	// var markerIds = [];
 
 	// The value of this variable is not important. The effects have to be activated when the value
 	// of the variable changes
 	const [isNewSuggestionAdded, setIsNewSuggestionAdded] = useState(true);
 
-	const [challengesData, setChallengesData] = useState(null);
+	// const [challengesData, setChallengesData] = useState(null);
 	const [polygonIds, setPolygonIds] = useState([]);
 
 	const [markers, setMarkers] = useState([]); 
@@ -88,30 +88,6 @@ const Map = ({mapContainer, mapRef}) => {
   	useEffect(() => {
 		initializeMap(mapContainer, santaka, mapRef);   
   	}, []);
-
-	//   function sleep(ms) {
-	// 	return new Promise(resolve => setTimeout(resolve, ms));
-	//   }
-
-	// // // useEffect(() => {
-	// // // 	var markersToDisplay = [];
-
-	// // // 	markersToDisplay = SuggestionsList.markerIdsWithSameCoords(markersData, marker.getLatLng().lat, marker.getLatLng().lng);
-	// // // 	SuggestionsList.markersRecords(markersToDisplay).then(updatedMarkers => {
-	// // // 		markersToDisplay = updatedMarkers;
-	// // // 		// console.log('last: ', markersToDisplay);
-	// // // 		setMarkers(markersToDisplay);
-
-
-	// // // 		// sleep(1000);
-	// // // 		// setSuggestionsViewed(true); // Set suggestionsViewed to true
-
-
-	// // // 		// // // buttonToClick.click();
-	// // // 	// Continue with other code after markers are updated
-	// // // 	// marker.closePopup();
-    // // // 	});
-	// // // }, [isNewSuggestionAdded])
 
 	window.viewSuggestions = function(markerId) {
 		console.log('pressed on view', markerId);
@@ -137,6 +113,7 @@ const Map = ({mapContainer, mapRef}) => {
 			markersToDisplay = updatedMarkers;
 			// console.log('last: ', markersToDisplay);
 			setMarkers(markersToDisplay);
+			console.log(markersToDisplay)
 
 
 			// sleep(1000);
@@ -183,6 +160,7 @@ const Map = ({mapContainer, mapRef}) => {
 	
 		if (toggleFade === '1')
 			Fade.hideFade(CHOOSE_LOCATION_MESSAGE_ID, setCanAddNewMarker, mapRef, markerIds, setMarkerIds);
+
 		marker.off('dblclick'); 
 	
 		var buttonToClick = document.getElementById(BUTTON_TO_SHOW_UPLOAD_MODAL);

@@ -31,6 +31,8 @@ export const DEFAULT_ICON = new L.Icon({
 
 
 function App() {
+  const [challengesData, setChallengesData] = useState([]);
+  const [challengesToAccordion, setChallengesToAccordion] = useState([]);
 
   var ChallengesData =
   [
@@ -45,6 +47,21 @@ function App() {
       Routes: ['Route 3', 'Route 4']
     }
   ]
+
+  useEffect(() => {
+    console.log('cha: ', challengesData, 'l: ', []);
+    var Challenges = [];
+
+    for (let i = 0; i < challengesData.length; i++){
+      Challenges.push({
+        title: challengesData[i].title,
+        description: challengesData[i].description,
+        Routes: []});
+    }
+
+    setChallengesToAccordion(Challenges);
+    
+  }, [challengesData])
   // var loggedIn = true;
 // // //   mapContainer = useRef(null);
 // // //   mapRef = useRef(null);
@@ -59,7 +76,7 @@ function App() {
       {/* {user? ( */}
         <>
         {/* <OffCanvas Challenges={ChallengesData}/> */}
-        <AppFirstRow Challenges={ChallengesData}/>
+        <AppFirstRow Challenges={challengesToAccordion}/>
         
           {/* <Components.FadeModal/> */}
           <FadeModal/>
@@ -73,6 +90,8 @@ function App() {
             <MapComponent 
               mapContainer={mapContainer}
               mapRef={mapRef}
+              challengesData={challengesData}
+              setChallengesData={setChallengesData}
             />
         
             {/*

@@ -1,6 +1,11 @@
 
 // export function OffCanvasBody(){
 // 	return (
+
+import { useEffect } from "react";
+
+import './ScrollBar.css'
+
  
 // <div className="accordion accordion-flush " id="accordionFlushExample">
 
@@ -102,7 +107,9 @@ const RoutesInAccordionItem = ({RoutesTitles}) => {
 
 const AccordionItem = ({Challenge, numberOfChallenge}) => {
 	return (
-		<div className="accordion-item p-1 custom-bg">
+		<div className="accordion-item p-1 custom-bg"
+		// style={{ maxHeight: '300px', overflowY: 'auto', scrollbarColor: '#d9f8d9 #ffffff' }}
+		>
     		<h2 className="accordion-header">
       			<button 
 	  				className="accordion-button collapsed acordion-in-offCanvas" 
@@ -159,9 +166,16 @@ const AccordionItem = ({Challenge, numberOfChallenge}) => {
 
 // Returns an accordion of challenges
 const Accordion = ({Challenges}) => {
+	useEffect(() => {
+		console.log('!! ', Challenges);
+	})
+
 	return (
 	  <>
-	  <div className="accordion accordion-flush" id="accordion">
+	  <div 
+	  	className="accordion accordion-flush overflow-auto" id="accordion" 
+	  	// style={{ maxHeight: 'auto', overflowY: 'auto' }}
+	>
         {Challenges.map((challenge, index) => (
           <AccordionItem 
 			// React uses the key to keep track of which 

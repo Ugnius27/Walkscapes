@@ -75,13 +75,10 @@ export function isMarkerAtLeastInOnePolygon(markerCoords, polygons){
 
 function doesCoordsMatch(coordsArray, targetCoords){
 	for (var i = 0; i < coordsArray.length; i++){
-		// console.log('eq? : ', coordsArray[i], targetCoords, coordsArray[i][0] == targetCoords[0] && coordsArray[i][1] == targetCoords[1]);
-		if (
-			coordsArray[i][0] == targetCoords[0] &&
-			coordsArray[i][1] == targetCoords[1]
-		  ) {
+		if (coordsArray[i][0] == targetCoords[0] &&
+			coordsArray[i][1] == targetCoords[1]) {
 			return true;
-		  }
+		}
 	}
 
 	return false;
@@ -134,9 +131,9 @@ isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 			setMarkersData(markersInJson);
 		});
 
-		// console.log('markersDataUpdated');
+		// console.log('markersDataUpdated', markersData);
 
-	}, [challengesData])
+	}, [challengesData, isNewSuggestionAdded])
 
 	useEffect(() => {
 		// console.log('markersData changed ', markersData);
@@ -144,7 +141,7 @@ isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 		putMarkersOnMap(markersData, activePolygons);
 
 		// console.log('new markers put on map');
-	}, [markersData])
+	}, [markersData, isNewSuggestionAdded])
 
 	useEffect(() => {
 		// console.log('markers ids: ', markersIds);
