@@ -16,18 +16,16 @@
 <body>
 
 <script>
-    let a = 0;
-
-    function test() {
-        console.log(a);
-        a++;
-    }
+    document.body.addEventListener("htmx:responseError", function (event) {
+        let errorMessage = event.detail.message || 'An error occurred during the request.';
+        document.getElementById('result').innerHTML = errorMessage; // Clear previous results
+    });
 </script>
 
 <h1>Admin panel</h1>
 <div>
-    <div id="map" style="width: 70%; height: 500px; float: left"></div>
-    <div id="challenges" style="float: right;">
+    <div id="map" style="width: 70%; height: 80vh; float: left"></div>
+    <div id="challenges" style="float: right; max-width: 30%">
         <div hx-get="../api/challenges" hx-headers='{"Accept": "text/html"}' hx-swap="outerHTML"
              hx-trigger="load"></div>
     </div>

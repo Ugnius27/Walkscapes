@@ -1091,6 +1091,8 @@ version = "0.25.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b0bab19cef8a7fe1c18a43e881793bfc9d4ea984befec3ae5bd0415abf3ecf00"
 dependencies = [
+ "actix-web",
+ "futures-util",
  "itoa",
  "maud_macros",
 ]

@@ -33,22 +33,21 @@ async function load_polygons() {
 
         polygons[polygon._leaflet_id] = poly.id;
         polygon.on('click', on_polygon_click);
-        
+
         map.fitBounds(polygon.getBounds());
     })
 }
 
 async function load_markers() {
-    let challenges = await fetch_json('challenges');
-    if (challenges == null) {
-        console.error("Could not fetch challenges");
+    let marks = await fetch_json('record/markers');
+    if (marks == null) {
+        console.error("Could not fetch markers");
         return;
     }
-    challenges.forEach(challenge => {
-        challenge.markers.forEach(marker => {
-            markers[marker.id] = L.marker([marker.latitude, marker.longitude]).addTo(map)
-        })
-    })
+
+    marks.forEach(marker => {
+        markers[marker.id] = L.marker([marker.latitude, marker.longitude]).addTo(map);
+    });
 }
 
 async function load_map_data() {
