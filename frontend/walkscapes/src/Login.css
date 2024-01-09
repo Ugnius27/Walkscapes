@@ -1,0 +1,9 @@
+.input-box input{
+	border: 3px solid #d9f8d9;
+}
+
+.input-box input:focus {
+	border: 3px solid #acebac;
+	outline: none;
+	box-shadow: none;
+}

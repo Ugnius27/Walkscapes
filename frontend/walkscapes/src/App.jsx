@@ -6,6 +6,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
 import './popupsLeaflet.css'
+import './Login.css'
 import * as Map from './Components/Map/Map.jsx';
 
 import AppFirstRow from './Components/AppFirstRow/AppFirstRow.jsx';
@@ -26,30 +27,15 @@ export const DEFAULT_ICON = new L.Icon({
   shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
 });
 
-// // // var mapContainer;// = useRef(null);
-// // // export var mapRef;// = useRef(null);
-
-
 function App() {
+  const [username, setUsername] = useState("");
+  const [user, setUser] = useState("");
+
   const [challengesData, setChallengesData] = useState([]);
   const [challengesToAccordion, setChallengesToAccordion] = useState([]);
 
-  var ChallengesData =
-  [
-    {
-      title: 'Challenge 1',
-      description: 'Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the first item\'s accordion body.',
-      Routes: ['Route 1', 'Route 2']
-    },
-    {
-      title: 'Challenge 2',
-      description: 'Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the first item\'s accordion body.',
-      Routes: ['Route 3', 'Route 4']
-    }
-  ]
 
   useEffect(() => {
-    // console.log('cha: ', challengesData, 'l: ', []);
     var Challenges = [];
 
     for (let i = 0; i < challengesData.length; i++){
@@ -62,6 +48,10 @@ function App() {
     setChallengesToAccordion(Challenges);
     
   }, [challengesData])
+
+  useEffect (() =>{
+    console.log(user);
+  }, [user])
   // var loggedIn = true;
 // // //   mapContainer = useRef(null);
 // // //   mapRef = useRef(null);
@@ -69,72 +59,56 @@ function App() {
   var mapContainer = useRef(null);
   var mapRef = useRef(null);
 
-
   return (
     <div className='App'>
-      {/* <p>smth</p> */}
-      {/* {user? ( */}
+      {user? (
         <>
-        {/* <OffCanvas Challenges={ChallengesData}/> */}
         <AppFirstRow Challenges={challengesToAccordion}/>
         
-          {/* <Components.FadeModal/> */}
-          <FadeModal/>
-          
-          <div 
-            style={{ 
-              position: 'relative', 
-              height: '253px', 
-              marginLeft: '1.2rem'}}
-          >
-            <MapComponent 
-              mapContainer={mapContainer}
-              mapRef={mapRef}
-              challengesData={challengesData}
-              setChallengesData={setChallengesData}
-            />
+        <FadeModal/>
         
-            {/*
-            <Components.MessageOnFadeOverlay
-              id = {CHOOSE_LOCATION_MESSAGE_ID}
-              text = {`Click on the map to choose location`}
-            />
-            <Components.AddMarkerTable/>*/
-            }
-            
-          </div> 
-
-
-
-
-          {/* <p>logged in as {username}</p> */}
-          {/* <button ref={addMarkerButtonRef} onClick={handleClick}>
-            Click Me
-          </button> */}
-          {/* <CustomTable/> */}
-
-
-
-
+        <div 
+          style={{ 
+            position: 'relative', 
+            height: '253px', 
+            marginLeft: '1.2rem'}}
+        >
+          <MapComponent 
+            mapContainer={mapContainer}
+            mapRef={mapRef}
+            challengesData={challengesData}
+            setChallengesData={setChallengesData}
+          />
           
-        {/* <div>
-    </div> */}
+        </div> 
+
+        {/* <div>logged in as {username}</div> */}
         </>
+        ) : (
+        <>
+          {/* <input type="text" placeholder='username' onChange={(e) => setUsername(e.target.value)}/>
+          <button onClick={()=>setUser(username)}>Login</button> */}
 
+        <div className="container-fluid d-flex justify-content-center align-items-center vh-100">
+          <div className="text-center input-box">
+            <input
+              className='form-control form-control-lg '
+              type="text"
+              placeholder="Username"
+              onChange={(e) => setUsername(e.target.value)}
+          />
 
+          <button className='popup-button'
+            onClick={() => setUser(username)}
+          >
+            Log in
+          </button>            
+            
+          </div>
+        </div>
+        </> 
+      )}
 
-
-      {/* ) : ( */}
-        {/* <>
-          <input type="text" placeholder='username' onChange={(e) => setUsername(e.target.value)}/>
-          <button onClick={()=>setUser(username)}>Login</button>
-        </> */}
-        
-      {/* )} */}
-
-
-
-      
     </div>
   );
 }
