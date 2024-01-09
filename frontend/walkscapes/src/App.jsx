@@ -49,7 +49,7 @@ function App() {
   ]
 
   useEffect(() => {
-    console.log('cha: ', challengesData, 'l: ', []);
+    // console.log('cha: ', challengesData, 'l: ', []);
     var Challenges = [];
 
     for (let i = 0; i < challengesData.length; i++){

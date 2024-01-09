@@ -86,16 +86,16 @@ const SuggestionsListModal = ({mapRef, markersData, markers}) => {
 
   const HeaderOfModal = () => {
     return (
-      <div class="modal-header">
+      <div className="modal-header">
         <h1 
-          class="modal-title fs-4" 
+          className="modal-title fs-4" 
           id={`${SUGGESTIONS_MODAL}Label`}
         >
           Suggestions
         </h1>
         <button style={{display: 'flex'}}
           type="button" 
-          class="btn-close"
+          className="btn-close"
           data-bs-dismiss="modal" 
           aria-label="Close"
           onClick={handleClose}
@@ -109,9 +109,9 @@ const SuggestionsListModal = ({mapRef, markersData, markers}) => {
 		<>
 		<button 
       id={BUTTON_TO_SHOW_SUGGESTIONS_MODAL}
-      data-markerId={-1} // markers id that was pressed
+      data-markerid={-1} // markers id that was pressed
       type="button" 
-      class="btn btn-primary" 
+      className="btn btn-primary" 
       data-bs-toggle="modal" 
       data-bs-target={`#${SUGGESTIONS_MODAL}`}
       style={{display: 'none'}}
@@ -119,18 +119,18 @@ const SuggestionsListModal = ({mapRef, markersData, markers}) => {
     </button>
 
     <div 
-      class="modal fade" 
+      className="modal fade" 
       id={SUGGESTIONS_MODAL} 
       data-bs-backdrop="static"
       data-bs-keyboard="false" 
-      tabindex="-1" 
+      tabIndex="-1" 
       aria-labelledby={`${SUGGESTIONS_MODAL}Label`}
       aria-hidden="true"
       data-bs-show={true}
       data-bs-dismiss='modalC'
     >
-      <div class="modal-dialog">
-        <div class="modal-content custom-bg">
+      <div className="modal-dialog">
+        <div className="modal-content custom-bg">
           <HeaderOfModal />
 
           <Accordion 

@@ -83,7 +83,7 @@ const AccordionItem = ({marker, index}) => {
 const Accordion = ({markers}) => {
 	return (
 		<>
-		<div class="accordion accordion-flush" id="suggestionsAccordion">
+		<div className="accordion accordion-flush" id="suggestionsAccordion">
 			{markers.map((marker, index) => (
 				<AccordionItem 
 					marker={marker}

@@ -13,16 +13,16 @@ export const BUTTON_TO_SHOW_UPLOAD_MODAL = 'showUploadModalButton';
 
 const HeaderOfModal = () => {
   return (
-    <div class="modal-header">
+    <div className="modal-header">
       <h1 
-        class="modal-title fs-4" 
+        className="modal-title fs-4" 
         id={`${UPLOAD_MODAL_ID}Label`}
       >
         Upload information about the place
       </h1>
       <button style={{display: 'flex'}}
         type="button" 
-        class="btn-close"
+        className="btn-close"
         data-bs-dismiss="modal" 
         aria-label="Close"
       ></button>
@@ -35,14 +35,14 @@ const ImagesOfModal = ({handleDelete, handleImageChange, selectedImages}) => {
     <>
     <div className='modal-body'>
       <h3 
-        class="fs-5" 
-        for="images"
+        className="fs-5" 
+        htmlFor="images"
       >
         Choose image
       </h3>
       <label 
         className="popup-button" 
-        for="images"
+        htmlFor="images"
       >
         Choose Files
       </label>
@@ -87,7 +87,7 @@ const DescriptionOfModal = ({description, setDescription}) => {
     <div className='modal-body'>
       <h3 
         className='fs-5' 
-        for="description"
+        htmlFor="description"
       >
         Description:
       </h3>
@@ -96,7 +96,8 @@ const DescriptionOfModal = ({description, setDescription}) => {
         cols="60"
         id="description"
         name="description"
-        required='true'
+        // required='true'
+        required={true}
         rows="4"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
@@ -171,7 +172,7 @@ const UploadModal = ({map, lastSubmittedMarkerId, isNewSuggestionAdded, setIsNew
       data-lat={0}
       data-lng={0}
       type="button" 
-      class="btn btn-primary" 
+      className="btn btn-primary" 
       data-bs-toggle="modal" 
       data-bs-target={`#${UPLOAD_MODAL_ID}`}
       style={{display: 'none'}}
@@ -179,17 +180,17 @@ const UploadModal = ({map, lastSubmittedMarkerId, isNewSuggestionAdded, setIsNew
     </button>
 
     <div 
-      class="modal fade" 
+      className="modal fade" 
       id={UPLOAD_MODAL_ID} 
       data-bs-keyboard="false" 
-      tabindex="-1" 
+      tabIndex="-1" 
       aria-labelledby={`${UPLOAD_MODAL_ID}Label`}
       aria-hidden="true"
       data-bs-show={true}
       data-bs-dismiss='modalC'
     >
-      <div class="modal-dialog">
-        <div class="modal-content">
+      <div className="modal-dialog">
+        <div className="modal-content">
           <HeaderOfModal />
 
           <ImagesOfModal 
@@ -205,7 +206,7 @@ const UploadModal = ({map, lastSubmittedMarkerId, isNewSuggestionAdded, setIsNew
             setDescription={setDescription}  
           />
           
-          <div class="modal-footer">
+          <div className="modal-footer">
             <button
               className="popup-button"
               data-bs-dismiss="modal"

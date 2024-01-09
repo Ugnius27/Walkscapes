@@ -10,6 +10,7 @@ import AddMarkerButton from '../AddMarkerButton/AddMarkerButton';
 import * as Fade from '../FadeModal/FadeModal.jsx';
 import * as Markers from '../Challenges/Markers.jsx'
 import * as SuggestionsList from '../SuggestionsModal/SuggestionsListModal.jsx'
+import * as ChallengesFunctions from '../Challenges/Challenges.jsx'
 
 import { DEFAULT_ICON, RED_ICON } from '../../App.jsx';
 import { BUTTON_TO_SHOW_UPLOAD_MODAL } from '../UploadModal/UploadModal.jsx';
@@ -103,7 +104,7 @@ const Map = ({mapContainer, mapRef, challengesData, setChallengesData}) => {
 			
 		marker.setIcon(RED_ICON);
 		marker.closePopup();
-		buttonToClick.dataset.markerId = markerId;
+		buttonToClick.dataset.markerid = markerId;
 
 		var markersToDisplay = [];
 
@@ -133,9 +134,10 @@ const Map = ({mapContainer, mapRef, challengesData, setChallengesData}) => {
 
 	window.fixMarkersPlace = function(markerId, toggleFade) {
 		setLastMarkerId(markerId);
-		var activePolygons=
-			challengesData?.filter(challenge => challenge.is_active)
-			.map(challenge => challenge.polygon) || [];
+		// var activePolygons=
+		// 	challengesData?.filter(challenge => challenge.is_active)
+		// 	.map(challenge => challenge.polygon) || [];
+		var activePolygons = ChallengesFunctions.getActivePolygons(challengesData);
 		
 
 		// console.log("Fixing marker's place ", markerId, ' ', mapRef, activePolygons);
@@ -190,8 +192,9 @@ const Map = ({mapContainer, mapRef, challengesData, setChallengesData}) => {
 			polygonIds={polygonIds}
 			setPolygonIds={setPolygonIds}
 			activePolygons={
-				challengesData?.filter(challenge => challenge.is_active)
-				.map(challenge => challenge.polygon) || []
+				// challengesData?.filter(challenge => challenge.is_active)
+				// .map(challenge => challenge.polygon) || []
+				ChallengesFunctions.getActivePolygons(challengesData)
 			}
 			markerIds={markerIds}
 			setMarkerIds={setMarkerIds}

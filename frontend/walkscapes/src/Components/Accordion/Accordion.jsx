@@ -166,9 +166,9 @@ const AccordionItem = ({Challenge, numberOfChallenge}) => {
 
 // Returns an accordion of challenges
 const Accordion = ({Challenges}) => {
-	useEffect(() => {
-		console.log('!! ', Challenges);
-	})
+	// useEffect(() => {
+	// 	console.log('!! ', Challenges);
+	// })
 
 	return (
 	  <>
