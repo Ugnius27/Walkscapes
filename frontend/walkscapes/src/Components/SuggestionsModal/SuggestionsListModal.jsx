@@ -78,7 +78,7 @@ const SuggestionsListModal = ({mapRef, markersData, markers}) => {
     if (!clickedButton)
       return;
 
-    const markerId = clickedButton.dataset.markerId;
+    const markerId = clickedButton.dataset.markerid;
     var marker = mapRef.current._layers[markerId];
 
     marker.setIcon(DEFAULT_ICON);

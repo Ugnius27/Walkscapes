@@ -52,9 +52,7 @@ function App() {
   useEffect (() =>{
     console.log(user);
   }, [user])
-  // var loggedIn = true;
-// // //   mapContainer = useRef(null);
-// // //   mapRef = useRef(null);
+
 
   var mapContainer = useRef(null);
   var mapRef = useRef(null);
@@ -82,12 +80,9 @@ function App() {
           
         </div> 
 
-        {/* <div>logged in as {username}</div> */}
         </>
         ) : (
         <>
-          {/* <input type="text" placeholder='username' onChange={(e) => setUsername(e.target.value)}/>
-          <button onClick={()=>setUser(username)}>Login</button> */}
 
         <div className="container-fluid d-flex justify-content-center align-items-center vh-100">
           <div className="text-center input-box">
