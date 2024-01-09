@@ -57,8 +57,18 @@ isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 
 	function bindPopupChoosePlace(marker, lat, lng, mapRef){
 
-		marker.bindPopup(`Coordinates: (${lat.toFixed(5)}, ${lng.toFixed(5)}) 
-										${FixMarkersPlaceButton(marker._leaflet_id, mapRef)}`).addTo(mapRef.current);
+		marker.bindPopup(
+			`<div class="d-flex justify-content-center">
+				Coordinates: (${lat.toFixed(5)}, ${lng.toFixed(5)})
+			</div>
+			<div 
+				class="d-flex justify-content-center"
+				style="margin-top: 5px; margin-bottom: 5px; font-size: 14px;"
+			>
+				Click twice on the marker to remove it
+			</div>
+			${FixMarkersPlaceButton(marker._leaflet_id, mapRef)}`).addTo(mapRef.current);
+
 		marker.openPopup();
 	}
 
