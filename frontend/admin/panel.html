@@ -12,9 +12,7 @@
     <script src="../node_modules/leaflet/dist/leaflet.js"></script>
     <script src="../node_modules/leaflet-editable/src/Leaflet.Editable.js"></script>
 </head>
-
 <body>
-
 <script>
     document.body.addEventListener("htmx:responseError", function (event) {
         let errorMessage = event.detail.message || 'An error occurred during the request.';
@@ -24,7 +22,16 @@
 
 <h1>Admin panel</h1>
 <div>
-    <div id="map" style="width: 70%; height: 80vh; float: left"></div>
+    <div id="map_container">
+        <div class="modal" id="polygon_modal">
+            <div class="modal-content" id="polygon_modal_content">
+                <p>...</p>
+                <button disabled>Delete</button>
+                <button disabled>Edit</button>
+            </div>
+        </div>
+        <div id="map"></div>
+    </div>
     <div id="challenges" style="float: right; max-width: 30%">
         <div hx-get="../api/challenges" hx-headers='{"Accept": "text/html"}' hx-swap="outerHTML"
              hx-trigger="load"></div>
@@ -35,4 +42,5 @@
 <script src="challenges.js"></script>
 <script src="load_map.js"></script>
 <script src="polygon_editor.js"></script>
+<script src="polygon_modal.js"></script>
 </body>

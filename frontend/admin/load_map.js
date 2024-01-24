@@ -34,11 +34,12 @@ async function load_polygons() {
         polygons_layer.addLayer(polygon);
         polygons_to_ids[polygon._leaflet_id] = poly.id;
         ids_to_polygons[poly.id] = polygon._leaflet_id;
-        polygon.on('click', on_polygon_click);
+        attach_enable_focus(polygon);
 
         map.fitBounds(polygon.getBounds());
     })
 }
+
 
 async function load_markers() {
     let marks = await fetch_json('record/markers');

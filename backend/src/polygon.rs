@@ -1,8 +1,13 @@
-use actix_web::{get, HttpResponse, post, Responder, web};
+use actix_web::{delete, get, HttpResponse, post, Responder, web};
+use actix_web::web::Data;
+use maud::{html, Markup};
 use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, MySqlPool};
+use sqlx::error::DatabaseError;
+use sqlx::types::Json;
+use crate::user_error::UserError;
 
-#[derive(Debug, FromRow, Serialize, Deserialize, Clone)]
+#[derive(Debug, FromRow, Serialize, Deserialize, Clone, Default)]
 pub struct Polygon {
     #[serde(default)]
     pub id: Option<i32>,
@@ -13,16 +18,15 @@ pub struct Polygon {
 // impl Polygon {
 //     pub fn new() -> Self {
 //         Polygon {
-//             id: None,
-//             vertices: None,
+//             ..Default::default()
 //         }
 //     }
 // }
 
 #[get("api/polygons")]
-async fn get_polygons(pool: web::Data<MySqlPool>) -> impl Responder {
+pub async fn get_polygons(pool: web::Data<MySqlPool>) -> impl Responder {
     let pool = pool.get_ref();
-    let polygons = match read_polygons(&pool).await {
+    let polygons = match get_polygons_from_db(&pool).await {
         Ok(val) => val,
         Err(err) => {
             eprintln!("{err}");
@@ -33,19 +37,69 @@ async fn get_polygons(pool: web::Data<MySqlPool>) -> impl Responder {
     HttpResponse::Ok().json(polygons)
 }
 
-#[post("api/polygons")]
-async fn post_polygon(polygon: web::Json<Polygon>, pool: web::Data<MySqlPool>) -> impl Responder {
-    let polygon_id = match create_polygon(polygon.0, pool.get_ref()).await {
+#[get("api/polygons/{id}")]
+pub async fn get_polygon(id: web::Path<i32>, pool: web::Data<MySqlPool>) -> impl Responder {
+    let id = id.into_inner();
+    let polygon = match get_polygon_from_db(id, pool.get_ref()).await {
         Ok(val) => val,
         Err(err) => {
             eprintln!("{err}");
             return HttpResponse::InternalServerError().body(format!("{err}"));
         }
     };
-    HttpResponse::Ok().json(polygon_id)
+
+    HttpResponse::Ok().body(polygon_to_html(&polygon).into_string())
 }
 
-async fn read_polygons(pool: &MySqlPool) -> Result<Vec<Polygon>, Box<dyn std::error::Error>> {
+#[delete("api/polygons/{id}")]
+async fn delete_polygon(id: web::Path<i32>, pool: web::Data<MySqlPool>) -> impl Responder {
+    let pool = pool.get_ref();
+    if let Err(err) = delete_polygon_from_db(id.into_inner(), pool).await {
+        return match err {
+            UserError::NotFound(_) => HttpResponse::NotFound().body(format!("{err}")),
+            _ => HttpResponse::InternalServerError().body(format!("{err}")),
+        };
+    }
+
+    HttpResponse::Ok().body("")
+}
+
+#[post("api/polygons")]
+async fn post_polygon(polygon: web::Json<Polygon>, pool: web::Data<MySqlPool>) -> Result<impl Responder, UserError> {
+    let polygon_id = add_polygon_to_db(polygon.0, pool.get_ref()).await?;
+    Ok(web::Json(polygon_id))
+}
+
+async fn delete_polygon_from_db(id: i32, pool: &MySqlPool) -> Result<(), UserError> {
+    let result = sqlx::query!(r#"
+    DELETE FROM polygons
+    WHERE id = ?"#,
+        id).execute(pool).await?;
+
+    if result.rows_affected() < 1 {
+        return Err(UserError::NotFound(id));
+    }
+    Ok(())
+}
+
+async fn get_polygon_from_db(id: i32, pool: &MySqlPool) -> Result<Polygon, UserError> {
+    let row = sqlx::query!(r#"
+    SELECT
+    id,
+    JSON_EXTRACT(ST_AsGeoJSON(vertices), '$.coordinates[0]') AS vertices
+    FROM polygons
+    WHERE id = ?"#,
+        id).fetch_one(pool).await?;
+
+    let vertices = row.vertices.ok_or_else(|| "Error parsing polygon vertices from database")?;
+    let vertices: Vec<(f64, f64)> = serde_json::from_value(vertices)?; //todo refactor into function
+    Ok(Polygon {
+        id: Some(row.id),
+        vertices: Some(vertices),
+    })
+}
+
+async fn get_polygons_from_db(pool: &MySqlPool) -> Result<Vec<Polygon>, Box<dyn std::error::Error>> {
     let rows = sqlx::query!(r#"
     SELECT
     id,
@@ -55,7 +109,7 @@ async fn read_polygons(pool: &MySqlPool) -> Result<Vec<Polygon>, Box<dyn std::er
     let mut polygons = Vec::new();
     for row in rows {
         let vertices = row.vertices.ok_or_else(|| String::from("Error parsing polygon vertices from database"))?;
-        let vertices: Vec<(f64, f64)> = serde_json::from_value(vertices)?; //todo! refactor into function
+        let vertices: Vec<(f64, f64)> = serde_json::from_value(vertices)?; //todo refactor into function
 
         polygons.push(Polygon {
             id: Some(row.id),
@@ -66,8 +120,8 @@ async fn read_polygons(pool: &MySqlPool) -> Result<Vec<Polygon>, Box<dyn std::er
     Ok(polygons)
 }
 
-async fn create_polygon(polygon: Polygon, pool: &MySqlPool) -> Result<i32, Box<dyn std::error::Error>> {
-    let polygon_string = polygon_to_db_string(&polygon)?;
+async fn add_polygon_to_db(polygon: Polygon, pool: &MySqlPool) -> Result<i32, UserError> {
+    let polygon_string = polygon_to_db_string(&polygon).map_err(|_| UserError::Internal)?;
 
     let result = sqlx::query!(r#"
     INSERT INTO polygons (vertices)
@@ -93,4 +147,19 @@ fn polygon_to_db_string(polygon: &Polygon) -> Result<String, Box<dyn std::error:
         return Err("No vertices in polygon".into());
     }
     Ok(polygon_string)
+}
+
+fn polygon_to_html(polygon: &Polygon) -> Markup {
+    html! {
+        script {"attach_focused_polygon_deleter('polygon_modal_delete')"}
+        p {(polygon.id.unwrap())}
+        button
+            id={"polygon_modal_delete"}
+            hx-delete={"../api/polygons/" (polygon.id.unwrap())}
+            hx-confirm={"Delete?"}
+            {"Delete"}
+        button
+
+            {"Edit"}
+    }
 }

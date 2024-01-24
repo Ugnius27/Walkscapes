@@ -24,12 +24,14 @@ function remove_focus() {
     }
 
     focused.setStyle({color: '#3388ff'});
-    focused.disableEdit();
     focused = null;
 
     if (form_open) {
         unset_polygon_id_in_form();
     }
+
+    //modal actions
+    close_polygon_modal()
 }
 
 function focus(target) {
@@ -39,15 +41,20 @@ function focus(target) {
     if (form_open) {
         set_polygon_id_in_form()
     }
+
+    //modal actions
+    open_polygon_modal(target);
 }
 
-function on_polygon_click(event) {
-    let poly = event.target;
-    if (poly !== focused) {
-        remove_focus();
-        focus(poly);
-        L.DomEvent.stopPropagation(event);
-    }
+function attach_enable_focus(polygon) {
+    polygon.on('click', function (event) {
+        let poly = event.target;
+        if (poly !== focused) {
+            remove_focus();
+            focus(poly);
+            L.DomEvent.stopPropagation(event);
+        }
+    });
 }
 
 map.on('click', function (event) {
@@ -92,6 +99,8 @@ map.on('editable:drawing:commit', function (event) {
         return;
     }
     console.log(poly._leaflet_id);
+    poly.disableEdit();
+
 
     // let polygonCoordinates = poly.getLatLngs()[0];
     // console.log('Polygon Coordinates:', polygonCoordinates);
@@ -135,7 +144,7 @@ async function showPolygonPopup(polygon) {
         map.removeLayer(polygon);
         return false;
     }
-    polygon.on('click', on_polygon_click);
+    attach_enable_focus(polygon)
     let polygon_id = await post_polygon(polygon);
 
     polygons_layer.addLayer(polygon)
@@ -143,6 +152,14 @@ async function showPolygonPopup(polygon) {
     ids_to_polygons[polygon_id] = polygon._leaflet_id;
     focus(polygon);
     return true
+}
+
+function deleteFocusedPolygon() {
+    let db_id = polygons_to_ids[focused];
+    polygons_to_ids[focused] = null;
+    ids_to_polygons[db_id] = null;
+    map.removeLayer(focused)
+    remove_focus();
 }
 
 function polyByDbId(id) {

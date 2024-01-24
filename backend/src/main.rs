@@ -4,6 +4,7 @@ mod image;
 mod field_extractors;
 mod challenge;
 mod polygon;
+mod user_error;
 
 use sqlx::{MySqlPool};
 use actix_web::{web, App, HttpServer};
@@ -13,7 +14,7 @@ use crate::record::{get_record, post_record};
 use crate::marker::get_markers;
 use crate::challenge::*;
 use crate::image::get_record_image;
-use crate::polygon::{get_polygons, post_polygon};
+use crate::polygon::{delete_polygon, get_polygon, get_polygons, post_polygon};
 
 
 #[tokio::main]
@@ -43,7 +44,9 @@ async fn main() -> Result<(), sqlx::Error> {
             .service(get_record_image)
             .service(post_challenge)
             .service(post_polygon)
+            .service(delete_polygon)
             .service(get_polygons)
+            .service(get_polygon)
             .service(actix_files::Files::new("/", "../frontend")
                 .index_file("index.html"))
     })
