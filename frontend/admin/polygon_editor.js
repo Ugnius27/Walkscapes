@@ -1,6 +1,6 @@
 let focused = null;
 let form_open = false;
-let polygons_layer = L.layerGroup().addTo(map);
+let polygons_layer = L.featureGroup().addTo(map);
 let polygons_to_ids = {};
 let ids_to_polygons = {};
 let markers = {};
@@ -59,6 +59,7 @@ function attach_enable_focus(polygon) {
 
 map.on('click', function (event) {
     remove_focus();
+    close_record();
     if (form_open) {
         unset_polygon_id_in_form()
     }

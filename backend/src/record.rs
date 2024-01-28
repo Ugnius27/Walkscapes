@@ -1,11 +1,14 @@
+mod html;
+
 use actix_multipart::Multipart;
-use actix_web::{get, HttpResponse, post, Responder, web};
+use actix_web::{get, HttpRequest, HttpResponse, post, Responder, web};
 use futures_util::StreamExt;
 use serde::Serialize;
 use sqlx::{FromRow, MySqlPool};
 use crate::image::Image;
 use crate::marker::*;
 use crate::field_extractors::*;
+use crate::record::html::record_view_html;
 
 #[derive(Debug, FromRow, Serialize)]
 struct Record {
@@ -27,7 +30,7 @@ impl Record {
 
 //TODO: sanitize inputs
 #[get("api/record/marker={marker_id}")]
-pub async fn get_record(pool: web::Data<MySqlPool>, id: web::Path<i32>) -> impl Responder {
+pub async fn get_record(request: HttpRequest, pool: web::Data<MySqlPool>, id: web::Path<i32>) -> impl Responder {
     let mut record = Record::new();
     record.id = id.into_inner();
     match sqlx::query!("SELECT marker_fk as id, description from records WHERE marker_fk = ?", record.id).fetch_one(pool.get_ref()).await {
@@ -51,10 +54,17 @@ pub async fn get_record(pool: web::Data<MySqlPool>, id: web::Path<i32>) -> impl 
         }
     };
 
-    match serde_json::to_string(&record) {
-        Ok(result) => HttpResponse::Ok().body(result),
-        Err(err) => HttpResponse::InternalServerError().body(format!("{err}")) //TODO: json error?
+    if let Some(header) = request.headers().get("Accept") {
+        if let Ok(value) = header.to_str() {
+            if value.contains("application/json") {
+                return HttpResponse::Ok().json(&record);
+            } else {
+                return HttpResponse::Ok().body(record_view_html(&record).into_string());
+            }
+        }
     }
+
+    HttpResponse::BadRequest().body("Malformed request")
 }
 
 //TODO: sanitize

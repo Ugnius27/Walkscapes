@@ -35,8 +35,6 @@ async function load_polygons() {
         polygons_to_ids[polygon._leaflet_id] = poly.id;
         ids_to_polygons[poly.id] = polygon._leaflet_id;
         attach_enable_focus(polygon);
-
-        map.fitBounds(polygon.getBounds());
     })
 }
 
@@ -49,13 +47,22 @@ async function load_markers() {
     }
 
     marks.forEach(marker => {
-        markers[marker.id] = L.marker([marker.latitude, marker.longitude]).addTo(map);
+        let new_marker = L.marker([marker.latitude, marker.longitude]).addTo(map);
+        markers[marker.id] = new_marker;
+        new_marker.on('click', function (event) {
+            focus_marker(new_marker, marker.id);
+        });
     });
+}
+
+function fit_map_view() {
+    map.fitBounds(polygons_layer.getBounds());
 }
 
 async function load_map_data() {
     await load_polygons();
     await load_markers();
+    fit_map_view();
 }
 
 document.addEventListener('DOMContentLoaded', load_map_data);

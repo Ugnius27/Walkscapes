@@ -5,9 +5,10 @@
 
 #map {
     width: 100%;
-    height: 80vh;
+    height: 85vh;
     float: left;
 }
+
 
 .modal {
     visibility: hidden;
@@ -37,12 +38,15 @@
     position: relative;
     float: right;
     width: 29%;
+    height: 85vh;
 }
 
 ul#challenges_list {
     margin: 0;
     padding: 0;
     list-style: none;
+    height: 100%;
+    overflow: auto;
 }
 
 li.button {
@@ -63,6 +67,7 @@ li.button.hoverable:hover {
 
 li.button.selectable {
     user-select: text;
+    cursor: auto;
 }
 
 .readonly {
@@ -73,16 +78,35 @@ li.button.selectable {
     position: absolute;
     right: 0;
     top: 0;
-    background-color: rgba(255, 255, 255, 0.9);
+    height: 100%;
+    background-color: rgba(255, 255, 255, 1);
     transition: visibility 0.2s ease-in-out, width 0.2s ease-in-out;
     visibility: hidden;
     width: 0;
-    height: 100%;
     border: 1px solid #888;
+    overflow: hidden;
 }
 
 #record.show {
     width: 100%;
-    height: 100%;
     visibility: visible;
+    overflow: auto;
+}
+
+img.record {
+    width: 100%;
+    display: inline;
+}
+
+img.red {
+    filter: hue-rotate(165deg);
+}
+
+.sticky_menu {
+    position: sticky;
+    width: 100%;
+    overflow: auto;
+    top: 0;
+    border: 1px solid #888;
+    background-color: rgba(255, 255, 255, 0.9);
 }
