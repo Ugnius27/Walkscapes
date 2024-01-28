@@ -20,7 +20,8 @@
     });
 </script>
 
-<h1>Admin panel</h1>
+<h1>Walkscapes Admin Panel</h1>
+<div id="result"></div>
 <div>
     <div id="map_container">
         <div class="modal" id="polygon_modal">
@@ -32,9 +33,13 @@
         </div>
         <div id="map"></div>
     </div>
-    <div id="challenges" style="float: right; max-width: 30%">
-        <div hx-get="../api/challenges" hx-headers='{"Accept": "text/html"}' hx-swap="outerHTML"
-             hx-trigger="load"></div>
+    <div id="right_menu">
+        <ul hx-get="../api/challenges" hx-headers='{"Accept": "text/html"}' hx-swap="outerHTML" hx-trigger="load"
+            id="challenges_list"></ul>
+        <div id="record">
+            <p>Testassssssssssss</p>
+            <button onclick="close_record()">Close</button>
+        </div>
     </div>
 </div>
 
@@ -42,5 +47,7 @@
 <script src="challenges.js"></script>
 <script src="load_map.js"></script>
 <script src="polygon_editor.js"></script>
+<script src="htmx_utils.js"></script>
 <script src="polygon_modal.js"></script>
+<script src="record.js"></script>
 </body>

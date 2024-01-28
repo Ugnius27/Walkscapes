@@ -151,7 +151,7 @@ fn polygon_to_db_string(polygon: &Polygon) -> Result<String, Box<dyn std::error:
 
 fn polygon_to_html(polygon: &Polygon) -> Markup {
     html! {
-        script {"attach_focused_polygon_deleter('polygon_modal_delete')"}
+        script {"attach_listener_to_element('polygon_modal_delete', deleteFocusedPolygon)"}
         p {(polygon.id.unwrap())}
         button
             id={"polygon_modal_delete"}
@@ -159,7 +159,7 @@ fn polygon_to_html(polygon: &Polygon) -> Markup {
             hx-confirm={"Delete?"}
             {"Delete"}
         button
-
+            disabled
             {"Edit"}
     }
 }

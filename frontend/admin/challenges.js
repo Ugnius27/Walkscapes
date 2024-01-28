@@ -19,10 +19,16 @@ function set_polygon_id_in_form() {
         return;
     }
     let field = document.getElementById('polygonId');
+    // if (field == null) {
+    //     return;
+    // }
     field.value = polygons_to_ids[focused._leaflet_id];
 }
 
 function unset_polygon_id_in_form() {
     let field = document.getElementById('polygonId');
+    // if (field == null) {
+    //     return;
+    // }
     field.value = "Please select a polygon";
 }

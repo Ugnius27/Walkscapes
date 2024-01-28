@@ -11,17 +11,3 @@ function close_polygon_modal() {
     let modal_content = document.getElementById("polygon_modal_content");
     modal_content.innerHTML = "<p>...</p><button disabled>Delete</button><button disabled>Edit</button>";
 }
-
-
-function attach_focused_polygon_deleter(source_id) {
-    let deleter = document.getElementById(source_id);
-    deleter.addEventListener('htmx:afterRequest', function (event) {
-        let element = event.detail.elt;
-        if (element.id === source_id) {
-            if (event.detail.successful) {
-                deleteFocusedPolygon();
-            }
-        }
-        event.stopPropagation();
-    })
-}
