@@ -5,10 +5,13 @@ mod field_extractors;
 mod challenge;
 mod polygon;
 mod user_error;
+mod tls;
 
 use sqlx::{MySqlPool};
 use actix_web::{web, App, HttpServer};
 use std::env;
+use std::fs::File;
+use std::io::BufReader;
 use actix_cors::Cors;
 use crate::record::{get_record, post_record};
 use crate::marker::get_markers;
@@ -16,19 +19,19 @@ use crate::challenge::*;
 use crate::image::get_record_image;
 use crate::polygon::{delete_polygon, get_polygon, get_polygons, post_polygon};
 
-
 #[tokio::main]
-async fn main() -> Result<(), sqlx::Error> {
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    //Paths
     dotenv::dotenv().ok();
-    let database_url = env::var("DATABASE_URL").expect("URL error");
-    let pool = match MySqlPool::connect(&database_url).await {
-        Ok(pool) => pool,
-        Err(err) => {
-            eprintln!("{err}");
-            panic!();
-        }
-    };
+    let database_url = env::var("DATABASE_URL").expect("DB URL nor found");
 
+    //TLS
+    let tls_config = tls::load_rustls_config();
+
+    //DB
+    let pool = MySqlPool::connect(&database_url).await?;
+
+    //Server
     HttpServer::new(move || {
         App::new()
             .wrap(Cors::permissive())
@@ -50,11 +53,11 @@ async fn main() -> Result<(), sqlx::Error> {
             .service(actix_files::Files::new("/", "../frontend")
                 .index_file("index.html"))
     })
-        .bind("0.0.0.0:8080")
-        .expect("Failed to bind server")
+        .bind("0.0.0.0:8080").expect("Failed to bind HTTP")
+        .bind_rustls_021("0.0.0.0:8443", tls_config).expect("Failed to bind HTTPS")
         .run()
-        .await
-        .expect("Failed to run server");
+        .await.unwrap();
 
+    //Done
     Ok(())
 }
