@@ -11,7 +11,7 @@ pub fn record_view_html(record: &Record) -> Markup {
         p {(record.description.as_ref().unwrap_or(&String::from("")))}
         @for image_id in record.photos.iter() {
             hr;
-            img.record src={"http://localhost:8080/api/record/marker="(record.id)"/photo="(image_id)} {}
+            img.record src={"../api/record/marker="(record.id)"/photo="(image_id)} {}
         }
     }
 }

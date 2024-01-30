@@ -25,9 +25,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     dotenv::dotenv().ok();
     let database_url = env::var("DATABASE_URL").expect("DB URL nor found");
 
-    //TLS
-    let tls_config = tls::load_rustls_config();
-
     //DB
     let pool = MySqlPool::connect(&database_url).await?;
 
@@ -54,7 +51,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .index_file("index.html"))
     })
         .bind("0.0.0.0:8080").expect("Failed to bind HTTP")
-        .bind_rustls_021("0.0.0.0:8443", tls_config).expect("Failed to bind HTTPS")
+        //TLS
+        // .bind_rustls_021("0.0.0.0:8443", tls::load_rustls_config()).expect("Failed to bind HTTPS")
         .run()
         .await.unwrap();
 

@@ -1,7 +1,6 @@
 use std::env;
 use std::fs::File;
 use std::io::BufReader;
-use actix_web::http::header::CacheDirective::Private;
 use rustls::{Certificate, PrivateKey, ServerConfig};
 use rustls_pemfile::{certs, pkcs8_private_keys};
 
@@ -13,8 +12,8 @@ pub fn load_rustls_config() -> ServerConfig {
         .with_no_client_auth();
 
     // load TLS key/cert files
-    let private_key_path = env::var("PRIVATE_KEY_PATH").unwrap_or(String::from(""));
-    let certificate_chain_path = env::var("CERTIFICATE_CHAIN_PATH").unwrap_or(String::from(""));
+    let private_key_path = env::var("PRIVATE_KEY_PATH").unwrap();
+    let certificate_chain_path = env::var("CERTIFICATE_CHAIN_PATH").unwrap();
     let cert_file = &mut BufReader::new(File::open(certificate_chain_path).unwrap());
     let key_file = &mut BufReader::new(File::open(private_key_path).unwrap());
 
