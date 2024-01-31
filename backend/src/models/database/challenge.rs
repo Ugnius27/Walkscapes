@@ -1,5 +1,5 @@
 use sqlx::MySqlPool;
-use crate::challenge::Challenge;
+use crate::models::Challenge;
 use crate::polygon::Polygon;
 use crate::marker::Marker;
 

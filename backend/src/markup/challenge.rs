@@ -1,5 +1,5 @@
 use maud::{html, Markup};
-use crate::challenge::Challenge;
+use crate::models::challenge::
 
 pub fn challenges_index_html(challenges: &Vec<Challenge>) -> Markup {
     html! {

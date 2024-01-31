@@ -1,63 +1,21 @@
-mod database;
-mod html;
-
 use actix_web::{get, post, HttpResponse, Responder, web, HttpRequest, delete, put};
 use maud::Markup;
-use serde::{Deserialize, Serialize};
-use sqlx::{FromRow, MySqlPool};
-use crate::marker::Marker;
-use crate::polygon::Polygon;
-use crate::challenge::database::*;
-use crate::challenge::html::*;
-
-
-#[derive(Debug, FromRow, Serialize, Deserialize, Clone)]
-pub struct Challenge {
-    pub id: Option<i32>,
-    pub title: String,
-    pub description: String,
-    pub polygon: Polygon,
-    pub markers: Vec<Marker>,
-    pub is_active: bool,
-}
-
-impl From<ChallengePostForm> for Challenge {
-    fn from(value: ChallengePostForm) -> Self {
-        Challenge {
-            id: None,
-            title: value.title,
-            description: value.description,
-            polygon: Polygon {
-                id: Some(value.polygon_id),
-                vertices: None,
-            },
-            markers: Vec::new(),
-            is_active: if value.is_active == "on" { true } else { false },
-        }
+use sqlx::MySqlPool;
+use crate::routes::user_error::user_error::UserError;
+mod crate::models:: {
+    pub mod challenge {
+        mod database
     }
 }
-
-#[derive(Debug, FromRow, Serialize, Deserialize)]
-struct ChallengePostForm {
-    title: String,
-    description: String,
-    polygon_id: i32,
-    #[serde(default)]
-    is_active: String,
-}
-
 
 #[delete("api/challenges/{id}")]
-pub async fn delete_challenge(id: web::Path<i32>, pool: web::Data<MySqlPool>) -> impl Responder {
-    match delete_challenge_from_db(id.into_inner(), pool.get_ref()).await {
-        Ok(_) => HttpResponse::Ok().body(""),
-        Err(err) => HttpResponse::Conflict().body(format!("{err}")),
-    }
+pub async fn delete_challenge(challenge_id: web::Path<i32>, pool: web::Data<MySqlPool>) -> Result<impl Responder, UserError> {
+    Ok(delete_challenge_from_db(challenge_id.into_inner(), pool.get_ref()).await?);
 }
 
 #[get("api/challenges/{id}/edit")]
-pub async fn get_challenge_edit_form(id: web::Path<i32>, pool: web::Data<MySqlPool>) -> actix_web::Result<Markup> {
-    let challenge = get_challenge_from_db(id.into_inner(), pool.get_ref()).await?;
+pub async fn get_challenge_edit_form(challenge_id: web::Path<i32>, pool: web::Data<MySqlPool>) -> Result<Markup, UserError> {
+    let challenge = get_challenge_from_db(challenge_id.into_inner(), pool.get_ref()).await?;
     Ok(edit_form_html(&challenge))
 }
 
@@ -134,4 +92,3 @@ pub async fn post_challenge(web::Form(form): web::Form<ChallengePostForm>, pool:
     let response = challenges_index_html(&challenges).into_string();
     HttpResponse::Ok().body(response)
 }
-

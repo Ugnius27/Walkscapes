@@ -1,0 +1,46 @@
+use serde::Deserialize;
+use sqlx::FromRow;
+use crate::models::Marker;
+use crate::models::polygon::Polygon;
+
+#[derive(FromRow)]
+pub struct Challenge {
+    pub id: i32,
+    pub title: String,
+    pub description: String,
+    pub polygon_fk: i32,
+    pub is_active: bool,
+    pub is_visible: bool,
+}
+
+impl From<ChallengePostForm> for Challenge {
+    fn from(value: ChallengePostForm) -> Self {
+        Challenge {
+            id: 0,
+            title: value.title,
+            description: value.description,
+            polygon_fk: value.polygon_id,
+            is_active: if value.is_active == "on" { true } else { false },
+            is_visible: if value.is_visible == "on" { true } else { false },
+        }
+    }
+}
+
+pub struct ChallengeMarkersPolygon {
+    #[serde(flatten)]
+    challenge: Challenge,
+    markers: Vec<Marker>,
+    polygon: Polygon,
+}
+
+#[derive(Deserialize)]
+pub struct ChallengePostForm {
+    title: String,
+    description: String,
+    polygon_id: i32,
+    is_active: String,
+    is_visible: String,
+}
+
+
+

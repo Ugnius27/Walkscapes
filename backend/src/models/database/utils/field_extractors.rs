@@ -1,7 +1,7 @@
 use actix_multipart::Field;
 use std::str::FromStr;
 use futures_util::StreamExt;
-use crate::image::Image;
+use crate::models::Image;
 
 pub async fn extract_bytes_from_field(mut field: Field) -> Result<Vec::<u8>, &'static str> {
     let mut bytes = Vec::new();
