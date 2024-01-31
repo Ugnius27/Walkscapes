@@ -1,29 +1,29 @@
-use sqlx::MySqlPool;
-use crate::image::Image;
-use crate::record::Record;
+use sqlx::{MySql, MySqlPool};
+use crate::models::{Image, Record};
 
 pub async fn get_records_by_marker_id(pool: &MySqlPool, marker_id: i32) -> Result<Vec<Record>, sqlx::Error> {
     Ok(sqlx::query_as!(Record,
         r#"SELECT * FROM records
-        WHERE marker_fk = ?"#,
+        WHERE marker_id = ?"#,
         marker_id)
-        .fetch_all(pool.get_ref()).await?)
+        .fetch_all(pool).await?)
 }
 
-pub async fn insert_record_image(pool: &MySqlPool, image: Image, record_fk: i32) -> Result<(), sqlx::Error> {
+pub async fn insert_image_with_record_id(pool: &MySqlPool, image: Image, record_id: i32) -> Result<(), sqlx::Error> {
     sqlx::query!(
-        r#"INSERT INTO images (record_fk, filename, image_data)
+        r#"INSERT INTO images (record_id, filename, image_data)
         VALUES (?, ?, ?)"#,
-        record_fk, image.filename, image.image_data)
+        record_id, image.filename, image.image_data)
         .execute(pool).await?;
     Ok(())
 }
 
-pub async fn insert_record(pool: &MySqlPool, record: Record) -> Result<(), sqlx::Error> {
-    sqlx::query!(
-        r#"INSERT INTO records (marker_fk, description)
+pub async fn insert_record_transaction(transaction: &mut sqlx::Transaction<'_, MySql>, record: Record) -> Result<i32, sqlx::Error> {
+    let result = sqlx::query!(
+        r#"INSERT INTO records (marker_id, description)
         VALUES (?, ?)"#,
-        record.id, record.description)
-        .execute(pool).await?;
-    Ok(())
+        record.marker_id, record.description)
+        .execute(&mut **transaction).await?;
+
+    Ok(result.last_insert_id() as i32)
 }

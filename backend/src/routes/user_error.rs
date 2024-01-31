@@ -9,18 +9,20 @@ pub enum UserError {
     Dependency(String),
     Parse(String),
     Internal,
+    NotImplemented(String),
 }
 
 impl Error for UserError {}
 
 impl ResponseError for UserError {
     fn status_code(&self) -> StatusCode {
-       match *self {
-           UserError::Internal => StatusCode::INTERNAL_SERVER_ERROR,
-           UserError::Dependency(_) => StatusCode::UNPROCESSABLE_ENTITY,
-           UserError::NotFound(_) => StatusCode::NOT_FOUND,
-           UserError::Parse(_) => StatusCode::BAD_REQUEST,
-       }
+        match *self {
+            UserError::Internal => StatusCode::INTERNAL_SERVER_ERROR,
+            UserError::Dependency(_) => StatusCode::UNPROCESSABLE_ENTITY,
+            UserError::NotFound(_) => StatusCode::NOT_FOUND,
+            UserError::Parse(_) => StatusCode::BAD_REQUEST,
+            UserError::NotImplemented(_) => StatusCode::NOT_IMPLEMENTED,
+        }
     }
 }
 
@@ -32,6 +34,7 @@ impl fmt::Display for UserError {
             E::Dependency(message) => write!(f, "{}", message),
             E::Internal => write!(f, "An internal server error occurred :("),
             E::Parse(message) => write!(f, "{}", message),
+            E::NotImplemented(message) => write!(f, "{}", message),
         }
     }
 }

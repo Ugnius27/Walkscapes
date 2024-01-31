@@ -19,6 +19,7 @@ pub async fn extract_image_from_field(field: Field) -> Result<Image, &'static st
     let bytes = extract_bytes_from_field(field).await?;
     Ok(Image {
         id: 0,
+        record_id: 0,
         filename,
         image_data: bytes,
     })

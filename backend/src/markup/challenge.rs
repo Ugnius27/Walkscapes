@@ -1,5 +1,5 @@
 use maud::{html, Markup};
-use crate::models::challenge::
+use crate::models::challenge::Challenge;
 
 pub fn challenges_index_html(challenges: &Vec<Challenge>) -> Markup {
     html! {
@@ -18,7 +18,7 @@ pub fn read_challenge_html(challenges: &Vec<Challenge>, id: i32) -> Markup {
             (new_challenge_tile())
 
             @for challenge in challenges {
-                @if challenge.id.unwrap() == id {
+                @if challenge.id == id {
                     (view_form(challenge))
                 } @else {
                     (challenge_tile_html(challenge))
@@ -37,7 +37,7 @@ fn new_challenge_tile() -> Markup {
 pub fn challenge_tile_html(challenge: &Challenge) -> Markup {
     html! {
         li.button.hoverable
-            hx-get={"../api/challenges/" (challenge.id.unwrap())}
+            hx-get={"../api/challenges/" (challenge.id)}
             hx-target="#challenges_list"
             hx-swap="outerHTML"
             {(challenge.title)}
@@ -47,7 +47,7 @@ pub fn challenge_tile_html(challenge: &Challenge) -> Markup {
 fn view_form(challenge: &Challenge) -> Markup {
     html! {
         script {
-            "setViewOnPoly("(challenge.polygon.id.unwrap())")"
+            "setViewOnPoly("(challenge.polygon_id)")"
         }
         li.button.selectable id="this_challenge" {
             div {
@@ -61,7 +61,7 @@ fn view_form(challenge: &Challenge) -> Markup {
                 }
                 div {
                     label { "Polygon:" }
-                    p {(challenge.polygon.id.unwrap())}
+                    p {(challenge.polygon_id)}
                 }
                 div {
                     label { "Active:" }
@@ -69,12 +69,12 @@ fn view_form(challenge: &Challenge) -> Markup {
                 }
 
                 button
-                    hx-get={"../api/challenges/" (challenge.id.unwrap()) "/edit" }
+                    hx-get={"../api/challenges/" (challenge.id) "/edit" }
                     hx-target="#this_challenge"
                     hx-swap="outerHTML"
                     {"Edit"}
                 button
-                    hx-delete={"../api/challenges/" (challenge.id.unwrap()) }
+                    hx-delete={"../api/challenges/" (challenge.id) }
                     hx-target="#this_challenge"
                     hx-swap="outerHTML"
                     hx-confirm={"Are you sure you want to delete \"" (challenge.title) "\""}
@@ -93,7 +93,7 @@ pub fn edit_form_html(challenge: &Challenge) -> Markup {
         li.button.selectable id="this_challenge" {
             form
                 id="challenge_edit_form"
-                hx-put={"../api/challenges/" (challenge.id.unwrap()) }
+                hx-put={"../api/challenges/" (challenge.id) }
                 hx-target="#this_challenge"
                 hx-swap="outerHTML"
             {
@@ -107,7 +107,7 @@ pub fn edit_form_html(challenge: &Challenge) -> Markup {
                 }
                 div {
                     label { "Polygon:" }
-                    input.readonly id="polygonId" name="polygon_id" required readonly value=(challenge.polygon.id.unwrap()) {}
+                    input.readonly id="polygonId" name="polygon_id" required readonly value=(challenge.polygon_id) {}
                 }
                 div {
                     label { "Active:" }
@@ -119,7 +119,7 @@ pub fn edit_form_html(challenge: &Challenge) -> Markup {
                     {"Save"}
                 button
                     type="button"
-                    hx-get={"../api/challenges/" (challenge.id.unwrap()) }
+                    hx-get={"../api/challenges/" (challenge.id) }
                     hx-target="#challenges_list"
                     hx-swap="outerHTML"
                     onclick="disable_form_open()"
@@ -129,7 +129,7 @@ pub fn edit_form_html(challenge: &Challenge) -> Markup {
         script {
             "enable_form_open();
             attach_listener_to_element('challenge_edit_form', disable_form_open);
-            setViewOnPoly("(challenge.polygon.id.unwrap())")";
+            setViewOnPoly("(challenge.polygon_id)")";
         }
    }
 }

@@ -16,6 +16,6 @@ pub async fn get_markers_with_records(pool: &MySqlPool) -> Result<Vec<Marker>, E
         Marker,
         r#"SELECT markers.id, latitude, longitude
         FROM markers
-        INNER JOIN records on records.marker_fk = markers.id"#)
-        .fetch_all(pool.get_ref()).await?)
+        INNER JOIN records on records.marker_id = markers.id"#)
+        .fetch_all(pool).await?)
 }

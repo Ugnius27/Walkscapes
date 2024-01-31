@@ -1,107 +1,129 @@
+use std::collections::HashMap;
+use std::io::{BufReader, Read};
+use actix_multipart::form::MultipartForm;
 use actix_multipart::Multipart;
 use actix_web::{get, HttpRequest, HttpResponse, post, Responder, web};
-use futures_util::StreamExt;
+use futures_util::{StreamExt, TryStreamExt};
 use sqlx::MySqlPool;
-use crate::field_extractors::{extract_f64_from_field, extract_image_from_field, extract_string_from_field};
-use crate::image::Image;
-use crate::marker::{insert_marker, Marker};
-use crate::record;
-use crate::record::html::record_view_html;
-use crate::record::Record;
-use crate::user_error::UserError;
+use crate::models::database::{image, record};
+use crate::models::{Image, Record};
+use crate::models::record::RecordUploadForm;
+use crate::routes::user_error::UserError;
 
-#[post("api/records")]
-pub async fn post_record(mut payload: Multipart, pool: web::Data<MySqlPool>) -> impl Responder {
-    let pool = pool.get_ref();
+//todo change to save files on disk instead of in database
+#[post("api/markers/{marker_id}/records")]
+pub async fn post_record(form: MultipartForm<RecordUploadForm>, path: web::Path<i32>, pool: web::Data<MySqlPool>) -> Result<impl Responder, UserError> {
+    let mut transaction = pool.begin().await?;
+    let mut form = form.into_inner();
 
-    let mut marker = Marker::new();
-    let mut record = Record::new();
-    let mut images: Vec<Image> = Vec::new();
+    let record_id = record::insert_record_transaction(
+        &mut transaction,
+        Record { id: 0, marker_id: path.into_inner(), description: form.description.0 },
+    ).await?;
 
-    while let Some(field) = payload.next().await {
-        let field = match field {
-            Ok(field) => field,
-            Err(err) => return HttpResponse::BadRequest().body(format!("Error processing field: {}", err))
-        };
+    //todo prevent empty file upload
+    for file in form.files.iter_mut() {
+        let mut bytes = file
+            .file
+            .as_file()
+            .bytes() //this is potentially super slow as we are trying each byte
+            .collect::<Result<Vec<u8>, _>>()
+            .map_err(|_| UserError::Internal)?; //todo idk if this is internal
 
-        let Some(field_name) = field.content_disposition().get_name() else {
-            return HttpResponse::BadRequest().body("Field has no name");
-        };
-
-        match field_name {
-            "image" => {
-                match extract_image_from_field(field).await {
-                    Ok(image) => images.push(image),
-                    Err(err) => return HttpResponse::BadRequest().body(err),
-                }
-            }
-            "description" => {
-                match extract_string_from_field(field).await {
-                    Ok(desc) => record.description = Some(desc),
-                    Err(err) => return HttpResponse::BadRequest().body(err),
-                }
-            }
-            "latitude" => {
-                match extract_f64_from_field(field).await {
-                    Ok(lat) => marker.latitude = lat,
-                    Err(err) => return HttpResponse::BadRequest().body(err),
-                }
-            }
-            "longitude" => {
-                match extract_f64_from_field(field).await {
-                    Ok(long) => marker.longitude = long,
-                    Err(err) => return HttpResponse::BadRequest().body(err),
-                }
-            }
-            _ => return HttpResponse::BadRequest().body("Unexpected field name"),
-        }
+        image::insert_image_transaction(
+            &mut transaction,
+            Image {
+                id: 0,
+                record_id,
+                filename: file.file_name.as_ref().unwrap_or(&String::from("")).to_string(),
+                image_data: bytes,
+            },
+        ).await?;
     }
-
-    let marker_id = match insert_marker(&pool, marker).await {
-        Ok(id) => id,
-        Err(err) => {
-            eprintln!("{err}");
-            return HttpResponse::InternalServerError().body("Database error");
-        }
-    };
-
-    record.id = marker_id;
-    if let Err(err) = insert_record(&pool, record).await {
-        eprintln!("{err}");
-        return HttpResponse::InternalServerError().body("Database error");
-    }
-
-    for image in images {
-        if let Err(err) = insert_record_image(&pool, image, marker_id).await {
-            eprintln!("{err}");
-            return HttpResponse::InternalServerError().body("Database error");
-        }
-    }
-
-    HttpResponse::Ok().body("Data received")
+    transaction.commit().await?;
+    Ok(HttpResponse::Ok().body(""))
 }
 
-#[get("api/marker={marker_id}/records")]
-pub async fn get_records(request: HttpRequest, pool: web::Data<MySqlPool>, marker_id: web::Path<i32>) -> Result<impl Responder, UserError> {
-    let marker_id = marker_id.into_inner();
+// pub async fn post_record(mut payload: Multipart, marker_id: web::Path<i32>, pool: web::Data<MySqlPool>) -> impl Responder {
+//     let pool = pool.get_ref();
+//
+//     let mut marker = Marker::new();
+//     let mut record = Record::new();
+//     let mut images: Vec<Image> = Vec::new();
+//
+//     while let Some(field) = payload.next().await {
+//         let field = match field {
+//             Ok(field) => field,
+//             Err(err) => return HttpResponse::BadRequest().body(format!("Error processing field:recr {}", err))
+//         };
+//
+//         let Some(field_name) = field.content_disposition().get_name() else {
+//             return HttpResponse::BadRequest().body("Field has no name");
+//         };
+//
+//         match field_name {
+//             "image" => {
+//                 match extract_image_from_field(field).await {
+//                     Ok(image) => images.push(image),
+//                     Err(err) => return HttpResponse::BadRequest().body(err),
+//                 }
+//             }
+//             "description" => {
+//                 match extract_string_from_field(field).await {
+//                     Ok(desc) => record.description = Some(desc),
+//                     Err(err) => return HttpResponse::BadRequest().body(err),
+//                 }
+//             }
+//             "latitude" => {
+//                 match extract_f64_from_field(field).await {
+//                     Ok(lat) => marker.latitude = lat,
+//                     Err(err) => return HttpResponse::BadRequest().body(err),
+//                 }
+//             }
+//             "longitude" => {
+//                 match extract_f64_from_field(field).await {
+//                     Ok(long) => marker.longitude = long,
+//                     Err(err) => return HttpResponse::BadRequest().body(err),
+//                 }
+//             }
+//             _ => return HttpResponse::BadRequest().body("Unexpected field name"),
+//         }
+//     }
+//
+//     let marker_id = match insert_marker(&pool, marker).await {
+//         Ok(id) => id,
+//         Err(err) => {
+//             eprintln!("{err}");
+//             return HttpResponse::InternalServerError().body("Database error");
+//         }
+//     };
+//
+//     record.id = marker_id;
+//     if let Err(err) = insert_record(&pool, record).await {
+//         eprintln!("{err}");
+//         return HttpResponse::InternalServerError().body("Database error");
+//     }
+//
+//     for image in images {
+//         if let Err(err) = insert_record_image(&pool, image, marker_id).await {
+//             eprintln!("{err}");
+//             return HttpResponse::InternalServerError().body("Database error");
+//         }
+//     }
+//
+//     HttpResponse::Ok().body("Data received")
+// }
 
-    let records = record::database::get_records_by_marker_id(&pool, marker_id).await?;
-    for record in records {}
-        let images = sqlx::query_as!(Image, "SELECT images.id from images inner join records on records.marker_fk = record_fk WHERE record_fk = ?", record.id).fetch_all(pool.get_ref()).await?
-    for row in result {
-        record.photos.push(row.id);
+//experimental
+#[get("api/records")]
+pub async fn get_records(query: web::Query<HashMap<String, String>>, pool: web::Data<MySqlPool>) -> Result<impl Responder, UserError> {
+    if let Some(marker_id) = query.0.get("marker-id") {
+        let marker_id = marker_id.parse::<i32>()
+            .map_err(|e| UserError::Parse("Could not parse 'marker-id' value in query".into()))?;
+        let records = record::get_records_by_marker_id(&pool, marker_id).await?;
+        return Ok(web::Json(records));
     }
 
-    if let Some(header) = request.headers().get("Accept") {
-        if let Ok(value) = header.to_str() {
-            if value.contains("application/json") {
-                return HttpResponse::Ok().json(&record);
-            } else {
-                return HttpResponse::Ok().body(record_view_html(&record).into_string());
-            }
-        }
-    }
-
-    Ok(HttpResponse::BadRequest().body("Malformed request"))
+    return Err(UserError::NotImplemented("Must be queried with a marker-id".into()));
 }
 
