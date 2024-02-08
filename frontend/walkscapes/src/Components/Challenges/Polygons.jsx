@@ -4,7 +4,7 @@ import 'leaflet/dist/leaflet.css';
 import { useEffect, useState } from 'react'
 import * as Database from './GetDataFromDB.js'
 
-const Polygons = ({mapRef, polygonIds, setPolygonIds, activeChallenges}) => {
+const Polygons = ({mapRef, polygonIds, setPolygonIds, activeChallenges, challenges}) => {
 	const [polygons, setPolygons] = useState(null);
 
 	function createPolygon(map, vertices, color) {
@@ -26,11 +26,21 @@ const Polygons = ({mapRef, polygonIds, setPolygonIds, activeChallenges}) => {
 		});
 	}
 	  
-	function putPolygonsOnMap(mapRef, activeChallenges) {
+	/*function putPolygonsOnMap(mapRef, activeChallenges) {
 		var ids = []
 
 		for (var i = 0; i < activeChallenges.length; i++) {
 			ids.push(createPolygon(mapRef.current, activeChallenges[i].polygon.vertices, 'blue'));
+		}
+
+		setPolygonIds(ids);
+	}*/
+
+	function putPolygonsOnMap(mapRef, challenges) {
+		var ids = []
+
+		for (var i = 0; i < challenges.length; i++) {
+			ids.push(createPolygon(mapRef.current, challenges[i].polygon.vertices, 'blue'));
 		}
 
 		setPolygonIds(ids);
@@ -48,7 +58,7 @@ const Polygons = ({mapRef, polygonIds, setPolygonIds, activeChallenges}) => {
 			return;
 
 		removePolygons(polygonIds);
-		putPolygonsOnMap(mapRef, activeChallenges)
+		putPolygonsOnMap(mapRef, challenges)
 	}, [polygons, activeChallenges])
 }
 

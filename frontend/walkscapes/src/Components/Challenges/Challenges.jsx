@@ -29,6 +29,7 @@ markerIds, setMarkerIds, isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 	useEffect(() => {
 		Database.fetchChallenges().then((challengesInJson) => {
 			setChallengesData(challengesInJson);
+			console.log('challengesInJson: ', challengesInJson);
 		}).catch((error) => {
 			console.error('Error fetching challenges: ', error);
 		});
@@ -55,6 +56,7 @@ markerIds, setMarkerIds, isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 		}
 		  
 		setActiveChallenges(activeChallengesTemp);
+		console.log('active challenges: ', activeChallengesTemp);
 
 
 		// if (challengesData) {
@@ -83,6 +85,7 @@ markerIds, setMarkerIds, isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 			polygonIds={polygonIds}
 			setPolygonIds={setPolygonIds}
 			activeChallenges={activeChallenges}
+			challenges={challengesData}
 		/>
 		<Markers 
 			mapRef={mapRef}

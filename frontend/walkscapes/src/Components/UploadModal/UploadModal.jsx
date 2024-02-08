@@ -6,7 +6,7 @@ import React, { useState, useEffect } from 'react';
 
 import * as UploadToDB from '../UploadModal/UploadDataToDB.js'
 
-import { DEFAULT_ICON } from '../../App.jsx';
+import { DEFAULT_ICON, RED_ICON } from '../../App.jsx';
 
 export const UPLOAD_MODAL_ID = 'uploadModal';
 export const BUTTON_TO_SHOW_UPLOAD_MODAL = 'showUploadModalButton';
@@ -128,20 +128,43 @@ const UploadModal = ({map, lastSubmittedMarkerId, isNewSuggestionAdded, setIsNew
     setSelectedImages([]);
     setDescription('');
 
-    console.log('submitted marker: ', lastSubmittedMarkerId);
+    //console.log('submitted marker: ', lastSubmittedMarkerId);
 
 
     var lastSubmittedMarker = map._layers[lastSubmittedMarkerId];
     var coordinates = lastSubmittedMarker.getLatLng();
+    console.log('before uploadRecordFunc');
+    console.log('lastSubmittedMarker: ', lastSubmittedMarker);
+    UploadToDB.uploadRecord(coordinates.lat, coordinates.lng, selectedImages, description)
+        .then(() => {
+            setIsNewSuggestionAdded((previous) => !previous);
+            //console.log('SET SUGG ADDED');
+            //console.log('lastSubmittedMarker: ', lastSubmittedMarker);
 
-    UploadToDB.uploadRecord(coordinates.lat, coordinates.lng, selectedImages, description);
+            //lastSubmittedMarker.setIcon(RED_ICON);
+            //console.log('icon changed');
+            //lastSubmittedMarker.openPopup();
+            
+            
+            // Now you can fetch markers or perform any other actions 
+            // that should happen after the record is successfully uploaded.
+        })
+        .catch(error => {
+            // Handle error if the record upload fails
+            console.error('Error uploading record:', error);
+        });
+        
+    setShowAlert(true);
+    
+    /*UploadToDB.uploadRecord(coordinates.lat, coordinates.lng, selectedImages, description);
+
     setIsNewSuggestionAdded((previous) => !previous);
 
     // console.log(lastSubmittedMarker);
     lastSubmittedMarker.setIcon(DEFAULT_ICON);
     lastSubmittedMarker.openPopup();
 
-    setShowAlert(true);
+    setShowAlert(true);*/
   };
   
   function sleep(ms) {
