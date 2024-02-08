@@ -3,7 +3,7 @@ use sqlx::MySqlPool;
 use crate::models::Polygon;
 use crate::routes::user_error::UserError;
 use crate::models::database::polygon;
-use crate::markup::polygon::polygon_to_html;
+use crate::markup::polygon_modal::polygon_to_html;
 
 #[get("api/polygons")]
 pub async fn get_polygons(pool: web::Data<MySqlPool>) -> Result<impl Responder, UserError> {

@@ -1,3 +1,3 @@
-pub mod challenge;
-pub mod record;
-pub mod polygon;
+pub mod challenge_list;
+pub mod record_menu;
+pub mod polygon_modal;

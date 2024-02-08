@@ -1,9 +1,6 @@
 use sqlx::{Error, MySqlPool};
 use crate::models::Challenge;
 
-macro_rules! select_builder {
-    () => {};
-}
 pub async fn get_challenges(pool: &MySqlPool) -> Result<Vec<Challenge>, Error> {
     Ok(sqlx::query_as!(
         Challenge,
@@ -43,8 +40,8 @@ pub async fn insert_challenge(challenge: &Challenge, pool: &MySqlPool) -> Result
         is_active,
         is_visible)
         values (?, ?, ?, ?, ?);"#,
-        challenge.id,
         challenge.title,
+        challenge.description,
         challenge.polygon_id,
         challenge.is_active,
         challenge.is_visible

@@ -7,12 +7,9 @@ use sqlx::MySqlPool;
 use actix_web::{web, App, HttpServer};
 use std::env;
 use actix_cors::Cors;
-use crate::routes::{
-    record,
-    challenge,
-    polygon,
-    marker,
-};
+use crate::routes::{json_api, ui_components};
+use json_api::*;
+use ui_components::challenge_list;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -28,26 +25,32 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         App::new()
             .wrap(Cors::permissive())
             .app_data(web::Data::new(pool.clone()))
+
             .service(marker::get_markers)
             .service(marker::get_marker_records)
+
             .service(record::get_records)
             .service(record::post_record)
+
             .service(challenge::get_challenges)
-            .service(challenge::get_challenge_edit_form)
-            .service(challenge::put_challenge)
-            .service(challenge::delete_challenge)
             .service(challenge::get_challenge)
-            .service(challenge::post_challenge)
-            // .service(get_record_image)
+
             .service(polygon::post_polygon)
             .service(polygon::delete_polygon)
             .service(polygon::get_polygons)
             .service(polygon::get_polygon_by_id)
+
+            .service(challenge_list::get_challenges)
+            .service(challenge_list::get_selected_challenge)
+            .service(challenge_list::get_challenge_edit_form)
+            .service(challenge_list::put_challenge)
+            .service(challenge_list::delete_challenge)
+            .service(challenge_list::post_challenge)
+
             .service(actix_files::Files::new("/", "../frontend")
                 .index_file("index.html"))
     })
         .bind("0.0.0.0:8080").expect("Failed to bind HTTP")
-        //TLS
         .bind_rustls_021("0.0.0.0:8443", tls::load_rustls_config()).expect("Failed to bind HTTPS")
         .run()
         .await.unwrap();

@@ -20,8 +20,8 @@ impl From<ChallengePostForm> for Challenge {
             title: value.title,
             description: value.description,
             polygon_id: value.polygon_id,
-            is_active: if value.is_active == "on" { true } else { false },
-            is_visible: if value.is_visible == "on" { true } else { false },
+            is_active: if value.is_active.is_some() { true } else { false },
+            is_visible: if value.is_visible.is_some() { true } else { false },
         }
     }
 }
@@ -31,6 +31,6 @@ pub struct ChallengePostForm {
     title: String,
     description: String,
     polygon_id: i32,
-    is_active: String,
-    is_visible: String,
+    is_active: Option<String>,
+    is_visible: Option<String>,
 }

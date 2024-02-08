@@ -3,6 +3,8 @@ use std::fmt;
 use actix_web::http::StatusCode;
 use actix_web::ResponseError;
 
+pub type UserResult<T> = Result<T, UserError>;
+
 #[derive(Debug)]
 pub enum UserError {
     NotFound(i32),
