@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 
 import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+//import 'leaflet/dist/leaflet.css';
 
+import './Markers.css'
 import * as Database from './GetDataFromDB.js'
 
 import { DEFAULT_ICON, RED_ICON } from '../../App.jsx';
@@ -11,6 +12,9 @@ const VIEW_SUGGESTIONS_BUTTON_ID = 'viewSuggestionsButton';
 
 export function createMarker(mapRef, lat, lng) {
 	var marker = L.marker([lat, lng], { icon: DEFAULT_ICON, draggable: false }).addTo(mapRef.current);
+	//var marker = L.marker([lat, lng]).addTo(mapRef.current);
+	//var marker = leaflet_marker;
+	//marker._icon.classList.add("red");
 	bindFixedMarkersPopup(marker, lat, lng, mapRef);
 
 	return marker._leaflet_id

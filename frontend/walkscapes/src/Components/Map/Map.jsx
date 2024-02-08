@@ -3,8 +3,9 @@
 import React, { useEffect, useState } from 'react';
 
 import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+//import 'leaflet/dist/leaflet.css';
 
+import '../Challenges/Markers.css'
 import AddMarkerButton from '../AddMarkerButton/AddMarkerButton';
 
 import * as Fade from '../FadeModal/FadeModal.jsx';
@@ -37,7 +38,10 @@ export function initializeMap(mapContainer, center, mapRef) {
 	}).addTo(map);
   
 	var marker = L.marker(center, { icon: DEFAULT_ICON }).addTo(map);
+	// var marker = L.marker(center).addTo(map);
 	marker.bindPopup("Center");
+
+	//marker._icon.classList.add("red");
 
 	mapRef.current = map; // Save the map instance to the ref
 }

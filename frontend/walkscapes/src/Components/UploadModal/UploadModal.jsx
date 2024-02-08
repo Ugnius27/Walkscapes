@@ -1,5 +1,5 @@
 import L, { map } from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+//import 'leaflet/dist/leaflet.css';
 import '../../popupsLeaflet.css'
 
 import React, { useState, useEffect } from 'react';

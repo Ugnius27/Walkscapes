@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+//import 'leaflet/dist/leaflet.css';
 
 import './popupsLeaflet.css'
 import './Login.css'
@@ -28,9 +28,6 @@ export const DEFAULT_ICON = new L.Icon({
 });
 
 function App() {
-  const [username, setUsername] = useState("");
-  const [user, setUser] = useState("");
-
   const [challengesData, setChallengesData] = useState([]);
   const [challengesToAccordion, setChallengesToAccordion] = useState([]);
 
@@ -49,60 +46,32 @@ function App() {
     
   }, [challengesData])
 
-  useEffect (() =>{
-    console.log(user);
-  }, [user])
-
-
   var mapContainer = useRef(null);
   var mapRef = useRef(null);
 
   return (
     <div className='App'>
-      {user? (
-        <>
-        <AppFirstRow Challenges={challengesToAccordion}/>
+      <>
+      <AppFirstRow Challenges={challengesToAccordion}/>
+      
+      <FadeModal/>
+      
+      <div 
+        style={{ 
+          position: 'relative', 
+          height: '253px', 
+          marginLeft: '1.2rem'}}
+      >
+        <MapComponent 
+          mapContainer={mapContainer}
+          mapRef={mapRef}
+          challengesData={challengesData}
+          setChallengesData={setChallengesData}
+        />
         
-        <FadeModal/>
-        
-        <div 
-          style={{ 
-            position: 'relative', 
-            height: '253px', 
-            marginLeft: '1.2rem'}}
-        >
-          <MapComponent 
-            mapContainer={mapContainer}
-            mapRef={mapRef}
-            challengesData={challengesData}
-            setChallengesData={setChallengesData}
-          />
-          
-        </div> 
+      </div> 
 
-        </>
-        ) : (
-        <>
-
-        <div className="container-fluid d-flex justify-content-center align-items-center vh-100">
-          <div className="text-center input-box">
-            <input
-              className='form-control form-control-lg '
-              type="text"
-              placeholder="Username"
-              onChange={(e) => setUsername(e.target.value)}
-          />
-
-          <button className='popup-button'
-            onClick={() => setUser(username)}
-          >
-            Log in
-          </button>            
-            
-          </div>
-        </div>
-        </> 
-      )}
+      </>
 
     </div>
   );

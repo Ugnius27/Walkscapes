@@ -36,6 +36,31 @@ export function toggleAddMarkerButton(){
 	addMarkerButtonElement.style.display = (addMarkerButtonElement.style.display == 'none') ? 'flex' : 'none';
 }
 
+function currentLocation(callback) {
+    if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(
+            function (position) {
+                var coordinates = position.coords;
+
+                var latitude = coordinates.latitude;
+                var longitude = coordinates.longitude;
+
+                // console.log("Latitude: " + latitude + ", Longitude: " + longitude);
+                callback([latitude, longitude]);
+            },
+            function (error) {
+                console.error("Error getting location:", error.message);
+                callback(null);
+            }
+        );
+    } else {
+        console.log("Geolocation is not supported by this browser.");
+        callback(null);
+    }
+}
+
+
+
 const AddMarkerButton = ({mapRef, activePolygons, polygonIds, markerIds, setMarkerIds, lastMarkerId, setLastMarkerId,
 isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 	// var lastMarkerId = -1;
@@ -71,6 +96,56 @@ isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 
 		marker.openPopup();
 	}
+
+
+
+
+	async function addToCurrentLocation() {
+		console.log('Add to Current Location clicked');
+		//map.removeControl(customTableControl);
+		//addTableIsOnTheMap = false;
+
+		currentLocation(async function (currentCoordinates) {
+			if (currentCoordinates) {
+				/*console.log(currentCoordinates);
+				var newMarker = L.marker(currentCoordinates, { icon: redIcon }).addTo(map);
+				newMarker.bindPopup(currentCoordinates[0] + ", " + currentCoordinates[1]);
+
+				coordsForUploading = [currentCoordinates[0], currentCoordinates[1]];
+
+				await togglePopup();
+				if (submitted){
+					console.log("This was submitted");
+					createMarker(map, currentCoordinates[0], currentCoordinates[1], 
+					`${currentCoordinates[0]}, ${currentCoordinates[1]}`);
+				}
+				else{
+					console.log("This was not submitted");
+					map.removeLayer(newMarker);
+				}*/
+				console.log('currentCoordinates: ', currentCoordinates);
+				//var newMarker = L.marker([lat, lng], { icon: RED_ICON, draggable: true }).addTo(mapRef.current);
+
+			} else {
+				console.log("Unable to get the current location.");
+			}
+		});
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	function chooseLocation(mapRef) {  // TODO: finish
 		console.log('Choose location clicked');
