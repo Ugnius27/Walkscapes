@@ -50,7 +50,7 @@ markerIds, setMarkerIds, isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 			for (let i = 0; i < challengesData.length; i++) {
 				const challenge = challengesData[i];
 				if (challenge.is_active) {
-				activeChallengesTemp.push(challenge);
+					activeChallengesTemp.push(challenge);
 				}
 			}
 		}
@@ -95,6 +95,9 @@ markerIds, setMarkerIds, isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 				// .map(challenge => challenge.polygon) || []
 				activePolygons
 			}
+			/*polygons={
+				challengesData.map(challenge => challenge.polygon)
+			}*/
 			markersData={markersData}
 			setMarkersData={setMarkersData}
 			markersIds={markerIds}

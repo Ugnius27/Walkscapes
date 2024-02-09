@@ -142,7 +142,8 @@ isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 	useEffect(() => {
 		// console.log('markersData changed ', markersData);
 		removeMarkersFromMap(markersIds)
-		putMarkersOnMap(markersData, activePolygons);
+		// putMarkersOnMap(markersData, activePolygons);
+		putMarkersOnMap(markersData, challengesData.map(challenge => challenge.polygon));
 
 		// console.log('new markers put on map');
 	}, [markersData, isNewSuggestionAdded])
