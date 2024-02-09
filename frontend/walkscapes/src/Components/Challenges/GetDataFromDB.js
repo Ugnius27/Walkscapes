@@ -1,4 +1,4 @@
- export const BASE_URL = 'http://localhost:8080';
+export const BASE_URL = '';
 //export const BASE_URL = '';
 
 const MARKERS_API_ENDPOINT = '/api/record/markers';
@@ -6,7 +6,11 @@ const MARKERS_API_ENDPOINT = '/api/record/markers';
 
 export async function fetchMarkers() {
     try {
-        const response = await fetch(`${BASE_URL}${MARKERS_API_ENDPOINT}`);
+        const response = await fetch(`${BASE_URL}${MARKERS_API_ENDPOINT}`, {
+            headers: {
+                'Accept': 'application/json' // Specify the desired media type
+            }
+        });
         if (!response.ok) {
             throw new Error('Failed to fetch markers');
         }
@@ -24,19 +28,23 @@ export async function fetchMarkers() {
 }
 
 export async function fetchRecordsForMarker(markerId) {
-	try {
-		const response = await fetch(`${BASE_URL}/api/record/marker=${markerId}`);
-		if (!response.ok) {
-			throw new Error(`Failed to fetch records for marker ${markerId}`);
-		}
-		
-		const records = await response.json();
-		return records;
+    try {
+        const response = await fetch(`${BASE_URL}/api/record/marker=${markerId}`, {
+            headers: {
+                'Accept': 'application/json' // Specify the desired media type
+            }
+        });
+        if (!response.ok) {
+            throw new Error(`Failed to fetch records for marker ${markerId}`);
+        }
 
-	} catch (error) {
-		console.error(error);
-		return [];
-	}
+        const records = await response.json();
+        return records;
+
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
 }
 
 export async function fetchRecordImage(markerId, photoId) {
@@ -59,7 +67,11 @@ export async function fetchRecordImage(markerId, photoId) {
 
 export async function fetchPolygons() {
     try {
-        const response = await fetch(`${BASE_URL}/api/polygons`);
+        const response = await fetch(`${BASE_URL}/api/polygons`, {
+            headers: {
+                'Accept': 'application/json' // Specify the desired media type
+            }
+        });
         if (!response.ok) {
             throw new Error(`Failed to fetch polygons`);
         }
