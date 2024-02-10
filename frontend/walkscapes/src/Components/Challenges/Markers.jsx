@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 
 import L from 'leaflet';
-//import 'leaflet/dist/leaflet.css';
+import 'leaflet/dist/leaflet.css';
 
 import './Markers.css'
 import * as Database from './GetDataFromDB.js'
@@ -11,6 +11,10 @@ import { DEFAULT_ICON, RED_ICON } from '../../App.jsx';
 const VIEW_SUGGESTIONS_BUTTON_ID = 'viewSuggestionsButton';
 
 export function createMarker(mapRef, lat, lng) {
+	// console.log('mapref: ', mapRef);
+	if (mapRef.current === null) return;
+
+	// console.log('mapref!: ', mapRef);
 	var marker = L.marker([lat, lng], { icon: DEFAULT_ICON, draggable: false }).addTo(mapRef.current);
 	//var marker = L.marker([lat, lng]).addTo(mapRef.current);
 	//var marker = leaflet_marker;
@@ -94,6 +98,12 @@ isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 	const [challenges, setChallenges] = useState([]);
 
 	function removeMarkersFromMap(markersIds) {
+		if (mapRef.current === undefined || mapRef.current === null){
+			return;
+		}
+		// console.log('in removeMarkersFromMap: ', mapRef, ' markersIds: ', markersIds);
+
+
 		for (let i = 0; i < markersIds.length; i++){
 			var marker = mapRef.current._layers[markersIds[i]];
 			mapRef.current.removeLayer(marker);
@@ -104,7 +114,7 @@ isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 		var ids = []
 		var usedCoords = [];
 
-		if (!markersData || !polygons)
+		if (!markersData || !polygons || !mapRef)
 			return;
 
 		for (var i = 0; i < markersData.length; i++){
@@ -114,7 +124,11 @@ isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 				if (isMarkerInThePolygon(coords, polygons[j].vertices) && !doesCoordsMatch(usedCoords, coords)){
 					// console.log(coords);
 					// console.log(doesCoordsMatch(usedCoords, coords), ' ', usedCoords, coords);
-					ids.push(createMarker(mapRef, coords[0], coords[1]))
+					var id = createMarker(mapRef, coords[0], coords[1])
+					if (id){
+						ids.push(id)
+					}
+					
 					usedCoords.push(coords);
 
 					break
@@ -143,7 +157,13 @@ isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 		// console.log('markersData changed ', markersData);
 		removeMarkersFromMap(markersIds)
 		// putMarkersOnMap(markersData, activePolygons);
-		putMarkersOnMap(markersData, challengesData.map(challenge => challenge.polygon));
+		var polygons = []
+		for (let i = 0; i < challengesData.length; i++){
+			polygons.push(challengesData[i].polygon)
+		}
+		// putMarkersOnMap(markersData, challengesData.map(challenge => challenge.polygon));
+		putMarkersOnMap(markersData, polygons);
+
 
 		// console.log('new markers put on map');
 	}, [markersData, isNewSuggestionAdded])

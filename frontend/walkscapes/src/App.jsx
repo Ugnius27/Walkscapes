@@ -7,6 +7,7 @@ import L from 'leaflet';
 
 import './popupsLeaflet.css'
 import './Login.css'
+import * as CurrentLocation from './CurrentLocation.js';
 import * as Map from './Components/Map/Map.jsx';
 
 import AppFirstRow from './Components/AppFirstRow/AppFirstRow.jsx';
@@ -31,7 +32,6 @@ function App() {
   const [challengesData, setChallengesData] = useState([]);
   const [challengesToAccordion, setChallengesToAccordion] = useState([]);
 
-
   useEffect(() => {
     var Challenges = [];
 
@@ -43,6 +43,8 @@ function App() {
     }
 
     setChallengesToAccordion(Challenges);
+
+    //CurrentLocation.getCurrentLocation()
     
   }, [challengesData])
 

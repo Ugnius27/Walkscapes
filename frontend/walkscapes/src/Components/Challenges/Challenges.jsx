@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import * as Database from './GetDataFromDB.js'
+import * as Calculations from '../../Calculations.js'
+import * as CurrentLocation from '../../CurrentLocation.js'
 
 import Polygons from './Polygons.jsx'
 import Markers from './Markers.jsx'
@@ -21,15 +23,34 @@ export function getActivePolygons(challengesData){
 	return [];
 }
 
-const Challenges = ({mapRef, challengesData, setChallengesData, polygonIds, setPolygonIds, markersData, setMarkersData, 
+const Challenges = ({mapRef, setCenterCoord, challengesData, setChallengesData, polygonIds, setPolygonIds, activePolygons,
+	setActivePolygons,	 markersData, setMarkersData, 
 markerIds, setMarkerIds, isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 	const [activeChallenges, setActiveChallenges] = useState([]);
-	const [activePolygons, setActivePolygons] = useState([]);
+	// const [activePolygons, setActivePolygons] = useState([]);
+	
+
+	// function centerCoordinate (activePolygons, currentLocationCoords) {
+	// 	var minDistance = null, minCoords; //, index;
+
+	// 	for (let i = 0; i < activePolygons.length; i++){
+	// 		var centerOfPolygon = Calculations.getPolygonCenter(activePolygons[i].vertices);
+
+	// 		var distance = Calculations.distanceBetween2Points(centerOfPolygon, [currentLocationCoords.latitude, currentLocationCoords.longitude])
+	// 		if (minDistance == null || distance < minDistance){
+	// 			//index = i;
+	// 			minDistance = distance;
+	// 			minCoords = centerOfPolygon;
+	// 		}
+	// 	}
+
+	// 	return minCoords;
+	// }
 
 	useEffect(() => {
 		Database.fetchChallenges().then((challengesInJson) => {
 			setChallengesData(challengesInJson);
-			console.log('challengesInJson: ', challengesInJson);
+			// console.log('challengesInJson: ', challengesInJson);
 		}).catch((error) => {
 			console.error('Error fetching challenges: ', error);
 		});
@@ -56,7 +77,7 @@ markerIds, setMarkerIds, isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 		}
 		  
 		setActiveChallenges(activeChallengesTemp);
-		console.log('active challenges: ', activeChallengesTemp);
+		// console.log('active challenges: ', activeChallengesTemp);
 
 
 		// if (challengesData) {
@@ -74,9 +95,23 @@ markerIds, setMarkerIds, isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 		// }
 
 		setActivePolygons(getActivePolygons(challengesData))
+		// console.log('active ploygons: ', activePolygons);
 		  
 		  
 	}, [challengesData])
+
+	// useEffect(() => {
+	// 	CurrentLocation.getCurrentLocation()
+	// 	.then(location => {
+	// 		console.log("Current location:", location);
+	// 		setCenterCoord(centerCoordinate(activePolygons, location))
+	// 	})
+	// 	.catch(error => {
+	// 		console.error("Error getting current location:", error);
+	// 	});
+
+		
+	// }, [activePolygons])
 
 	return (
 		<>

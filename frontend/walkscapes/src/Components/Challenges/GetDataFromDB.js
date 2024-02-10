@@ -1,4 +1,4 @@
-//export const BASE_URL = 'http://localhost:8080';
+// export const BASE_URL = 'http://localhost:8080';
 export const BASE_URL = '';
 
 const MARKERS_API_ENDPOINT = '/api/record/markers';
@@ -17,7 +17,7 @@ export async function fetchMarkers() {
 
         const markers = await response.json();
 
-        console.log('markers: ', markers);
+        // console.log('markers: ', markers);
         //console.log("markers length0: " + markers.length)
         return markers;
 
@@ -98,7 +98,7 @@ export async function fetchChallenges() {
         }
 
         const challenges = await response.json();
-        console.log('challenges: ', challenges);
+        // console.log('challenges: ', challenges);
         return challenges;
 
     } catch (error) {

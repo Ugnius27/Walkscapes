@@ -12,6 +12,8 @@ import * as Fade from '../FadeModal/FadeModal.jsx';
 import * as Markers from '../Challenges/Markers.jsx'
 import * as SuggestionsList from '../SuggestionsModal/SuggestionsListModal.jsx'
 import * as ChallengesFunctions from '../Challenges/Challenges.jsx'
+import * as CurrentLocation from '../../CurrentLocation.js'
+import * as Calculations from '../../Calculations.js'
 
 import { DEFAULT_ICON, RED_ICON } from '../../App.jsx';
 import { BUTTON_TO_SHOW_UPLOAD_MODAL } from '../UploadModal/UploadModal.jsx';
@@ -23,27 +25,31 @@ export const ADD_MARKER_MODAL_ID = 'AddMarkerModal';
 export const CHOOSE_LOCATION_MESSAGE_ID = 'ChooseLocationMessage';
 export const ADD_TO_CURR_LOCATION_MESSAGE_ID = 'AddToCurrLocationMessage';
 
+//const SPARE_CENTER_COORDINATE = [54.89984180616253, 23.961551736420333];
+const SPARE_CENTER_COORDINATE = [54.53, 23.3];
+
 export const useMarkerState = () => {
 	const [canAddNewMarker, setCanAddNewMarker] = useState(true);
   
 	return { canAddNewMarker, setCanAddNewMarker };
 };
 
-export function initializeMap(mapContainer, center, mapRef) {
+export function initializeMap(mapContainer, center, mapRef, polygonVertices) {
 	if (!mapContainer.current || mapRef.current) return;
-  
-	var map = L.map(mapContainer.current).setView(center, 15);
+
+	const bounds = L.latLngBounds(polygonVertices);
+	var map = L.map(mapContainer.current)
+	const zoomLevel = map.getBoundsZoom(bounds);
+	var centerCoords = bounds.getCenter()
+	map.setView(centerCoords, zoomLevel);
+
 	L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 	  maxZoom: 20,
 	}).addTo(map);
   
-	var marker = L.marker(center, { icon: DEFAULT_ICON }).addTo(map);
-	// var marker = L.marker(center).addTo(map);
-	marker.bindPopup("Center");
+	//var marker = L.marker(centerCoords, { icon: DEFAULT_ICON }).addTo(map);
 
-	//marker._icon.classList.add("red");
-
-	mapRef.current = map; // Save the map instance to the ref
+	mapRef.current = map;
 }
   
 export function addButtonOnMap(customTableControl, map, addTableIsOnTheMap) {
@@ -67,10 +73,13 @@ const Map = ({mapContainer, mapRef, challengesData, setChallengesData}) => {
 
 	// The value of this variable is not important. The effects have to be activated when the value
 	// of the variable changes
+	// const [centerCoord, setCenterCoord] = useState([-1, -1]);
 	const [isNewSuggestionAdded, setIsNewSuggestionAdded] = useState(true);
 
 	// const [challengesData, setChallengesData] = useState(null);
 	const [polygonIds, setPolygonIds] = useState([]);
+	const [activePolygons, setActivePolygons] = useState([]);
+
 
 	const [markers, setMarkers] = useState([]); 
 	const [markersData, setMarkersData] = useState(null);
@@ -87,15 +96,116 @@ const Map = ({mapContainer, mapRef, challengesData, setChallengesData}) => {
 	// // // }, [markerIds]);
 
 	const santaka = [54.89984180616253, 23.961551736420333];
+
+	function verticesOfClosestPolygon (challenges, currentLocationCoords) {
+		var minDistance = null, minCoords, minVertices; //, index;
+
+		for (let i = 0; i < challenges.length; i++){
+			if (!challenges[i].is_active)
+				continue;
+
+			var pol_vertices = challenges[i].polygon.vertices;
+			var centerOfPolygon = Calculations.getPolygonCenter(pol_vertices);
+			
+			// var centroid = polygon.getBounds().getCenter();
+			// console.log('centroid ', centroid, ' centerOfPolygon ', centerOfPolygon);
+
+			var distance = Calculations.distanceBetween2Points(centerOfPolygon, currentLocationCoords)
+			// console.log('distance ', distance);
+			// console.log('actp ', activePolygons);
+			if (minDistance == null || distance < minDistance){
+				//index = i;
+				minDistance = distance;
+				minCoords = centerOfPolygon;
+				minVertices = pol_vertices
+			}
+		}
+
+		// console.log('minCoords: ', minCoords);
+		// console.log('minVertices: ', minVertices);
+		// return minCoords;
+		return minVertices
+	}
+
+	// function centerCoordinate (challengesData, currentLocationCoords) {
+	// 	var minDistance = null, minCoords; //, index;
+
+	// 	for (let i = 0; i < activePolygons.length; i++){
+	// 		var centerOfPolygon = Calculations.getPolygonCenter(activePolygons[i].vertices);
+
+	// 		var distance = Calculations.distanceBetween2Points(centerOfPolygon, [currentLocationCoords.latitude, currentLocationCoords.longitude])
+	// 		if (minDistance == null || distance < minDistance){
+	// 			//index = i;
+	// 			minDistance = distance;
+	// 			minCoords = centerOfPolygon;
+	// 		}
+	// 	}
+
+	// 	return minCoords;
+	// }
+
+
+	// function centerCoordinate (activePolygons, currentLocationCoords) {
+	// 	var minDistance = null, minCoord; //, index;
+
+	// 	for (let i = 0; i < activePolygons.length; i++){
+	// 		var centerOfPolygon = Calculations.getPolygonCenter(activePolygons[i].vertices);
+
+	// 		var distance = Calculations.distanceBetween2Points(centerOfPolygon, [currentLocationCoords.latitude, currentLocationCoords.longitude])
+	// 		if (minDistance == null || distance < minDistance){
+	// 			//index = i;
+	// 			minDistance = distance;
+	// 			minCoord = centerOfPolygon;
+	// 		}
+	// 	}
+
+	// 	return minCoord;
+	// }
     // mapRef.current - main map
 
 
   	useEffect(() => {
-		initializeMap(mapContainer, santaka, mapRef);   
-  	}, []);
+		if (challengesData.length > 0 && activePolygons.length > 0){
+			// console.log('Chal data: ', challengesData)
+
+			CurrentLocation.getCurrentLocation()
+			.then(location => {
+				// console.log("Current location:", location, ' activePolygons ', activePolygons);
+				
+				var vertices;
+				vertices = verticesOfClosestPolygon(challengesData, location)
+			
+				initializeMap(mapContainer, location, mapRef, vertices);
+				// }
+
+
+				
+			})
+			.catch(error => {
+				console.error("Error getting current location:", error);
+			});
+
+			// if ((centerCoord[0] === -1 || centerCoord[1] === -1)){
+			// 	initializeMap(mapContainer, santaka, mapRef);
+
+			// 	// console.log('ppppp');
+			// }
+		}
+		
+		// console.log('here again ', activePolygons);
+			
+	//else initializeMap(mapContainer, centerCoord, mapRef);
+		// console.log('nelygu  ', centerCoord, ' ooo'); 
+			 
+		// console.log('initializeMap ', centerCoord, ' ppp'); 
+  	}, [activePolygons]);
+
+	// useEffect(() => {
+	// 	console.log('Chal data: ', challengesData)
+	// }, [challengesData])
 
 	window.viewSuggestions = function(markerId) {
-		console.log('pressed on view', markerId);
+		// console.log('pressed on view', markerId);
 
 		var marker = mapRef.current._layers[markerId];
 		var buttonToClick = document.getElementById(BUTTON_TO_SHOW_SUGGESTIONS_MODAL);
@@ -118,7 +228,7 @@ const Map = ({mapContainer, mapRef, challengesData, setChallengesData}) => {
 			markersToDisplay = updatedMarkers;
 			// console.log('last: ', markersToDisplay);
 			setMarkers(markersToDisplay);
-			console.log(markersToDisplay)
+			// console.log(markersToDisplay)
 
 
 			// sleep(1000);
@@ -227,10 +337,13 @@ const Map = ({mapContainer, mapRef, challengesData, setChallengesData}) => {
 
 		<Challenges 
 			mapRef={mapRef}
+			// setCenterCoord={setCenterCoord}
 			challengesData={challengesData}
 			setChallengesData={setChallengesData}
 			polygonIds={polygonIds}
 			setPolygonIds={setPolygonIds}
+			activePolygons={activePolygons}
+			setActivePolygons={setActivePolygons}
 			markersData={markersData}
 			setMarkersData={setMarkersData}
 			markerIds={markerIds}

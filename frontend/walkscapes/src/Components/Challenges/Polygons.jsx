@@ -8,6 +8,9 @@ const Polygons = ({mapRef, polygonIds, setPolygonIds, activeChallenges, challeng
 	const [polygons, setPolygons] = useState(null);
 
 	function createPolygon(map, vertices, color) {
+		if (!map)
+			return;
+
 		var polygon = L.polygon(vertices, {color: color}).addTo(map);
 		// console.log('pol id: ', polygon._leaflet_id);
 		polygon.on('click', (e) => {
@@ -18,6 +21,9 @@ const Polygons = ({mapRef, polygonIds, setPolygonIds, activeChallenges, challeng
 	}
 
 	function removePolygons(polygonIds) {
+		if (mapRef.current === null)
+			return;
+
 		polygonIds.forEach(polygonId => {
 			const polygon = mapRef.current._layers[polygonId];
 			if (polygon) {
