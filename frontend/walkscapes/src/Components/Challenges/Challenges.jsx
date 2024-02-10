@@ -121,6 +121,7 @@ markerIds, setMarkerIds, isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 			setPolygonIds={setPolygonIds}
 			activeChallenges={activeChallenges}
 			challenges={challengesData}
+			setChallengesData={setChallengesData}
 		/>
 		<Markers 
 			mapRef={mapRef}

@@ -47,7 +47,7 @@ export function MessageOnFadeOverlay({ id, text, setCanAddNewMarker, mapRef, mar
 		//const { w, h } = mapElement.getBoundingClientRect();
 		const { width, height } = mapElement.getBoundingClientRect();
 
-		console.log('map width: ', width);
+		// console.log('map width: ', width);
 		mapWidth = width;
 	}
 	mapWidth = mapWidth - 3;

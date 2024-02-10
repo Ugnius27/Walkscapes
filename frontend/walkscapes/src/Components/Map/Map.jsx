@@ -7,7 +7,6 @@ import L from 'leaflet';
 
 import '../Challenges/Markers.css'
 import AddMarkerButton from '../AddMarkerButton/AddMarkerButton';
-import InstructionContainer from '../FadeModal/InstructionContainer.jsx';
 
 import * as Fade from '../FadeModal/FadeModal.jsx';
 import * as Markers from '../Challenges/Markers.jsx'
@@ -166,7 +165,8 @@ const Map = ({mapContainer, mapRef, challengesData, setChallengesData}) => {
 
 
   	useEffect(() => {
-		if (challengesData.length > 0 && activePolygons.length > 0){
+
+		if (challengesData.length > 0 && activePolygons.length > 0 && mapRef.current === null){
 			// console.log('Chal data: ', challengesData)
 
 			CurrentLocation.getCurrentLocation()
@@ -320,8 +320,6 @@ const Map = ({mapContainer, mapRef, challengesData, setChallengesData}) => {
 			isNewSuggestionAdded={isNewSuggestionAdded}
 			setIsNewSuggestionAdded={setIsNewSuggestionAdded}
 		/>
-
-		<InstructionContainer />
 
 		<Fade.MessageOnFadeOverlay
 			id = {CHOOSE_LOCATION_MESSAGE_ID}

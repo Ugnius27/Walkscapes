@@ -4,7 +4,7 @@ import L from 'leaflet';
 import { useEffect, useState } from 'react'
 import * as Database from './GetDataFromDB.js'
 
-const Polygons = ({mapRef, polygonIds, setPolygonIds, activeChallenges, challenges}) => {
+const Polygons = ({mapRef, polygonIds, setPolygonIds, activeChallenges, challenges, setChallengesData}) => {
 	const [polygons, setPolygons] = useState(null);
 
 	function createPolygon(map, vertices, color) {
@@ -16,6 +16,9 @@ const Polygons = ({mapRef, polygonIds, setPolygonIds, activeChallenges, challeng
 		polygon.on('click', (e) => {
 			console.log('clicked on polygon ', e,  '  id: ', e.target._leaflet_id);
 		})
+		//challenges[challengeNr].polygon['leaflet_id'] = polygon.options.id;
+		// console.log(polygon)
+		
 
 		return polygon._leaflet_id;
 	}
@@ -43,13 +46,16 @@ const Polygons = ({mapRef, polygonIds, setPolygonIds, activeChallenges, challeng
 	}*/
 
 	function putPolygonsOnMap(mapRef, challenges) {
-		var ids = []
+		var ids = [], tempChallenges = challenges
 
 		for (var i = 0; i < challenges.length; i++) {
 			ids.push(createPolygon(mapRef.current, challenges[i].polygon.vertices, 'blue'));
+			tempChallenges[i].polygon['leaflet_id'] = ids[ids.length - 1]
 		}
 
 		setPolygonIds(ids);
+		setChallengesData(tempChallenges)
+		// console.log(tempChallenges)
 	}
 
 	useEffect(() => {

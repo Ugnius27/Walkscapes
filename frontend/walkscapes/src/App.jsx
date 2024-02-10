@@ -11,6 +11,7 @@ import * as CurrentLocation from './CurrentLocation.js';
 import * as Map from './Components/Map/Map.jsx';
 
 import AppFirstRow from './Components/AppFirstRow/AppFirstRow.jsx';
+import Carousel from './Components/AppFirstRow/Carousel.jsx'
 import MapComponent from './Components/Map/Map.jsx';
 import FadeModal from './Components/FadeModal/FadeModal.jsx';
 
@@ -52,9 +53,13 @@ function App() {
   var mapRef = useRef(null);
 
   return (
-    <div className='App'>
+    <div className='App p-3'>
       <>
-      <AppFirstRow Challenges={challengesToAccordion}/>
+      {/* <AppFirstRow Challenges={challengesToAccordion}/> */}
+      <Carousel 
+        challengesData={challengesData}
+        mapRef={mapRef}
+      />
       
       <FadeModal/>
       
@@ -62,7 +67,7 @@ function App() {
         style={{ 
           position: 'relative', 
           height: '253px', 
-          marginLeft: '1.2rem'}}
+          marginLeft: '0.6rem'}}
       >
         <MapComponent 
           mapContainer={mapContainer}
@@ -70,8 +75,10 @@ function App() {
           challengesData={challengesData}
           setChallengesData={setChallengesData}
         />
-        
+        {/* <Carousel /> */}
       </div> 
+
+      
 
       </>
 
