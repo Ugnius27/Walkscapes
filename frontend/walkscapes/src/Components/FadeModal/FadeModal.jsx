@@ -41,11 +41,32 @@ export function hideFade(messageId, setCanAddNewMarker, mapRef, markerIds){
 }
 
 export function MessageOnFadeOverlay({ id, text, setCanAddNewMarker, mapRef, markerIds, setMarkerIds }) { //TODO: fix mess text: (dbckick on marker to remove it)
+	const mapElement = document.getElementById('map');
+	var mapWidth, height;
+	if (mapElement) {
+		//const { w, h } = mapElement.getBoundingClientRect();
+		const { width, height } = mapElement.getBoundingClientRect();
+
+		console.log('map width: ', width);
+		mapWidth = width;
+	}
+	mapWidth = mapWidth - 3;
+	
 	return (
 		<>
 		<div 
-			className='mt-5 flex-column justify-content-center align-items-center'
-			style={{zIndex: 985, display: 'none'}}
+			//className='mt-5 flex-column justify-content-center align-items-center'
+			className="bg-white p-3 flex-column justify-content-center align-items-center"
+			style={{
+				position: 'absolute',
+				top: '62vh',
+				left: '2.8vw',
+				//transform: 'translate(-50%, -50%)', // Center the container itself
+				width: mapWidth,
+				zIndex: 1000,
+				display: 'none',
+      		}}
+			//style={{zIndex: 985, display: 'none'}}
 			id={id}
 		>
 			<div className='row'>
@@ -55,7 +76,6 @@ export function MessageOnFadeOverlay({ id, text, setCanAddNewMarker, mapRef, mar
 					{text}
 				</h4>
 			</div>
-
 			<div 
 				className='row' 
 				style={{zIndex: 985}}

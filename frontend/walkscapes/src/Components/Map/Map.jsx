@@ -7,6 +7,7 @@ import L from 'leaflet';
 
 import '../Challenges/Markers.css'
 import AddMarkerButton from '../AddMarkerButton/AddMarkerButton';
+import InstructionContainer from '../FadeModal/InstructionContainer.jsx';
 
 import * as Fade from '../FadeModal/FadeModal.jsx';
 import * as Markers from '../Challenges/Markers.jsx'
@@ -34,7 +35,7 @@ export const useMarkerState = () => {
 	return { canAddNewMarker, setCanAddNewMarker };
 };
 
-export function initializeMap(mapContainer, center, mapRef, polygonVertices) {
+export function initializeMap(mapContainer, mapRef, polygonVertices) {
 	if (!mapContainer.current || mapRef.current) return;
 
 	const bounds = L.latLngBounds(polygonVertices);
@@ -175,7 +176,7 @@ const Map = ({mapContainer, mapRef, challengesData, setChallengesData}) => {
 				var vertices;
 				vertices = verticesOfClosestPolygon(challengesData, location)
 			
-				initializeMap(mapContainer, location, mapRef, vertices);
+				initializeMap(mapContainer, mapRef, vertices);
 				// }
 
 
@@ -183,6 +184,7 @@ const Map = ({mapContainer, mapRef, challengesData, setChallengesData}) => {
 			})
 			.catch(error => {
 				console.error("Error getting current location:", error);
+				initializeMap(mapContainer, mapRef, challengesData[0].polygon.vertices);
 			});
 
 			// if ((centerCoord[0] === -1 || centerCoord[1] === -1)){
@@ -296,7 +298,7 @@ const Map = ({mapContainer, mapRef, challengesData, setChallengesData}) => {
 		<div 
             className='m-3 border border-dark border-2'
             ref={mapContainer} 
-            style={{ height: '350px', zIndex: 1000 }} 
+            style={{ height: '80vh', zIndex: 1000 }} 
             id='map'
 		>
         </div>
@@ -318,6 +320,8 @@ const Map = ({mapContainer, mapRef, challengesData, setChallengesData}) => {
 			isNewSuggestionAdded={isNewSuggestionAdded}
 			setIsNewSuggestionAdded={setIsNewSuggestionAdded}
 		/>
+
+		<InstructionContainer />
 
 		<Fade.MessageOnFadeOverlay
 			id = {CHOOSE_LOCATION_MESSAGE_ID}
