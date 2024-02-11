@@ -7,7 +7,7 @@ pub fn polygon_to_html(polygon: &Polygon) -> Markup {
         p {(polygon.id)}
         button
             id={"polygon_modal_delete"}
-            hx-delete={"../api/polygons/" (polygon.id)}
+            hx-delete={"polygon-editor/" (polygon.id)}
             hx-confirm={"Delete?"}
             {"Delete"}
         button

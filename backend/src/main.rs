@@ -10,6 +10,7 @@ use actix_cors::Cors;
 use crate::routes::{json_api, ui_components};
 use json_api::*;
 use ui_components::challenge_list;
+use crate::routes::ui_components::polygon_editor;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -34,10 +35,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             .service(challenge::get_challenges)
 
-            .service(polygon::post_polygon)
-            .service(polygon::delete_polygon)
             .service(polygon::get_polygons)
-            .service(polygon::get_polygon_by_id)
+
+            .service(polygon_editor::post_polygon)
+            .service(polygon_editor::delete_polygon)
+            .service(polygon_editor::get_polygon_by_id)
 
             .service(challenge_list::get_challenges)
             .service(challenge_list::get_selected_challenge)

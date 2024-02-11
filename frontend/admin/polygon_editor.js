@@ -120,7 +120,7 @@ function polygon_to_json(polygon) {
 }
 
 async function post_polygon(polygon) {
-    return await fetch('../api/polygons', {
+    return await fetch('polygon-editor', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
