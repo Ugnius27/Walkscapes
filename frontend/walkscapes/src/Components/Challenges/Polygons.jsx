@@ -13,9 +13,13 @@ const Polygons = ({mapRef, polygonIds, setPolygonIds, activeChallenges, challeng
 
 		var polygon = L.polygon(vertices, {color: color}).addTo(map);
 		// console.log('pol id: ', polygon._leaflet_id);
-		polygon.on('click', (e) => {
-			console.log('clicked on polygon ', e,  '  id: ', e.target._leaflet_id);
-		})
+
+
+		// polygon.on('click', (e) => {
+		// 	console.log('clicked on polygon ', e,  '  id: ', e.target._leaflet_id);
+		// })
+
+		
 		//challenges[challengeNr].polygon['leaflet_id'] = polygon.options.id;
 		// console.log(polygon)
 		

@@ -14,6 +14,7 @@ import AppFirstRow from './Components/AppFirstRow/AppFirstRow.jsx';
 import Carousel from './Components/AppFirstRow/Carousel.jsx'
 import MapComponent from './Components/Map/Map.jsx';
 import FadeModal from './Components/FadeModal/FadeModal.jsx';
+import Description from './Components/Challenges/Description.jsx';
 
 export const ADD_MARKER_MODAL_ID = 'AddMarkerModal';
 export const CHOOSE_LOCATION_MESSAGE_ID = 'ChooseLocationMessage';
@@ -32,6 +33,7 @@ export const DEFAULT_ICON = new L.Icon({
 function App() {
   const [challengesData, setChallengesData] = useState([]);
   const [challengesToAccordion, setChallengesToAccordion] = useState([]);
+  const [pressedChallengeNumber, setPressedChallengeNumber] = useState(null);
 
   useEffect(() => {
     var Challenges = [];
@@ -59,6 +61,8 @@ function App() {
       <Carousel 
         challengesData={challengesData}
         mapRef={mapRef}
+        pressedChallengeNumber={pressedChallengeNumber}
+        setPressedChallengeNumber={setPressedChallengeNumber}
       />
       
       <FadeModal/>
@@ -74,8 +78,14 @@ function App() {
           mapRef={mapRef}
           challengesData={challengesData}
           setChallengesData={setChallengesData}
+          pressedChallengeNumber={pressedChallengeNumber}
+          setPressedChallengeNumber={setPressedChallengeNumber}
         />
         {/* <Carousel /> */}
+        <Description
+          challengesData={challengesData}
+          pressedChallengeNumber={pressedChallengeNumber}
+        />
       </div> 
 
       
