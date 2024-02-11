@@ -4,21 +4,35 @@ use actix_multipart::form::MultipartForm;
 use actix_web::{get, HttpRequest, HttpResponse, post, Responder, web};
 use futures_util::{StreamExt, TryStreamExt};
 use sqlx::MySqlPool;
-use crate::models::database::{image, record};
-use crate::models::{Image, Record};
-use crate::models::record::RecordUploadForm;
+use crate::models::database::{image, marker, record};
+use crate::models::{Image, Marker, Record};
+use crate::models::record::{RecordUploadForm, RecordUploadFormMarkerType};
 use crate::routes::user_error::UserError;
 
 //todo change to save files on disk instead of in database
-//todo SAFETY
-#[post("api/markers/{marker_id}/records")]
-pub async fn post_record(form: MultipartForm<RecordUploadForm>, path: web::Path<i32>, pool: web::Data<MySqlPool>) -> Result<impl Responder, UserError> {
+//todo max file size limit
+#[post("api/records")]
+pub async fn post_record(form: MultipartForm<RecordUploadForm>, pool: web::Data<MySqlPool>) -> Result<impl Responder, UserError> {
     let mut transaction = pool.begin().await?;
     let mut form = form.into_inner();
 
+    type MT = RecordUploadFormMarkerType;
+    let marker_id = match form.marker_type.0 {
+        MT::MarkerId(marker_id) => marker_id,
+        MT::LatLang(latlang) => {
+            marker::insert_marker_transaction(
+                &mut transaction,
+                Marker {
+                    id: 0,
+                    latitude: latlang.0,
+                    longitude: latlang.1,
+                }).await?
+        }
+    };
+
     let record_id = record::insert_record_transaction(
         &mut transaction,
-        Record { id: 0, marker_id: path.into_inner(), description: form.description.0 },
+        Record { id: 0, marker_id, description: form.description.0 },
     ).await?;
 
     //todo prevent empty file upload

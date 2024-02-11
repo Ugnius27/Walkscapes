@@ -1,13 +1,13 @@
 use crate::models::Marker;
-use sqlx::{Error, MySqlPool};
+use sqlx::{Error, MySql, MySqlPool, Transaction};
 
-pub async fn insert_marker(pool: &MySqlPool, marker: Marker) -> Result<i32, Error> {
+pub async fn insert_marker_transaction(transaction: &mut Transaction<'_, MySql>, marker: Marker) -> Result<i32, Error> {
     let result = sqlx::query!(
         r#"INSERT INTO markers (latitude, longitude)
         VALUES (?, ?)"#,
         marker.latitude,
         marker.longitude
-    ).execute(pool).await?;
+    ).execute(&mut **transaction).await?;
     Ok(result.last_insert_id() as i32)
 }
 

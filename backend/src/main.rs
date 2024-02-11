@@ -33,7 +33,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             .service(record::post_record)
 
             .service(challenge::get_challenges)
-            .service(challenge::get_challenge)
 
             .service(polygon::post_polygon)
             .service(polygon::delete_polygon)

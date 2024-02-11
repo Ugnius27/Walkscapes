@@ -1,7 +1,8 @@
+use actix_multipart::form::json::Json;
 use actix_multipart::form::MultipartForm;
 use actix_multipart::form::tempfile::TempFile;
 use actix_multipart::form::text::Text;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 
 #[derive(Serialize)]
@@ -21,8 +22,17 @@ impl Record {
     }
 }
 
+#[derive(Serialize, Deserialize)]
+pub(crate) enum RecordUploadFormMarkerType {
+    #[serde(rename = "marker_id")]
+    MarkerId(i32),
+    #[serde(rename = "latlang")]
+    LatLang((f64, f64)),
+}
+
 #[derive(MultipartForm)]
 pub struct RecordUploadForm {
     pub description: Text<String>,
     pub files: Vec<TempFile>,
+    pub marker_type: Json<RecordUploadFormMarkerType>,
 }

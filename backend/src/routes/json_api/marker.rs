@@ -1,3 +1,4 @@
+use std::iter::zip;
 use actix_web::{get, HttpResponse, Responder, web};
 use sqlx::MySqlPool;
 use crate::models::database::{image, marker, record};
@@ -12,20 +13,21 @@ pub async fn get_markers(pool: web::Data<MySqlPool>) -> Result<impl Responder, U
 
 #[get("api/markers/{marker_id}/records")]
 pub async fn get_marker_records(path: web::Path<i32>, pool: web::Data<MySqlPool>) -> Result<impl Responder, UserError> {
-    let mut records_with_image_ids = Vec::<(Record, Vec<i32>)>::new();
-
     let records = record::get_records_by_marker_id(&pool, path.into_inner()).await?;
-    for record in records {
+
+    let mut records_image_ids = Vec::with_capacity(records.len());
+    for record in records.iter() {
         let image_ids = image::get_image_ids_by_record_id(&pool, record.id).await?;
-        records_with_image_ids.push((record, image_ids));
+        records_image_ids.push(image_ids);
     }
 
-    let records_with_image_ids: Vec<serde_json::Value> = records_with_image_ids
-        .into_iter()
-        .map(|(record, image_ids)| serde_json::json!({
-            "id": record.id,
-            "description": record.description,
-            "image_ids": image_ids,
-        })).collect();
-    Ok(web::Json(records_with_image_ids))
+    let complete_records = zip(records, records_image_ids)
+        .map(|(record, image_ids)|
+            serde_json::json!({
+                "id": record.id,
+                "description": record.description,
+                "image_ids": image_ids,
+        }))
+        .collect::<Vec<serde_json::Value>>();
+    Ok(web::Json(complete_records))
 }

@@ -21,7 +21,8 @@ impl From<ChallengePostForm> for Challenge {
             description: value.description,
             polygon_id: value.polygon_id,
             is_active: if value.is_active.is_some() { true } else { false },
-            is_visible: if value.is_visible.is_some() { true } else { false },
+            // is_visible: if value.is_visible.is_some() { true } else { false },
+            is_visible: true,
         }
     }
 }
