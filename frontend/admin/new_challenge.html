@@ -1,5 +1,5 @@
 <li class="button">
-    <form hx-post="../api/challenges" hx-swap="outerHTML" hx-target="#challenges_list" id="this_challenge">
+    <form hx-post="challenges-list" hx-swap="outerHTML" hx-target="#challenges_list" id="this_challenge">
         <div>
             <label>Title</label>
             <input name="title" required type="text">
@@ -20,7 +20,7 @@
 
         <button class="btn" id="submit_button">Submit
         </button>
-        <button class="btn" hx-get="../api/challenges" hx-swap="outerHTML" hx-target="#challenges_list"
+        <button class="btn" hx-get="challenges-list" hx-swap="outerHTML" hx-target="#challenges_list"
                 onclick="disable_form_open()"
                 type="button">Cancel
         </button>

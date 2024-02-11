@@ -21,3 +21,4 @@ maud = { version = "0.25.0", features = ["actix-web"] }
 serde_urlencoded = "0.7.1"
 rustls = { version = "0.21.8" }
 rustls-pemfile = "1.0.0"
+tempfile = "3.9.0"
