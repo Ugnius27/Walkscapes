@@ -49,6 +49,14 @@ ul#challenges_list {
     overflow: auto;
 }
 
+ul#records-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    height: 100%;
+    overflow: auto;
+}
+
 li.button {
     display: block;
     padding: 10px;
@@ -74,7 +82,7 @@ li.button.selectable {
     background-color: #aaaaaaaa;
 }
 
-#record {
+#record-viewer {
     position: absolute;
     right: 0;
     top: 0;
@@ -87,7 +95,7 @@ li.button.selectable {
     overflow: hidden;
 }
 
-#record.show {
+#record-viewer.show {
     width: 100%;
     visibility: visible;
     overflow: auto;
@@ -105,7 +113,7 @@ img.red {
 .sticky_menu {
     position: sticky;
     width: 100%;
-    overflow: auto;
+    /*overflow: auto;*/
     top: 0;
     border: 1px solid #888;
     background-color: rgba(255, 255, 255, 0.9);

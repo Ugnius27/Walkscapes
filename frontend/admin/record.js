@@ -1,19 +1,19 @@
 let focused_marker = null;
 let is_record_open = false;
 
-function open_record(marker_id) {
+function open_record_viewer(marker_id) {
     is_record_open = true;
-    let menu = document.getElementById("record");
-    htmx.ajax('GET', `${API_PATH}/record/marker=${marker_id}`, {target: '#record', swap: 'innerHTML'})
+    let menu = document.getElementById("record-viewer");
+    htmx.ajax('GET', `record-viewer/markers/${marker_id}/records`, {target: '#record-viewer', swap: 'innerHTML'})
     menu.classList.add("show");
 }
 
-function close_record() {
+function close_record_viewer() {
     if (!is_record_open) {
         return;
     }
     is_record_open = false;
-    let menu = document.getElementById("record");
+    let menu = document.getElementById("record-viewer");
     remove_marker_focus()
     menu.classList.remove("show");
     // let modal_content = document.getElementById("polygon_modal_content");
@@ -26,7 +26,7 @@ function focus_marker(leaflet_marker, marker_id) {
     }
     focused_marker = leaflet_marker;
     focused_marker._icon.classList.add("red")
-    open_record(marker_id);
+    open_record_viewer(marker_id);
 }
 
 function remove_marker_focus() {

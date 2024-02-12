@@ -59,7 +59,7 @@ function attach_enable_focus(polygon) {
 
 map.on('click', function (event) {
     remove_focus();
-    close_record();
+    close_record_viewer();
     if (form_open) {
         unset_polygon_id_in_form()
     }

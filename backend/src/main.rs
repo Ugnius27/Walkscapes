@@ -2,6 +2,7 @@ mod tls;
 mod models;
 mod routes;
 mod markup;
+mod utils;
 
 use sqlx::MySqlPool;
 use actix_web::{web, App, HttpServer};
@@ -10,7 +11,7 @@ use actix_cors::Cors;
 use crate::routes::{json_api, ui_components};
 use json_api::*;
 use ui_components::challenge_list;
-use crate::routes::ui_components::polygon_editor;
+use crate::routes::ui_components::{polygon_editor, record_viewer};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -33,6 +34,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             .service(record::get_records)
             .service(record::post_record)
 
+            .service(image::get_image_by_id)
+
             .service(challenge::get_challenges)
 
             .service(polygon::get_polygons)
@@ -47,6 +50,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             .service(challenge_list::put_challenge)
             .service(challenge_list::delete_challenge)
             .service(challenge_list::post_challenge)
+
+            .service(record_viewer::get_records)
+            .service(record_viewer::get_record)
+            .service(record_viewer::delete_record)
+            .service(record_viewer::delete_marker)
 
             .service(actix_files::Files::new("/", "../frontend")
                 .index_file("index.html"))
