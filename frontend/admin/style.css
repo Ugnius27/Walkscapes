@@ -98,7 +98,8 @@ li.button.selectable {
 #record-viewer.show {
     width: 100%;
     visibility: visible;
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 img.record {
