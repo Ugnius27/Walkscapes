@@ -19,3 +19,19 @@ pub async fn get_markers_with_records(pool: &MySqlPool) -> Result<Vec<Marker>, E
         INNER JOIN records on records.marker_id = markers.id"#)
         .fetch_all(pool).await?)
 }
+
+pub async fn get_markers(pool: &MySqlPool) -> Result<Vec<Marker>, Error> {
+    Ok(sqlx::query_as!(
+       Marker,
+       r#"SELECT * FROM markers"#
+   ).fetch_all(pool).await?)
+}
+
+pub async fn delete_marker_by_id_transaction(transaction: &mut Transaction<'_, MySql>, marker_id: i32) -> Result<(), Error> {
+    sqlx::query!(
+        r#"DELETE FROM markers
+        WHERE id = ?"#,
+        marker_id
+    ).execute(&mut **transaction).await?;
+    Ok(())
+}

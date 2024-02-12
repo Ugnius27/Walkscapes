@@ -1,13 +1,18 @@
+use std::collections::HashMap;
 use std::iter::zip;
-use actix_web::{get, HttpResponse, Responder, web};
+use actix_web::{get, Responder, web};
 use sqlx::MySqlPool;
 use crate::models::database::{image, marker, record};
-use crate::models::Record;
 use crate::routes::user_error::UserError;
 
 #[get("api/markers")]
-pub async fn get_markers(pool: web::Data<MySqlPool>) -> Result<impl Responder, UserError> {
-    let markers = marker::get_markers_with_records(&pool).await?;
+pub async fn get_markers(query: web::Query<HashMap<String, String>>, pool: web::Data<MySqlPool>) -> Result<impl Responder, UserError> {
+    let markers;
+    if query.0.get("all").is_some() {
+        markers = marker::get_markers(&pool).await?;
+    } else {
+        markers = marker::get_markers_with_records(&pool).await?;
+    }
     Ok(web::Json(markers))
 }
 

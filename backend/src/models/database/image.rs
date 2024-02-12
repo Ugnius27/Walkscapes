@@ -30,3 +30,12 @@ pub async fn insert_image_transaction(transaction: &mut sqlx::Transaction<'_, My
     ).execute(&mut **transaction).await?;
     Ok(())
 }
+
+pub async fn delete_images_by_record_id_transaction(transaction: &mut sqlx::Transaction<'_, MySql>, record_id: i32) -> Result<(), Error> {
+    sqlx::query!(
+        r#"DELETE FROM images
+        WHERE record_id = ?"#,
+        record_id
+    ).execute(&mut **transaction).await?;
+    Ok(())
+}

@@ -40,7 +40,7 @@ async function load_polygons() {
 
 
 async function load_markers() {
-    let marks = await fetch_json('record/markers');
+    let marks = await fetch_json('markers?all');
     if (marks == null) {
         console.error("Could not fetch markers");
         return;
