@@ -14,7 +14,7 @@
     visibility: hidden;
     opacity: 0;
     transition: visibility 0.1s linear, opacity 0.1s linear;
-    width: 15%;
+    width: 20%;
 
     position: absolute;
     z-index: 5000;

@@ -22,8 +22,14 @@ function close_record_viewer() {
 }
 
 function focus_marker(leaflet_marker, marker_id) {
+    if (focused_marker === leaflet_marker) {
+        remove_marker_focus()
+        close_record_viewer()
+        return;
+    }
+
     if (focused_marker != null) {
-        remove_marker_focus();
+        remove_marker_focus()
     }
     focused_marker = leaflet_marker;
     focused_marker._icon.classList.add("red")
