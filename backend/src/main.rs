@@ -60,7 +60,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .index_file("index.html"))
     })
         .bind("0.0.0.0:8080").expect("Failed to bind HTTP")
-        .bind_rustls_021("0.0.0.0:8443", tls::load_rustls_config()).expect("Failed to bind HTTPS")
+        // .bind_rustls_021("0.0.0.0:8443", tls::load_rustls_config()).expect("Failed to bind HTTPS")
         .run()
         .await.unwrap();
 
