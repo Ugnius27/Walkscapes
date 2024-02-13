@@ -1,5 +1,6 @@
 use actix_web::{delete, get, HttpResponse, Responder, web};
 use maud::Markup;
+use serde_json::json;
 use sqlx::MySqlPool;
 use crate::markup::record_viewer::{NavBehaviour, no_records, record_index, records_index};
 use crate::models::database::{image, marker};
@@ -36,7 +37,7 @@ pub async fn get_record(path: web::Path<i32>, pool: web::Data<MySqlPool>) -> Use
 pub async fn delete_record(path: web::Path<i32>, pool: web::Data<MySqlPool>) -> UserResult<impl Responder> {
     let record_id = path.into_inner();
 
-    //todo
+    //todo same as below
     let marker_id = record::get_record_by_id(&pool, record_id).await?.marker_id;
     let record_count = record::get_records_count_by_marker_id(&pool, marker_id).await?;
 
@@ -48,12 +49,15 @@ pub async fn delete_record(path: web::Path<i32>, pool: web::Data<MySqlPool>) -> 
     if record_count == 1 {
         marker::delete_marker_by_id_transaction(&mut transaction, marker_id).await?;
         transaction.commit().await?;
-        return Ok(no_records(marker_id));
+        return Ok(HttpResponse::Ok()
+            .json(json!({
+                "marker_id": marker_id
+        })));
     }
 
     transaction.commit().await?;
     let records = get_records_by_marker_id(&pool, marker_id).await?;
-    Ok(records_index(&records))
+    Ok(HttpResponse::Ok().body(records_index(&records).into_string()))
 }
 
 #[delete("admin/record-viewer/markers/{marker_id}")]

@@ -25,7 +25,7 @@ pub fn records_index(records: &[Record]) -> Markup {
 pub fn record_index(record: &Record, record_image_ids: &[i32], navigation_behaviour: NavBehaviour) -> Markup {
     type NB = NavBehaviour;
     html! {
-        script {"attach_listener_to_element('record_viewer_delete', ())"}
+        script {"htmx_delete_marker_if_empty("(record.marker_id)")"}
         div.sticky_menu {
             @match navigation_behaviour {
                 NB::Close => {

@@ -47,10 +47,10 @@ async function load_markers() {
     }
 
     marks.forEach(marker => {
-        let new_marker = L.marker([marker.latitude, marker.longitude]).addTo(map);
-        markers[marker.id] = new_marker;
-        new_marker.on('click', function (event) {
-            focus_marker(new_marker, marker.id);
+        let leaflet_marker = L.marker([marker.latitude, marker.longitude]).addTo(map);
+        markers[marker.id] = leaflet_marker;
+        leaflet_marker.on('click', function (event) {
+            focus_marker(leaflet_marker, marker.id);
         });
     });
 }
