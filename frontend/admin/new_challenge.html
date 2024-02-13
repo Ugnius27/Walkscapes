@@ -1,4 +1,10 @@
 <li class="button">
+    <script>
+        console.log("OK")
+        enable_form_open()
+        set_polygon_id_in_form()
+        attach_listener_to_element('this_challenge', disable_form_open)
+    </script>
     <form hx-post="challenges-list" hx-swap="outerHTML" hx-target="#challenges_list" id="this_challenge">
         <div>
             <label>Title</label>
@@ -25,8 +31,4 @@
                 type="button">Cancel
         </button>
     </form>
-    <script>
-        enable_form_open()
-        attach_listener_to_element('this_challenge', disable_form_open)
-    </script>
 </li>

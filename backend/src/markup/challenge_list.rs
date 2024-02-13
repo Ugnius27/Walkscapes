@@ -30,7 +30,7 @@ pub fn challenges_index_selected(challenges: &Vec<Challenge>, id: i32) -> Markup
 
 fn new_challenge_tile() -> Markup {
     html! {
-       li.button.hoverable hx-get="new_challenge.html" hx-target="#challenges_list" {("CREATE NEW CHALLENGE")}
+        li.button.hoverable hx-get="new_challenge.html" hx-target="#challenges_list" {("CREATE NEW CHALLENGE")}
    }
 }
 
