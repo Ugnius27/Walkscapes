@@ -2,19 +2,26 @@ import { useEffect } from 'react';
 import L from 'leaflet';
 
 import './Carousel.css'
+import * as Polygons from '../Challenges/Polygons.jsx'
+
+import {ACTIVE_POLYGON_COLOR, INACTIVE_POLYGON_COLOR, PRESSED_POLYGON_COLOR} from '../Challenges/Polygons.jsx'
 
 const Carousel = (({challengesData, mapRef, pressedChallengeNumber, setPressedChallengeNumber, polygonIds}) => {
-	useEffect (() => {
-		console.log('polygonIds:: ', polygonIds);
-	}, [polygonIds])
+	// useEffect (() => {
+	// 	console.log('polygonIds:: ', polygonIds);
+	// }, [polygonIds])
 
-	function changeAllPolygonsColor(polygonIds, color) {
-		for (let i = 0; i < polygonIds.length; i++){
-			var polygon = mapRef.current._layers[polygonIds[i]];
-			if (polygon)
-				polygon.setStyle({ fillColor: color, color: color });
-		}
-	}
+	// function changeAllPolygonsColor(polygonIds) {
+	// 	for (let i = 0; i < polygonIds.length; i++){
+	// 		var polygon = mapRef.current._layers[polygonIds[i]];
+	// 		if (polygon){
+	// 			var color = challengesData[i].is_active? ACTIVE_POLYGON_COLOR : INACTIVE_POLYGON_COLOR;
+
+	// 			polygon.setStyle({ fillColor: color, color: color });
+	// 		}
+				
+	// 	}
+	// }
 	
 	function carouselItems(challengesData){
 		const items = [];
@@ -68,10 +75,10 @@ const Carousel = (({challengesData, mapRef, pressedChallengeNumber, setPressedCh
 		setPressedChallengeNumber(nextIndex);
 
 		// console.log(polygonIds);
-		changeAllPolygonsColor(polygonIds, 'green')
+		Polygons.changeAllPolygonsColor(mapRef, challengesData, polygonIds)
 		var polygon = mapRef.current._layers[polygonIds[nextIndex]];
 		// console.log('polygon: ', polygon);
-		polygon.setStyle({ fillColor: 'blue', color: 'blue' });
+		polygon.setStyle({ fillColor: PRESSED_POLYGON_COLOR, color: PRESSED_POLYGON_COLOR });
 
     }
 
@@ -80,10 +87,10 @@ const Carousel = (({challengesData, mapRef, pressedChallengeNumber, setPressedCh
         handleClickOnChallenge(null, challengesData[prevIndex].title);
 		setPressedChallengeNumber(prevIndex);
 
-		changeAllPolygonsColor(polygonIds, 'green')
+		Polygons.changeAllPolygonsColor(mapRef, challengesData, polygonIds)
 		var polygon = mapRef.current._layers[polygonIds[prevIndex]];
 		// console.log('polygon: ', polygon);
-		polygon.setStyle({ fillColor: 'blue', color: 'blue' });
+		polygon.setStyle({ fillColor: PRESSED_POLYGON_COLOR, color: PRESSED_POLYGON_COLOR });
     }
 	
 

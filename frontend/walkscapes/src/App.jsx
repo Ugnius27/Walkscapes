@@ -66,7 +66,6 @@ function App() {
         pressedChallengeNumber={pressedChallengeNumber}
         setPressedChallengeNumber={setPressedChallengeNumber}
         polygonIds={polygonIds}
-
       />
       
       <FadeModal/>
