@@ -3,7 +3,19 @@ import L from 'leaflet';
 
 import './Carousel.css'
 
-const Carousel = (({challengesData, mapRef, pressedChallengeNumber, setPressedChallengeNumber}) => {
+const Carousel = (({challengesData, mapRef, pressedChallengeNumber, setPressedChallengeNumber, polygonIds}) => {
+	useEffect (() => {
+		console.log('polygonIds:: ', polygonIds);
+	}, [polygonIds])
+
+	function changeAllPolygonsColor(polygonIds, color) {
+		for (let i = 0; i < polygonIds.length; i++){
+			var polygon = mapRef.current._layers[polygonIds[i]];
+			if (polygon)
+				polygon.setStyle({ fillColor: color, color: color });
+		}
+	}
+	
 	function carouselItems(challengesData){
 		const items = [];
 		for (let index = 0; index < challengesData.length; index++) {
@@ -17,6 +29,12 @@ const Carousel = (({challengesData, mapRef, pressedChallengeNumber, setPressedCh
 					<h3 className="text-center">{challenge.title}</h3>
 				</div>
 			);
+
+			if (index === pressedChallengeNumber) {
+				var polygon = mapRef.current._layers[polygonIds[index]];
+				if (polygon)
+					polygon.setStyle({ fillColor: 'blue', color: 'blue' });
+			}
 		}
 
 		return items
@@ -47,13 +65,25 @@ const Carousel = (({challengesData, mapRef, pressedChallengeNumber, setPressedCh
 	function handleNextChallenge() {
         const nextIndex = (pressedChallengeNumber + 1) % challengesData.length;
         handleClickOnChallenge(null, challengesData[nextIndex].title);
-		setPressedChallengeNumber((pressedChallengeNumber + 1) % challengesData.length);
+		setPressedChallengeNumber(nextIndex);
+
+		// console.log(polygonIds);
+		changeAllPolygonsColor(polygonIds, 'green')
+		var polygon = mapRef.current._layers[polygonIds[nextIndex]];
+		// console.log('polygon: ', polygon);
+		polygon.setStyle({ fillColor: 'blue', color: 'blue' });
+
     }
 
     function handlePrevChallenge() {
         const prevIndex = (pressedChallengeNumber - 1 + challengesData.length) % challengesData.length;
         handleClickOnChallenge(null, challengesData[prevIndex].title);
-		setPressedChallengeNumber((pressedChallengeNumber - 1) % challengesData.length);
+		setPressedChallengeNumber(prevIndex);
+
+		changeAllPolygonsColor(polygonIds, 'green')
+		var polygon = mapRef.current._layers[polygonIds[prevIndex]];
+		// console.log('polygon: ', polygon);
+		polygon.setStyle({ fillColor: 'blue', color: 'blue' });
     }
 	
 

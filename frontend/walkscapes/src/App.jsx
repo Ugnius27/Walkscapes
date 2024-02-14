@@ -35,6 +35,7 @@ function App() {
   const [challengesToAccordion, setChallengesToAccordion] = useState([]);
   const [pressedChallengeNumber, setPressedChallengeNumber] = useState(null);
   const [markersRecords, setMarkersRecords] = useState([]);
+  const [polygonIds, setPolygonIds] = useState([]);
 
   useEffect(() => {
     var Challenges = [];
@@ -64,6 +65,8 @@ function App() {
         mapRef={mapRef}
         pressedChallengeNumber={pressedChallengeNumber}
         setPressedChallengeNumber={setPressedChallengeNumber}
+        polygonIds={polygonIds}
+
       />
       
       <FadeModal/>
@@ -84,6 +87,8 @@ function App() {
 
           markersRecords={markersRecords}
           setMarkersRecords={setMarkersRecords}
+          polygonIds={polygonIds}
+          setPolygonIds={setPolygonIds}
         />
         {/* <Carousel /> */}
         <Description

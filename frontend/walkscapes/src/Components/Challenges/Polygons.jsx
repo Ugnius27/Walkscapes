@@ -21,7 +21,7 @@ const Polygons = ({mapRef, polygonIds, setPolygonIds, activeChallenges, challeng
 
 		
 		//challenges[challengeNr].polygon['leaflet_id'] = polygon.options.id;
-		// console.log(polygon)
+		console.log('id before return', polygon._leaflet_id)
 		
 
 		return polygon._leaflet_id;
@@ -31,6 +31,7 @@ const Polygons = ({mapRef, polygonIds, setPolygonIds, activeChallenges, challeng
 		if (mapRef.current === null)
 			return;
 
+		console.log('polygonIds: ', polygonIds);
 		polygonIds.forEach(polygonId => {
 			const polygon = mapRef.current._layers[polygonId];
 			if (polygon) {
@@ -49,15 +50,26 @@ const Polygons = ({mapRef, polygonIds, setPolygonIds, activeChallenges, challeng
 		setPolygonIds(ids);
 	}*/
 
+
+	useEffect(() => {
+		console.log('polygonIds: ', polygonIds);
+	}, [polygonIds])
+
 	function putPolygonsOnMap(mapRef, challenges) {
 		var ids = [], tempChallenges = challenges
 
 		for (var i = 0; i < challenges.length; i++) {
-			ids.push(createPolygon(mapRef.current, challenges[i].polygon.vertices, 'blue'));
-			tempChallenges[i].polygon['leaflet_id'] = ids[ids.length - 1]
+			var id = createPolygon(mapRef.current, challenges[i].polygon.vertices, 'green')
+			console.log('id after: ', id);
+			if (id >= 0){
+				ids.push(id);
+				tempChallenges[i].polygon['leaflet_id'] = ids[ids.length - 1]
+			}
 		}
 
+		console.log('ids: ', ids);
 		setPolygonIds(ids);
+		console.log('polygonIds: ', polygonIds);
 		setChallengesData(tempChallenges)
 		// console.log(tempChallenges)
 	}

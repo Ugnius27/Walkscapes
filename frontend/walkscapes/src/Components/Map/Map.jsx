@@ -76,7 +76,9 @@ const Map = ({
 	setPressedChallengeNumber, 
 	pressedChallengeNumber,
 	markersRecords,
-	setMarkersRecords}) => {
+	setMarkersRecords,
+	polygonIds,
+	setPolygonIds}) => {
 	// var markerIds = [];
 
 	// The value of this variable is not important. The effects have to be activated when the value
@@ -85,7 +87,7 @@ const Map = ({
 	const [isNewSuggestionAdded, setIsNewSuggestionAdded] = useState(true);
 
 	// const [challengesData, setChallengesData] = useState(null);
-	const [polygonIds, setPolygonIds] = useState([]);
+	// const [polygonIds, setPolygonIds] = useState([]);
 	const [activePolygons, setActivePolygons] = useState([]);
 
 
@@ -170,6 +172,8 @@ const Map = ({
 		// console.log('nelygu  ', centerCoord, ' ooo'); 
 			 
 		// console.log('initializeMap ', centerCoord, ' ppp'); 
+
+		// console.log(polygonIds, challengesData);
   	}, [activePolygons]);
 
 	// useEffect(() => {
