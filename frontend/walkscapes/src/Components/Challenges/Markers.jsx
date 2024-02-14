@@ -141,18 +141,18 @@ isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 		if (!markersData || !polygons || !mapRef)
 			return;
 
-		console.log('putMarkersOnMap markersData: ', markersData);
+		// console.log('putMarkersOnMap markersData: ', markersData);
 		for (var i = 0; i < markersData.length; i++) {
 			var coords = [markersData[i].latitude, markersData[i].longitude]
 
 			var id = createMarker(mapRef, coords[0], coords[1])
 			if (id) {
 				ids.push(id)
-				if (markersData[i].id == 37){
-					var m = mapRef.current._layers[id];
-					m.setIcon(RED_ICON);
-					console.log('hhhhhhhhhhhhhhhhhh');
-				}
+				// if (markersData[i].id == 37){
+				// 	var m = mapRef.current._layers[id];
+				// 	// m.setIcon(RED_ICON);
+				// 	// console.log('hhhhhhhhhhhhhhhhhh');
+				// }
 			}
 
 			
@@ -209,9 +209,9 @@ isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 		// console.log('new markers put on map');
 	}, [markersData, isNewSuggestionAdded])
 
-	useEffect(() => {
-		console.log('markers ids: ', markersIds);
-	}, [markersIds])
+	// useEffect(() => {
+	// 	console.log('markers ids: ', markersIds);
+	// }, [markersIds])
 
 	// useEffect(() => {
 	// 	// console.log('markers data');

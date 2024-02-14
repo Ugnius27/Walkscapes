@@ -214,7 +214,7 @@ const Map = ({
 			// console.log('GETTING NEW RECORDS');
 			recordsToDisplay = records;
 			// console.log('last: ', markersToDisplay);
-			console.log('markersData: ', markersData, 'recordsToDisplay: ', recordsToDisplay, ' markerId: ', markerId);
+			// console.log('markersData: ', markersData, 'recordsToDisplay: ', recordsToDisplay, ' markerId: ', markerId);
 
 			//setMarkers(markersToDisplay);
 			setRecordsOfDisplayedMarker(recordsToDisplay)

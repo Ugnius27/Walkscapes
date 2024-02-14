@@ -115,13 +115,13 @@ const UploadModal = ({map, lastSubmittedMarkerId, isNewSuggestionAdded, setIsNew
   var buttonToShowUploadModal = document.getElementById(BUTTON_TO_SHOW_UPLOAD_MODAL);
 
   function markerIdFromLeafletId(markerLeafletId) {
-    console.log('markersData: ', markersData);
-    console.log('markerIds: ', markerIds.length, ' markersData: ', markersData.length);
-    console.log('markerIds: ', markerIds, ' markersData: ', markersData);
+    // console.log('markersData: ', markersData);
+    // console.log('markerIds: ', markerIds.length, ' markersData: ', markersData.length);
+    // console.log('markerIds: ', markerIds, ' markersData: ', markersData);
 
     for (let i = 0; i < markersData.length; i++) {
       if (markerLeafletId == markerIds[i]) {
-        console.log('pppppppppppp:m ', markersData[i], ' i: ', i);
+        // console.log('pppppppppppp:m ', markersData[i], ' i: ', i);
         return markersData[i].id;
       }
     }
@@ -149,8 +149,8 @@ const UploadModal = ({map, lastSubmittedMarkerId, isNewSuggestionAdded, setIsNew
 
     var lastSubmittedMarker = map._layers[lastSubmittedMarkerId];
     var coordinates = lastSubmittedMarker.getLatLng();
-    console.log('before uploadRecordFunc');
-    console.log('lastSubmittedMarker: ', lastSubmittedMarker);
+    // console.log('before uploadRecordFunc');
+    // console.log('lastSubmittedMarker: ', lastSubmittedMarker);
     var markerId = markerIdFromLeafletId(lastSubmittedMarkerId);
 
     var isNewMarkerNeeded = true;

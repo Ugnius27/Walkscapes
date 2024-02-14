@@ -24,7 +24,7 @@ export async function uploadRecord(latitude, longitude, images, description, isM
     console.log('isMarkerExists: ', isMarkerExists, ' markerId: ', markerId, ' images: ', images);
     const formData = new FormData();
     if (isMarkerExists) {
-        console.log(JSON.stringify({"marker_id": markerId}));
+        // console.log(JSON.stringify({"marker_id": markerId}));
         const jsonString = JSON.stringify({"marker_id": markerId});
         const blob = new Blob([jsonString], { type: 'application/json' });
         formData.append('marker_type', blob);

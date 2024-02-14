@@ -74,7 +74,7 @@ export async function markerRecords(markerId) {
   try {
       // const record = await Database.fetchRecordsForMarker(markers[i].id);
       records = await Database.fetchMarkerRecords(markerId);
-      console.log('record: ', records, ' markId: ', markerId, ' markersRecordsFuncccc');
+      // console.log('record: ', records, ' markId: ', markerId, ' markersRecordsFuncccc');
       
   } catch (error) {
       console.error('Error fetching record for marker ', ':', error);

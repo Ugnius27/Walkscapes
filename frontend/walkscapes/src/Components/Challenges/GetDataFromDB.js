@@ -17,7 +17,7 @@ export async function fetchMarkers() {
 
         const markers = await response.json();
 
-        console.log('markers: ', markers);
+        // console.log('markers: ', markers);
         //console.log("markers length0: " + markers.length)
         return markers;
 
