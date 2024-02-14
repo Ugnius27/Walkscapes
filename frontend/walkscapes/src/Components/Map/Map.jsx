@@ -68,7 +68,15 @@ export function addButtonOnMap(customTableControl, map, addTableIsOnTheMap) {
 }
 
 
-const Map = ({mapContainer, mapRef, challengesData, setChallengesData, setPressedChallengeNumber, pressedChallengeNumber}) => {
+const Map = ({
+	mapContainer, 
+	mapRef, 
+	challengesData, 
+	setChallengesData, 
+	setPressedChallengeNumber, 
+	pressedChallengeNumber,
+	markersRecords,
+	setMarkersRecords}) => {
 	// var markerIds = [];
 
 	// The value of this variable is not important. The effects have to be activated when the value
@@ -81,7 +89,7 @@ const Map = ({mapContainer, mapRef, challengesData, setChallengesData, setPresse
 	const [activePolygons, setActivePolygons] = useState([]);
 
 
-	const [markers, setMarkers] = useState([]); 
+	const [recordsOfDisplayedMarker, setRecordsOfDisplayedMarker] = useState([]); 
 	const [markersData, setMarkersData] = useState(null);
 	const [markerIds, setMarkerIds] = useState([]);
 	const { canAddNewMarker, setCanAddNewMarker } = useMarkerState();
@@ -167,10 +175,10 @@ const Map = ({mapContainer, mapRef, challengesData, setChallengesData, setPresse
 	// 	console.log('Chal data: ', challengesData)
 	// }, [challengesData])
 
-	window.viewSuggestions = function(markerId) {
+	window.viewSuggestions = function(markerLeafletId) {
 		// console.log('pressed on view', markerId);
 
-		var marker = mapRef.current._layers[markerId];
+		var marker = mapRef.current._layers[markerLeafletId];
 		var buttonToClick = document.getElementById(BUTTON_TO_SHOW_SUGGESTIONS_MODAL);
 		
 		if (!buttonToClick){
@@ -181,27 +189,38 @@ const Map = ({mapContainer, mapRef, challengesData, setChallengesData, setPresse
 			
 		marker.setIcon(RED_ICON);
 		marker.closePopup();
-		buttonToClick.dataset.markerid = markerId;
+		buttonToClick.dataset.markerid = markerLeafletId;
 
-		var markersToDisplay = [];
+		// var markersToDisplay = [];
+		var recordsToDisplay = [];
+		
+		var markerId = Markers.markerIdWithSameCoords(markersData, [marker.getLatLng().lat, marker.getLatLng().lng]);
+		
+		// recordsToDisplay = SuggestionsList.markerRecords(markerId);
+		// console.log('markersData: ', markersData, 'recordsToDisplay: ', recordsToDisplay, ' markerId: ', markerId);
 
-		markersToDisplay = SuggestionsList.markerIdsWithSameCoords(markersData, marker.getLatLng().lat, marker.getLatLng().lng);
-		SuggestionsList.markersRecords(markersToDisplay).then(updatedMarkers => {
+		SuggestionsList.markerRecords(markerId).then(records => {
 			// console.log('GETTING NEW RECORDS');
-			markersToDisplay = updatedMarkers;
+			recordsToDisplay = records;
 			// console.log('last: ', markersToDisplay);
-			setMarkers(markersToDisplay);
+			console.log('markersData: ', markersData, 'recordsToDisplay: ', recordsToDisplay, ' markerId: ', markerId);
+
+			//setMarkers(markersToDisplay);
+			setRecordsOfDisplayedMarker(recordsToDisplay)
 			// console.log(markersToDisplay)
 
-
-			// sleep(1000);
-			// setSuggestionsViewed(true); // Set suggestionsViewed to true
-
-
 			buttonToClick.click();
-		// Continue with other code after markers are updated
-		// marker.closePopup();
-    	});
+		});
+		// markersToDisplay = SuggestionsList.markerIdsWithSameCoords(markersData, marker.getLatLng().lat, marker.getLatLng().lng);
+		// SuggestionsList.markersRecords(markersToDisplay).then(updatedMarkers => {
+		// 	// console.log('GETTING NEW RECORDS');
+		// 	markersToDisplay = updatedMarkers;
+		// 	console.log('last: ', markersToDisplay);
+		// 	setMarkers(markersToDisplay);
+		// 	// console.log(markersToDisplay)
+
+		// 	buttonToClick.click();
+    	// });/////////////////////////////////
 
 
 
@@ -294,7 +313,10 @@ const Map = ({mapContainer, mapRef, challengesData, setChallengesData, setPresse
 		<SuggestionsListModal 
 			mapRef={mapRef}
 			markersData={markersData}
-			markers={markers}
+			// markers={markers}
+			recordsOfDisplayedMarker={recordsOfDisplayedMarker}
+			setRecordsOfDisplayedMarker={setRecordsOfDisplayedMarker}
+
 			// suggestionsViewed={suggestionsViewed}
 		/>
 

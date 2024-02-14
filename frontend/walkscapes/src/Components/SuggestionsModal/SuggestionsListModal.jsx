@@ -10,68 +10,85 @@ export const BUTTON_TO_SHOW_SUGGESTIONS_MODAL = 'suggestionsModalButton';
 const SUGGESTIONS_MODAL = 'suggestionsModal';
 
 // Function that finds markers ids (of database) that has the coordinates [lat, lng]
-export function markerIdsWithSameCoords(markersData, lat, lng){
-  // console.log(markersData);
-  var markers = []
+// export function markerIdsWithSameCoords(markersData, lat, lng){
+//   // console.log(markersData);
+//   var markers = []
 
-  // return markersData.filter()
-  if (!markersData){
-    return null;
-  }
+//   // return markersData.filter()
+//   if (!markersData){
+//     return null;
+//   }
 
-  for (var i = 0; i < markersData.length; i++){
-    if (markersData[i].latitude === lat && markersData[i].longitude === lng){
-      markers.push({
-        id: markersData[i].id,
-        description: "",
-        photos: []
-      });
-    }
-  }
+//   for (var i = 0; i < markersData.length; i++){
+//     if (markersData[i].latitude === lat && markersData[i].longitude === lng){
+//       markers.push({
+//         id: markersData[i].id,
+//         description: "",
+//         photos: []
+//       });
+//     }
+//   }
 
-  // console.log(markers)
-  return markers;
-}
+//   // console.log(markers)
+//   return markers;
+// }
 
 
-export async function markersRecords(markers) {
-  if (!markers)
-    return null;
+// export async function markersRecords(markers) {
+//   if (!markers)
+//     return null;
 
-  for (let i = 0; i < markers.length; i++) {
-    try {
-      // Fetch record for the current marker
-      const record = await Database.fetchRecordsForMarker(markers[i].id);
+//   for (let i = 0; i < markers.length; i++) {
+//     try {
+//       // const record = await Database.fetchRecordsForMarker(markers[i].id);
+//       const records = await Database.fetchMarkerRecords(markers[i].id);
+//       console.log('record: ', records, ' markId: ', markers[i].id, ' markersRecordsFuncccc');
       
-      // Update the marker with the fetched record
-      markers[i].description = record.description;
+      
 
-      for (let j = 0; j < record.photos.length; j++){
-        try {
-          // Fetch image for the current photo
-          const image = await Database.fetchRecordImage(markers[i].id, record.photos[j]);
-          // console.log('Image for marker', i, 'photo', j, ':', image);
+//       // Update the marker with the fetched record
+//       // markers[i].description = record.description;
+
+//       // for (let j = 0; j < record.photos.length; j++){
+//       //   try {
+//       //     const image = await Database.fetchRecordImage(markers[i].id, record.photos[j]);
           
-          // Update the marker with the fetched image data
-          // markers[i].photos[j].image = image;
-          markers[i].photos[j] = image;
-        } catch (imageError) {
-          console.error('Error fetching image for marker', i, 'photo', j, ':', imageError);
-        }
-      }
+//       //     markers[i].photos[j] = image;
+//       //   } catch (imageError) {
+//       //     console.error('Error fetching image for marker', i, 'photo', j, ':', imageError);
+//       //   }
+//       // }
       
-      // console.log('Record for marker', i, ':', record);
-    } catch (error) {
-      console.error('Error fetching record for marker', i, ':', error);
-    }
+//       // console.log('Record for marker', i, ':', record);
+//     } catch (error) {
+//       console.error('Error fetching record for marker', i, ':', error);
+//     }
+//   }
+
+//   return markers;
+// }
+
+export async function markerRecords(markerId) {
+  var records = []
+
+  try {
+      // const record = await Database.fetchRecordsForMarker(markers[i].id);
+      records = await Database.fetchMarkerRecords(markerId);
+      console.log('record: ', records, ' markId: ', markerId, ' markersRecordsFuncccc');
+      
+  } catch (error) {
+      console.error('Error fetching record for marker ', ':', error);
   }
 
-  return markers;
+  return records;
 }
 
 
+const SuggestionsListModal = ({mapRef, markersData, recordsOfDisplayedMarker, setRecordsOfDisplayedMarker}) => {
+  // useEffect(() => {
+  //   console.log('markersss: ', markers);
+  // }, [markers])
 
-const SuggestionsListModal = ({mapRef, markersData, markers}) => {
   const handleClose = () => {
     var clickedButton = document.getElementById(BUTTON_TO_SHOW_SUGGESTIONS_MODAL);
 
@@ -133,8 +150,12 @@ const SuggestionsListModal = ({mapRef, markersData, markers}) => {
         <div className="modal-content custom-bg">
           <HeaderOfModal />
 
-          <Accordion 
+          {/* <Accordion 
             markers={markers}
+          /> */}
+
+          <Accordion 
+            records={recordsOfDisplayedMarker}
           />
 
          

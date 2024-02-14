@@ -37,7 +37,7 @@ export const Photos = ({ photos }) => {
 	);
 };
 
-const AccordionItem = ({marker, index}) => {
+const AccordionItem = ({record, index}) => {
 	return (
 		<>
 		<div class="accordion-item custom-bg">
@@ -58,20 +58,20 @@ const AccordionItem = ({marker, index}) => {
 				data-bs-parent="#suggestionsAccordion"
 			>
 				<div className="accordion-body acordion-in-offCanvas-item">						
-					{marker.description != ""?
+					{record.description != ""?
 					<>
 					<h3 className='fs-5 d-flex justify-content-center align-items-cente'>
 						Description
 					</h3>
-					{marker.description}
+					{record.description}
 					</> : <></>}
 					
-					{marker.photos.length > 0? 
+					{/* {marker.photos.length > 0? 
 					<Photos 
 						photos={marker.photos}
 					/> :
 					<></>
-					}
+					} */}
 					
 				</div>
 			</div>
@@ -80,13 +80,17 @@ const AccordionItem = ({marker, index}) => {
 	);
 }
 
-const Accordion = ({markers}) => {
+const Accordion = ({records}) => {
 	return (
 		<>
 		<div className="accordion accordion-flush" id="suggestionsAccordion">
-			{markers.map((marker, index) => (
-				<AccordionItem 
-					marker={marker}
+			{records.map((record, index) => (
+				// <AccordionItem 
+				// 	marker={marker}
+				// 	index={index}
+				// />
+				<AccordionItem
+					record={record}
 					index={index}
 				/>
 			))}

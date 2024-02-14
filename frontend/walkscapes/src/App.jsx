@@ -34,6 +34,7 @@ function App() {
   const [challengesData, setChallengesData] = useState([]);
   const [challengesToAccordion, setChallengesToAccordion] = useState([]);
   const [pressedChallengeNumber, setPressedChallengeNumber] = useState(null);
+  const [markersRecords, setMarkersRecords] = useState([]);
 
   useEffect(() => {
     var Challenges = [];
@@ -80,6 +81,9 @@ function App() {
           setChallengesData={setChallengesData}
           pressedChallengeNumber={pressedChallengeNumber}
           setPressedChallengeNumber={setPressedChallengeNumber}
+
+          markersRecords={markersRecords}
+          setMarkersRecords={setMarkersRecords}
         />
         {/* <Carousel /> */}
         <Description

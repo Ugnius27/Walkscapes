@@ -1,8 +1,8 @@
-// export const BASE_URL = 'http://localhost:8080';
-export const BASE_URL = '';
+export const BASE_URL = 'http://localhost:8080';
+// export const BASE_URL = '';
 
-const MARKERS_API_ENDPOINT = '/api/record/markers';
-
+// const MARKERS_API_ENDPOINT = '/api/record/markers';
+const MARKERS_API_ENDPOINT = '/api/markers';
 
 export async function fetchMarkers() {
     try {
@@ -17,7 +17,7 @@ export async function fetchMarkers() {
 
         const markers = await response.json();
 
-        // console.log('markers: ', markers);
+        console.log('markers: ', markers);
         //console.log("markers length0: " + markers.length)
         return markers;
 
@@ -100,6 +100,27 @@ export async function fetchChallenges() {
         const challenges = await response.json();
         // console.log('challenges: ', challenges);
         return challenges;
+
+    } catch (error) {
+        console.error(error);
+        return "";
+    }
+}
+
+export async function fetchMarkerRecords(markerId) {
+    try {
+        const response = await fetch(`${BASE_URL}/api/markers/${markerId}/records`, {
+            headers: {
+                "Accept": "application/json"
+            }
+        });
+        if (!response.ok) {
+            throw new Error(`Failed to fetch challenges`);
+        }
+
+        const records = await response.json();
+        console.log('records: ', records, ' markerId: ', markerId);
+        return records;
 
     } catch (error) {
         console.error(error);

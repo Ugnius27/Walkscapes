@@ -92,6 +92,19 @@ function doesCoordsMatch(coordsArray, targetCoords){
 	return false;
 }
 
+export function markerIdWithSameCoords(markersList, coordsToMatch) {
+	for (let i = 0; i < markersList.length; i++){
+		// console.log('markersList[i].id: ', markersList[i].id, 'c: ', [markersList[i].latitude, markersList[i].longitude],  ' and ', 
+		// coordsToMatch);
+		if (markersList[i].latitude == coordsToMatch[0] && markersList[i].longitude == coordsToMatch[1]){
+			// console.log('markersList[i].id!!!!: ', markersList[i].id);
+			return markersList[i].id;
+		}
+	}
+
+	return null;
+}
+
 const Markers = ({mapRef, markersData, setMarkersData, markersIds, setMarkerIds, activePolygons, challengesData, 
 isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 	// const [markersData, setMarkersData] = useState(null);
@@ -117,24 +130,34 @@ isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 		if (!markersData || !polygons || !mapRef)
 			return;
 
-		for (var i = 0; i < markersData.length; i++){
+		// console.log('putMarkersOnMap markersData: ', markersData);
+		for (var i = 0; i < markersData.length; i++) {
 			var coords = [markersData[i].latitude, markersData[i].longitude]
 
-			for (var j = 0; j < polygons.length; j++){
-				if (isMarkerInThePolygon(coords, polygons[j].vertices) && !doesCoordsMatch(usedCoords, coords)){
-					// console.log(coords);
-					// console.log(doesCoordsMatch(usedCoords, coords), ' ', usedCoords, coords);
-					var id = createMarker(mapRef, coords[0], coords[1])
-					if (id){
-						ids.push(id)
-					}
-					
-					usedCoords.push(coords);
-
-					break
-				}
+			var id = createMarker(mapRef, coords[0], coords[1])
+			if (id) {
+				ids.push(id)
 			}
 		}
+
+		// for (var i = 0; i < markersData.length; i++){
+		// 	var coords = [markersData[i].latitude, markersData[i].longitude]
+
+		// 	for (var j = 0; j < polygons.length; j++){
+		// 		if (isMarkerInThePolygon(coords, polygons[j].vertices) && !doesCoordsMatch(usedCoords, coords)){
+		// 			// console.log(coords);
+		// 			// console.log(doesCoordsMatch(usedCoords, coords), ' ', usedCoords, coords);
+		// 			var id = createMarker(mapRef, coords[0], coords[1])
+		// 			if (id){
+		// 				ids.push(id)
+		// 			}
+					
+		// 			usedCoords.push(coords);
+
+		// 			break
+		// 		}
+		// 	}
+		// }
 
 		// console.log(usedCoords);
 		// console.log(ids.length, ' llll');
@@ -169,7 +192,7 @@ isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 	}, [markersData, isNewSuggestionAdded])
 
 	useEffect(() => {
-		// console.log('markers ids: ', markersIds);
+		console.log('markers ids: ', markersIds);
 	}, [markersIds])
 
 	// useEffect(() => {
