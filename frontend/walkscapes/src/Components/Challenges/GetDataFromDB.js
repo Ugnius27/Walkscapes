@@ -27,33 +27,51 @@ export async function fetchMarkers() {
     }
 }
 
-export async function fetchRecordsForMarker(markerId) {
-    try {
-        const response = await fetch(`${BASE_URL}/api/record/marker=${markerId}`, {
-            headers: {
-                'Accept': 'application/json' // Specify the desired media type
-            }
-        });
-        if (!response.ok) {
-            throw new Error(`Failed to fetch records for marker ${markerId}`);
-        }
+// export async function fetchRecordsForMarker(markerId) {
+//     try {
+//         const response = await fetch(`${BASE_URL}/api/record/marker=${markerId}`, {
+//             headers: {
+//                 'Accept': 'application/json' // Specify the desired media type
+//             }
+//         });
+//         if (!response.ok) {
+//             throw new Error(`Failed to fetch records for marker ${markerId}`);
+//         }
 
-        const records = await response.json();
-        return records;
+//         const records = await response.json();
+//         return records;
 
-    } catch (error) {
-        console.error(error);
-        return [];
-    }
-}
+//     } catch (error) {
+//         console.error(error);
+//         return [];
+//     }
+// }
 
-export async function fetchRecordImage(markerId, photoId) {
+// export async function fetchRecordImage(markerId, photoId) {
+//     try {
+//         // console.log("marker id: " + markerId + "   photo id:  " + photoId);
+
+//         const response = await fetch(`${BASE_URL}/api/record/marker=${markerId}/photo=${photoId}`);
+//         if (!response.ok) {
+//             throw new Error(`Failed to fetch records for marker's ${markerId} photo ${photoId}`);
+//         }
+
+//         const photo = await response.blob();
+//         return photo;
+
+//     } catch (error) {
+//         console.error(error);
+//         return "";
+//     }
+// }
+
+export async function fetchRecordImage(imageId) {
     try {
         // console.log("marker id: " + markerId + "   photo id:  " + photoId);
 
-        const response = await fetch(`${BASE_URL}/api/record/marker=${markerId}/photo=${photoId}`);
+        const response = await fetch(`${BASE_URL}/api/images/${imageId}`);
         if (!response.ok) {
-            throw new Error(`Failed to fetch records for marker's ${markerId} photo ${photoId}`);
+            throw new Error(`Failed to fetch records image ${imageId}`);
         }
 
         const photo = await response.blob();

@@ -1,9 +1,12 @@
 import '../OffCanvas/OffCanvas.css'
 import './Accordion.css'
+import * as Database from '../Challenges/GetDataFromDB.js'
 
 import * as SuggestionsListModal from './SuggestionsListModal.jsx'
+import { useEffect, useState } from 'react';
 
 const ImageDisplay = ({ blobData }) => {
+	console.log('--------------- ', blobData);
 	if (!blobData) {
 	  return <p>No image available</p>;
 	}
@@ -18,21 +21,82 @@ const ImageDisplay = ({ blobData }) => {
 	);
   };
 
-export const Photos = ({ photos }) => {
-	// console.log('ph: ', ' ', photos);
+export const Photos = ({ photos, r }) => {
+	const [imagesBlob, setImagesBlob] = useState([]);
+	const [loading, setLoading] = useState(true);
+
+	var I = []
+
+	function blobPhotos(photos) {
+		for (let i = 0; i < photos.length; i++){
+			getBlobData(photos[i])
+			console.log('bbb: ', imagesBlob);
+			console.log(' I: ', I);
+		}
+	}
+
+	useEffect(() => {
+		async function fetchData() {
+			if (!photos || photos.length <= 0) {
+				console.log('nonono ', photos.length, '   r: ', r);
+				setLoading(false); // Update loading state
+			} else {
+				console.log('y ', photos.length, '   r: ', r);
+				const blobData = await Promise.all(photos.map(async photoId => {
+					try {
+						const image = await Database.fetchRecordImage(photoId);
+						return image;
+					} catch (error) {
+						console.error('Error fetching image for marker', error);
+						return null;
+					}
+				}));
+				setImagesBlob(blobData);
+				setLoading(false); // Update loading state
+			}
+		}
+	
+		fetchData();
+	}, [photos, r]); // Add dependencies
+
+	async function getBlobData(imageId){
+		// console.log(' photos', photos.length);
+		try {
+			const image = await Database.fetchRecordImage(imageId);
+			I.push(image)
+			return image;
+		} catch (imageError) {
+			console.error('Error fetching image for marker', imageError);
+		}
+
+		return null;
+	}
   
 	return (
 		<>
 		<h3 className='fs-5 mt-4 d-flex justify-content-center align-items-center' htmlFor="photos">
 		  Photos
 		</h3>
-		{photos && photos.length > 0 && (
-		  <div>
-			{photos.map((photo, index) => (
-				<ImageDisplay blobData={photo}/>
-			))}
-		  </div>
-		)}
+		{(photos.length > 0)? 
+		<> 
+		   <div>
+		 	{/* {imagesBlob.map((image, index) => (
+		 		<ImageDisplay blobData={image}/>				
+		 	))} */}
+			{loading ? (
+				<p>Loading images...</p>
+			) : (
+				<div>
+					{imagesBlob.map((image, index) => (
+						<ImageDisplay key={index} blobData={image} />
+					))}
+				</div>
+			)}
+		   </div>
+		</>
+		: <></>}
+
+		
 		</>	
 	);
 };
@@ -40,10 +104,10 @@ export const Photos = ({ photos }) => {
 const AccordionItem = ({record, index}) => {
 	return (
 		<>
-		<div class="accordion-item custom-bg">
-			<h2 class="accordion-header">
+		<div className="accordion-item custom-bg">
+			<h2 className="accordion-header">
 				<button 
-					class="accordion-button collapsed acordion-in-offCanvas" 
+					className="accordion-button collapsed acordion-in-offCanvas" 
 					type="button" 
 					data-bs-toggle="collapse" 
 					data-bs-target={`#collapse${index}`} 
@@ -54,7 +118,7 @@ const AccordionItem = ({record, index}) => {
 			</h2>
 			<div 
 				id={`collapse${index}`}
-				class="accordion-collapse collapse" 
+				className="accordion-collapse collapse" 
 				data-bs-parent="#suggestionsAccordion"
 			>
 				<div className="accordion-body acordion-in-offCanvas-item">						
@@ -66,12 +130,15 @@ const AccordionItem = ({record, index}) => {
 					{record.description}
 					</> : <></>}
 					
-					{/* {marker.photos.length > 0? 
-					<Photos 
-						photos={marker.photos}
-					/> :
-					<></>
-					} */}
+					{
+						record.image_ids? 
+						<Photos 
+							r={record}
+							photos={record.image_ids}
+						/> :
+						<></>
+					}
+					
 					
 				</div>
 			</div>
