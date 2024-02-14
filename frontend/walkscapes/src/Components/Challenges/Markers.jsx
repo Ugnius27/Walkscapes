@@ -25,7 +25,17 @@ export function createMarker(mapRef, lat, lng) {
 	return marker._leaflet_id
 }
 
-function FixedMarkersPopup(markerId, lat, lng) {
+// export function markerIdFromLeafletId(markerLeafletId) {
+// 	for (let i = 0; i < markerIds.length; i++) {
+// 		if (markerLeafletId == markerIds[i]) {
+// 			return markersData[i].id;
+// 		}
+// 	}
+
+// 	return null;
+// }
+
+function FixedMarkersPopup(markerLeafletId, lat, lng) {
 	return (
 		`<div style="text-align: center;">
 			Coordinates: (${lat.toFixed(5)}, ${lng.toFixed(5)})
@@ -33,14 +43,14 @@ function FixedMarkersPopup(markerId, lat, lng) {
 		<div style="text-align: center">
 			<button 
 				id="${VIEW_SUGGESTIONS_BUTTON_ID}"
-				onclick="viewSuggestions('${markerId}')"  
+				onclick="viewSuggestions('${markerLeafletId}')"  
 				class="popup-button"
 			> 
 				View suggestions
 			</button>
 
 			<button 
-				onclick="fixMarkersPlace('${markerId}', '0')"  
+				onclick="fixMarkersPlace('${markerLeafletId}', '0')"  
 				class="popup-button"
 			> 
 				Add new suggestion

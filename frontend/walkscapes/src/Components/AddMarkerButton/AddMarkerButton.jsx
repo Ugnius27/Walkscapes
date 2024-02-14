@@ -61,7 +61,7 @@ function currentLocation(callback) {
 
 
 
-const AddMarkerButton = ({mapRef, activePolygons, polygonIds, markerIds, setMarkerIds, lastMarkerId, setLastMarkerId,
+const AddMarkerButton = ({mapRef, markersData, activePolygons, polygonIds, markerIds, setMarkerIds, lastMarkerId, setLastMarkerId,
 isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 	// var lastMarkerId = -1;
 	// const [lastMarkerId, setLastMarkerId] = useState(-1);
@@ -100,37 +100,37 @@ isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 
 
 
-	async function addToCurrentLocation() {
-		console.log('Add to Current Location clicked');
-		//map.removeControl(customTableControl);
-		//addTableIsOnTheMap = false;
+// 	async function addToCurrentLocation() {
+// 		console.log('Add to Current Location clicked');
+// 		//map.removeControl(customTableControl);
+// 		//addTableIsOnTheMap = false;
 
-		currentLocation(async function (currentCoordinates) {
-			if (currentCoordinates) {
-				/*console.log(currentCoordinates);
-				var newMarker = L.marker(currentCoordinates, { icon: redIcon }).addTo(map);
-				newMarker.bindPopup(currentCoordinates[0] + ", " + currentCoordinates[1]);
+// 		currentLocation(async function (currentCoordinates) {
+// 			if (currentCoordinates) {
+// 				/*console.log(currentCoordinates);
+// 				var newMarker = L.marker(currentCoordinates, { icon: redIcon }).addTo(map);
+// 				newMarker.bindPopup(currentCoordinates[0] + ", " + currentCoordinates[1]);
 
-				coordsForUploading = [currentCoordinates[0], currentCoordinates[1]];
+// 				coordsForUploading = [currentCoordinates[0], currentCoordinates[1]];
 
-				await togglePopup();
-				if (submitted){
-					console.log("This was submitted");
-					createMarker(map, currentCoordinates[0], currentCoordinates[1], 
-					`${currentCoordinates[0]}, ${currentCoordinates[1]}`);
-				}
-				else{
-					console.log("This was not submitted");
-					map.removeLayer(newMarker);
-				}*/
-				console.log('currentCoordinates: ', currentCoordinates);
-				//var newMarker = L.marker([lat, lng], { icon: RED_ICON, draggable: true }).addTo(mapRef.current);
+// 				await togglePopup();
+// 				if (submitted){
+// 					console.log("This was submitted");
+// 					createMarker(map, currentCoordinates[0], currentCoordinates[1], 
+// 					`${currentCoordinates[0]}, ${currentCoordinates[1]}`);
+// 				}
+// 				else{
+// 					console.log("This was not submitted");
+// 					map.removeLayer(newMarker);
+// 				}*/
+// 				console.log('currentCoordinates: ', currentCoordinates);
+// 				//var newMarker = L.marker([lat, lng], { icon: RED_ICON, draggable: true }).addTo(mapRef.current);
 
-			} else {
-				console.log("Unable to get the current location.");
-			}
-		});
-}
+// 			} else {
+// 				console.log("Unable to get the current location.");
+// 			}
+// 		});
+// }
 
 
 
@@ -256,6 +256,8 @@ isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 			lastSubmittedMarkerId={lastMarkerId}
 			isNewSuggestionAdded={isNewSuggestionAdded}
 			setIsNewSuggestionAdded={setIsNewSuggestionAdded}
+			markersData={markersData}
+			markerIds={markerIds}
 		/>
 		</div>
 		

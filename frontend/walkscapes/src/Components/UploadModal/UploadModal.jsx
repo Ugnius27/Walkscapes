@@ -5,6 +5,7 @@ import '../../popupsLeaflet.css'
 import React, { useState, useEffect } from 'react';
 
 import * as UploadToDB from '../UploadModal/UploadDataToDB.js'
+import * as Markers from '../Challenges/Markers.jsx'
 
 import { DEFAULT_ICON, RED_ICON } from '../../App.jsx';
 
@@ -106,12 +107,24 @@ const DescriptionOfModal = ({description, setDescription}) => {
   );
 }
 
-const UploadModal = ({map, lastSubmittedMarkerId, isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
+const UploadModal = ({map, lastSubmittedMarkerId, isNewSuggestionAdded, setIsNewSuggestionAdded, markersData, markerIds}) => {
   const [selectedImages, setSelectedImages] = useState([]);
   const [description, setDescription] = useState('');
   const [showAlert, setShowAlert] = useState(false);
 
   var buttonToShowUploadModal = document.getElementById(BUTTON_TO_SHOW_UPLOAD_MODAL);
+
+  function markerIdFromLeafletId(markerLeafletId) {
+    console.log('markersData: ', markersData);
+    for (let i = 0; i < markerIds.length - 1; i++) {
+      if (markerLeafletId == markerIds[i]) {
+        console.log('pppppppppppp:m ', markersData[i], ' i: ', i);
+        return markersData[i].id;
+      }
+    }
+  
+    return null;
+  }
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
@@ -135,7 +148,19 @@ const UploadModal = ({map, lastSubmittedMarkerId, isNewSuggestionAdded, setIsNew
     var coordinates = lastSubmittedMarker.getLatLng();
     console.log('before uploadRecordFunc');
     console.log('lastSubmittedMarker: ', lastSubmittedMarker);
-    UploadToDB.uploadRecord(coordinates.lat, coordinates.lng, selectedImages, description)
+    var markerId = markerIdFromLeafletId(lastSubmittedMarkerId);
+
+    var isNewMarkerNeeded = true;
+    for (let i = 0; i < markersData.length - 1; i++){ //maybe delete
+      if (markersData[i].latititude == coordinates.lat && markersData[i].longtitute == coordinates.lng){
+        isNewMarkerNeeded = false;
+      }
+    }
+    if (markerId == null){
+      isNewMarkerNeeded = false;
+    }
+
+    UploadToDB.uploadRecord(coordinates.lat, coordinates.lng, selectedImages, description, isNewMarkerNeeded, markerId)
         .then(() => {
             setIsNewSuggestionAdded((previous) => !previous);
             //console.log('SET SUGG ADDED');

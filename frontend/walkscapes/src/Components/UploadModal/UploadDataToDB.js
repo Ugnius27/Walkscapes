@@ -20,10 +20,17 @@ import { UPLOAD_MODAL_ID } from './UploadModal.jsx'
         .then((json) => console.log(json));
 }*/
 
-export async function uploadRecord(latitude, longitude, images, description) {
+export async function uploadRecord(latitude, longitude, images, description, isMarkerExists, markerId) {
+    console.log('isMarkerExists: ', isMarkerExists, ' markerId: ', markerId);
     const formData = new FormData();
-    formData.append('latitude', latitude);
-    formData.append('longitude', longitude);
+    if (isMarkerExists) {
+        formData.append('marker_type', {"marker_id": markerId});
+    } else {
+        formData.append('marker_type', {"latlang": [latitude, longitude]});
+    }
+
+    // formData.append('latitude', latitude);
+    // formData.append('longitude', longitude);
     formData.append('description', description);
     
     for (const image of images) {
@@ -31,7 +38,8 @@ export async function uploadRecord(latitude, longitude, images, description) {
     }
 
     try {
-        const response = await fetch(`${BASE_URL}/api/record/upload`, {
+        // const response = await fetch(`${BASE_URL}/api/record/upload`, {
+        const response = await fetch(`${BASE_URL}/api/records`, {
             method: 'POST',
             body: formData,
         });

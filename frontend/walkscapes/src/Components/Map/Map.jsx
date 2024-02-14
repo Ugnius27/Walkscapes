@@ -95,6 +95,7 @@ const Map = ({
 	const { canAddNewMarker, setCanAddNewMarker } = useMarkerState();
 
 	const [lastMarkerId, setLastMarkerId] = useState(-1);
+	const [isMarkerExists, setIsMarkerExists] = useState(false);
 
 	const santaka = [54.89984180616253, 23.961551736420333];
 
@@ -175,6 +176,16 @@ const Map = ({
 	// 	console.log('Chal data: ', challengesData)
 	// }, [challengesData])
 
+	function markerIdFromLeafletId(markerLeafletId) {
+		for (let i = 0; i < markerIds.length; i++) {
+			if (markerLeafletId == markerIds[i]) {
+				return markersData[i].id;
+			}
+		}
+
+		return null;
+	}
+
 	window.viewSuggestions = function(markerLeafletId) {
 		// console.log('pressed on view', markerId);
 
@@ -189,7 +200,7 @@ const Map = ({
 			
 		marker.setIcon(RED_ICON);
 		marker.closePopup();
-		buttonToClick.dataset.markerid = markerLeafletId;
+		buttonToClick.dataset.markerLeafletId = markerLeafletId;
 
 		// var markersToDisplay = [];
 		var recordsToDisplay = [];
@@ -228,8 +239,8 @@ const Map = ({
 		
 	}
 
-	window.fixMarkersPlace = function(markerId, toggleFade) {
-		setLastMarkerId(markerId);
+	window.fixMarkersPlace = function(markerLeafletId, toggleFade) {
+		setLastMarkerId(markerLeafletId);
 		// var activePolygons=
 		// 	challengesData?.filter(challenge => challenge.is_active)
 		// 	.map(challenge => challenge.polygon) || [];
@@ -239,7 +250,7 @@ const Map = ({
 		// console.log("Fixing marker's place ", markerId, ' ', mapRef, activePolygons);
 		
 		
-		var marker = mapRef.current._layers[markerId];
+		var marker = mapRef.current._layers[markerLeafletId];
 		if (!marker) {
 			console.log("Can't find marker to make in undragable");
 			return;
@@ -268,7 +279,8 @@ const Map = ({
 	
 			buttonToClick.dataset.lat = coordinates.lat;
 			buttonToClick.dataset.lng = coordinates.lng;
-			buttonToClick.dataset.markerId = marker._leaflet_id;
+			buttonToClick.dataset.markerLeafletId = marker._leaflet_id;
+			// buttonToClick.dataset.markerId = markerIdFromLeafletId(marker._leaflet_id); //
 		}
 	}
 	
@@ -285,6 +297,7 @@ const Map = ({
 
 		<AddMarkerButton 
 			mapRef={mapRef}
+			markersData={markersData}
 			polygonIds={polygonIds}
 			setPolygonIds={setPolygonIds}
 			activePolygons={

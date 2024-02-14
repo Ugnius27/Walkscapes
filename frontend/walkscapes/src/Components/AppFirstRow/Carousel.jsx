@@ -18,18 +18,6 @@ const Carousel = (({challengesData, mapRef, pressedChallengeNumber, setPressedCh
 				</div>
 			);
 		}
-		// for (let index = 0; index < challengesData.length; index++) {
-		// 	const challenge = challengesData[index];
-		// 	items.push(
-		// 		<div 
-		// 			key={index} 
-		// 			className={`carousel-item ${index === 0 ? 'active' : ''}`}
-		// 			onClick={(event) => handleClickOnChallenge(event, challenge.title)}
-		// 		>
-		// 			<h3 className="text-center">{challenge.title}</h3>
-		// 		</div>
-		// 	);
-		// }
 
 		return items
 	}
@@ -55,6 +43,18 @@ const Carousel = (({challengesData, mapRef, pressedChallengeNumber, setPressedCh
 			}
 		}
 	}
+
+	function handleNextChallenge() {
+        const nextIndex = (pressedChallengeNumber + 1) % challengesData.length;
+        handleClickOnChallenge(null, challengesData[nextIndex].title);
+		setPressedChallengeNumber((pressedChallengeNumber + 1) % challengesData.length);
+    }
+
+    function handlePrevChallenge() {
+        const prevIndex = (pressedChallengeNumber - 1 + challengesData.length) % challengesData.length;
+        handleClickOnChallenge(null, challengesData[prevIndex].title);
+		setPressedChallengeNumber((pressedChallengeNumber - 1) % challengesData.length);
+    }
 	
 
 	// useEffect(() => {
@@ -76,12 +76,24 @@ const Carousel = (({challengesData, mapRef, pressedChallengeNumber, setPressedCh
 			{carouselItems(challengesData)}
 		</div>
 
-		<button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+		<button 
+			className="carousel-control-prev" 
+			type="button" 
+			data-bs-target="#carouselExampleIndicators" 
+			data-bs-slide="prev"
+			onClick={handlePrevChallenge}
+		>
 			<span className="carousel-control-prev-icon" aria-hidden="true"></span>
 			<span className="visually-hidden">Previous</span>
 		</button>
 		
-		<button className="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+		<button 
+			className="carousel-control-next" 
+			type="button" 
+			data-bs-target="#carouselExampleIndicators" 
+			data-bs-slide="next"
+			onClick={handleNextChallenge}
+		>
 			<span className="carousel-control-next-icon" aria-hidden="true"></span>
 			<span className="visually-hidden">Next</span>
 		</button>

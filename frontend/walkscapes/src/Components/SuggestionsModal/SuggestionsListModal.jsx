@@ -95,7 +95,8 @@ const SuggestionsListModal = ({mapRef, markersData, recordsOfDisplayedMarker, se
     if (!clickedButton)
       return;
 
-    const markerId = clickedButton.dataset.markerid;
+    // const markerId = clickedButton.dataset.markerId;
+    const markerId = clickedButton.dataset.markerLeafletId;
     var marker = mapRef.current._layers[markerId];
 
     marker.setIcon(DEFAULT_ICON);
