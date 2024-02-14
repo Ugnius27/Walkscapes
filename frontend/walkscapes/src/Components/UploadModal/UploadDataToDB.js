@@ -21,12 +21,22 @@ import { UPLOAD_MODAL_ID } from './UploadModal.jsx'
 }*/
 
 export async function uploadRecord(latitude, longitude, images, description, isMarkerExists, markerId) {
-    console.log('isMarkerExists: ', isMarkerExists, ' markerId: ', markerId);
+    console.log('isMarkerExists: ', isMarkerExists, ' markerId: ', markerId, ' images: ', images);
     const formData = new FormData();
     if (isMarkerExists) {
-        formData.append('marker_type', {"marker_id": markerId});
+        console.log(JSON.stringify({"marker_id": markerId}));
+        const jsonString = JSON.stringify({"marker_id": markerId});
+        const blob = new Blob([jsonString], { type: 'application/json' });
+        formData.append('marker_type', blob);
+        //formData.append('marker_type', JSON.stringify({"marker_id": markerId}));
     } else {
-        formData.append('marker_type', {"latlang": [latitude, longitude]});
+        // formData.append('marker_type', JSON.stringify({"latlang": [latitude, longitude]}));
+        // formData.append('marker_type', JSON.stringify({"latlang": [latitude, longitude]}), {type: 'application/json'});
+        const jsonString = JSON.stringify({"latlang": [latitude, longitude]});
+
+        const blob = new Blob([jsonString], { type: 'application/json' });
+        formData.append('marker_type', blob);
+
     }
 
     // formData.append('latitude', latitude);

@@ -116,7 +116,10 @@ const UploadModal = ({map, lastSubmittedMarkerId, isNewSuggestionAdded, setIsNew
 
   function markerIdFromLeafletId(markerLeafletId) {
     console.log('markersData: ', markersData);
-    for (let i = 0; i < markerIds.length - 1; i++) {
+    console.log('markerIds: ', markerIds.length, ' markersData: ', markersData.length);
+    console.log('markerIds: ', markerIds, ' markersData: ', markersData);
+
+    for (let i = 0; i < markersData.length; i++) {
       if (markerLeafletId == markerIds[i]) {
         console.log('pppppppppppp:m ', markersData[i], ' i: ', i);
         return markersData[i].id;
@@ -151,7 +154,7 @@ const UploadModal = ({map, lastSubmittedMarkerId, isNewSuggestionAdded, setIsNew
     var markerId = markerIdFromLeafletId(lastSubmittedMarkerId);
 
     var isNewMarkerNeeded = true;
-    for (let i = 0; i < markersData.length - 1; i++){ //maybe delete
+    for (let i = 0; i < markersData.length; i++){ //maybe delete
       if (markersData[i].latititude == coordinates.lat && markersData[i].longtitute == coordinates.lng){
         isNewMarkerNeeded = false;
       }
