@@ -43,10 +43,10 @@ export async function uploadRecord(latitude, longitude, images, description, isM
     // formData.append('longitude', longitude);
     formData.append('description', description);
     
-    // for (const image of images) {
-    //     formData.append('image', image);
-    // }
-    formData.append('files', images);
+    for (const image of images) {
+        formData.append('files', image);
+    }
+    // formData.append('files', images);
 
     try {
         // const response = await fetch(`${BASE_URL}/api/record/upload`, {
