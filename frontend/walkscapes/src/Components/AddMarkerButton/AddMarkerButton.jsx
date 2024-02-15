@@ -12,7 +12,9 @@ import ReactDOMServer from 'react-dom/server';
 import { DEFAULT_ICON, RED_ICON } from '../../App.jsx';
 
 import { ADD_MARKER_MODAL_ID, CHOOSE_LOCATION_MESSAGE_ID,
-		 ADD_TO_CURR_LOCATION_MESSAGE_ID, useMarkerState} from '../Map/Map.jsx';
+		 ADD_TO_CURR_LOCATION_MESSAGE_ID, 
+		 CHOOSE_LOCATION_MESSAGE, DRAG_MARKER_MESSAGE,
+		 useMarkerState} from '../Map/Map.jsx';
 
 import { UPLOAD_MODAL_ID, BUTTON_TO_SHOW_UPLOAD_MODAL } from '../UploadModal/UploadModal.jsx';
 
@@ -62,7 +64,7 @@ function currentLocation(callback) {
 
 
 const AddMarkerButton = ({mapRef, markersData, activePolygons, polygonIds, markerIds, setMarkerIds, lastMarkerId, setLastMarkerId,
-isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
+isNewSuggestionAdded, setIsNewSuggestionAdded, addMarkerMessage, setAddMarkerMessage}) => {
 	// var lastMarkerId = -1;
 	// const [lastMarkerId, setLastMarkerId] = useState(-1);
 
@@ -154,6 +156,7 @@ isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 			return true;
 		});
 
+		setAddMarkerMessage(CHOOSE_LOCATION_MESSAGE);
 		toggleAddMarkerButton();                         	  // hide
 		Fade.toggleFadeOverlay();                             // show
 		Fade.toggleFadeMessage(CHOOSE_LOCATION_MESSAGE_ID);   // show
@@ -184,6 +187,9 @@ isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 					// console.log("elsee ", count);
 				var newMarker = L.marker([lat, lng], { icon: RED_ICON, draggable: true }).addTo(mapRef.current);
 				bindPopupChoosePlace(newMarker, lat, lng, mapRef);
+				///////////////////////// sitoj vietoj keisk zinutes teksta
+				setAddMarkerMessage(DRAG_MARKER_MESSAGE);
+				///
 				setMarkerIds((prevMarkerIds) => [...prevMarkerIds, newMarker._leaflet_id]);
 				// console.log('its id: ', newMarker._leaflet_id, ' coords: ', [lat, lng]);
 

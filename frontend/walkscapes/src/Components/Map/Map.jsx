@@ -25,6 +25,9 @@ export const ADD_MARKER_MODAL_ID = 'AddMarkerModal';
 export const CHOOSE_LOCATION_MESSAGE_ID = 'ChooseLocationMessage';
 export const ADD_TO_CURR_LOCATION_MESSAGE_ID = 'AddToCurrLocationMessage';
 
+export const CHOOSE_LOCATION_MESSAGE = `Click on the map to choose location`
+export const DRAG_MARKER_MESSAGE = `Drag marker to desired place`
+
 //const SPARE_CENTER_COORDINATE = [54.89984180616253, 23.961551736420333];
 const SPARE_CENTER_COORDINATE = [54.53, 23.3];
 
@@ -98,6 +101,7 @@ const Map = ({
 
 	const [lastMarkerId, setLastMarkerId] = useState(-1);
 	const [isMarkerExists, setIsMarkerExists] = useState(false);
+	const [addMarkerMessage, setAddMarkerMessage] = useState(`Click on the map to choose location`);
 
 	const santaka = [54.89984180616253, 23.961551736420333];
 
@@ -316,11 +320,13 @@ const Map = ({
 
 			isNewSuggestionAdded={isNewSuggestionAdded}
 			setIsNewSuggestionAdded={setIsNewSuggestionAdded}
+			addMarkerMessage={addMarkerMessage}
+			setAddMarkerMessage={setAddMarkerMessage}
 		/>
 
 		<Fade.MessageOnFadeOverlay
 			id = {CHOOSE_LOCATION_MESSAGE_ID}
-			text = {`Click on the map to choose location`}
+			text = {addMarkerMessage}
       		setCanAddNewMarker={setCanAddNewMarker}
 			mapRef={mapRef}
 			markerIds={markerIds}
