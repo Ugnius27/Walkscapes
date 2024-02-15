@@ -117,7 +117,7 @@ export function markerIdWithSameCoords(markersList, coordsToMatch) {
 }
 
 const Markers = ({mapRef, markersData, setMarkersData, markersIds, setMarkerIds, activePolygons, challengesData, 
-isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
+isNewSuggestionAdded, setIsNewSuggestionAdded, mapInitialized}) => {
 	// const [markersData, setMarkersData] = useState(null);
 	const [challenges, setChallenges] = useState([]);
 
@@ -207,7 +207,7 @@ isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 
 
 		// console.log('new markers put on map');
-	}, [markersData, isNewSuggestionAdded])
+	}, [markersData, isNewSuggestionAdded, mapInitialized])
 
 	// useEffect(() => {
 	// 	console.log('markers ids: ', markersIds);

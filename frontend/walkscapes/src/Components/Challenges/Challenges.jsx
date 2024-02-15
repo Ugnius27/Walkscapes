@@ -142,6 +142,7 @@ mapInitialized}) => {
 			setMarkerIds={setMarkerIds}
 			isNewSuggestionAdded={isNewSuggestionAdded}
 			setIsNewSuggestionAdded={setIsNewSuggestionAdded}
+			mapInitialized={mapInitialized}
 		/>
 		</>
 	);
