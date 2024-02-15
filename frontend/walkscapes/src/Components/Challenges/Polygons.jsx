@@ -15,6 +15,7 @@ export function changeAllPolygonsColor(mapRef, challengesData, polygonIds) {
 			var color = challengesData[i].is_active? ACTIVE_POLYGON_COLOR : INACTIVE_POLYGON_COLOR;
 
 			polygon.setStyle({ fillColor: color, color: color });
+			console.log('created new polygon');
 		}
 			
 	}
