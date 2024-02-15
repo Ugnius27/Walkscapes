@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import L from 'leaflet';
 
-import 'leaflet/dist/leaflet.css';
+// import 'leaflet/dist/leaflet.css';
 import './Carousel.css'
 import * as Polygons from '../Challenges/Polygons.jsx'
 
