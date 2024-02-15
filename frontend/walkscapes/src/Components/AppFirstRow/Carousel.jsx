@@ -78,7 +78,8 @@ const Carousel = (({challengesData, mapRef, pressedChallengeNumber, setPressedCh
 		Polygons.changeAllPolygonsColor(mapRef, challengesData, polygonIds)
 		var polygon = mapRef.current._layers[polygonIds[nextIndex]];
 		// console.log('polygon: ', polygon);
-		polygon.setStyle({ fillColor: PRESSED_POLYGON_COLOR, color: PRESSED_POLYGON_COLOR });
+		if (polygon)
+			polygon.setStyle({ fillColor: PRESSED_POLYGON_COLOR, color: PRESSED_POLYGON_COLOR });
 
     }
 
@@ -90,7 +91,8 @@ const Carousel = (({challengesData, mapRef, pressedChallengeNumber, setPressedCh
 		Polygons.changeAllPolygonsColor(mapRef, challengesData, polygonIds)
 		var polygon = mapRef.current._layers[polygonIds[prevIndex]];
 		// console.log('polygon: ', polygon);
-		polygon.setStyle({ fillColor: PRESSED_POLYGON_COLOR, color: PRESSED_POLYGON_COLOR });
+		if (polygon)
+			polygon.setStyle({ fillColor: PRESSED_POLYGON_COLOR, color: PRESSED_POLYGON_COLOR });
     }
 	
 
