@@ -60,8 +60,10 @@ export function MessageOnFadeOverlay({ id, text, setCanAddNewMarker, mapRef, mar
 			style={{
 				position: 'absolute',
 				top: '62vh',
-				left: '2.8vw',
+				//left: '2.8vw',
+				left: '50%',
 				//transform: 'translate(-50%, -50%)', // Center the container itself
+				transform: 'translateX(-50%)',
 				width: mapWidth,
 				zIndex: 1000,
 				display: 'none',
