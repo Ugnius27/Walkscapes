@@ -1,6 +1,6 @@
 // App.jsx
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 
 import L from 'leaflet';
 //import 'leaflet/dist/leaflet.css';
@@ -21,94 +21,103 @@ export const CHOOSE_LOCATION_MESSAGE_ID = 'ChooseLocationMessage';
 export const ADD_TO_CURR_LOCATION_MESSAGE_ID = 'AddToCurrLocationMessage';
 
 export const RED_ICON = new L.Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
-  shadowUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png'
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+    shadowUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
 });
 
 export const DEFAULT_ICON = new L.Icon({
-  iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
-  shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
+    iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
+    shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
 });
 
 function App() {
-  const [challengesData, setChallengesData] = useState([]);
-  const [challengesToAccordion, setChallengesToAccordion] = useState([]);
-  const [pressedChallengeNumber, setPressedChallengeNumber] = useState(null);
-  const [markersRecords, setMarkersRecords] = useState([]);
-  const [polygonIds, setPolygonIds] = useState([]);
-  const [mapInitialized, setMapInitialized] = useState(false);
+    const [challengesData, setChallengesData] = useState([]);
+    const [challengesToAccordion, setChallengesToAccordion] = useState([]);
+    const [pressedChallengeNumber, setPressedChallengeNumber] = useState(null);
+    const [markersRecords, setMarkersRecords] = useState([]);
+    const [polygonIds, setPolygonIds] = useState([]);
+    const [mapInitialized, setMapInitialized] = useState(false);
 
-  useEffect(() => {
-    var Challenges = [];
+    useEffect(() => {
+        var Challenges = [];
 
-    for (let i = 0; i < challengesData.length; i++){
-      Challenges.push({
-        title: challengesData[i].title,
-        description: challengesData[i].description,
-        Routes: []});
-    }
+        for (let i = 0; i < challengesData.length; i++) {
+            Challenges.push({
+                title: challengesData[i].title,
+                description: challengesData[i].description,
+                Routes: []
+            });
+        }
 
-    setChallengesToAccordion(Challenges);
+        setChallengesToAccordion(Challenges);
 
-    //CurrentLocation.getCurrentLocation()
-    
-  }, [challengesData])
+        //CurrentLocation.getCurrentLocation()
 
-  useEffect(() => {
-    console.log('!!! mapRef: ', mapRef);
-  }, [mapRef])
+    }, [challengesData])
 
-  var mapContainer = useRef(null);
-  var mapRef = useRef(null);
+    useEffect(() => {
+        console.log('!!! mapRef: ', mapRef);
+    }, [mapRef])
 
-  return (
-    <div className='App p-3'>
-      <>
-      {/* <AppFirstRow Challenges={challengesToAccordion}/> */}
-      <Carousel 
-        challengesData={challengesData}
-        mapRef={mapRef}
-        pressedChallengeNumber={pressedChallengeNumber}
-        setPressedChallengeNumber={setPressedChallengeNumber}
-        polygonIds={polygonIds}
-      />
-      
-      <FadeModal/>
-      
-      <div 
-        style={{ 
-          position: 'relative', 
-          height: '253px', 
-          marginLeft: '0.6rem'}}
-      >
-        <MapComponent 
-          mapContainer={mapContainer}
-          mapRef={mapRef}
-          challengesData={challengesData}
-          setChallengesData={setChallengesData}
-          pressedChallengeNumber={pressedChallengeNumber}
-          setPressedChallengeNumber={setPressedChallengeNumber}
+    var mapContainer = useRef(null);
+    var mapRef = useRef(null);
 
-          markersRecords={markersRecords}
-          setMarkersRecords={setMarkersRecords}
-          polygonIds={polygonIds}
-          setPolygonIds={setPolygonIds}
-          mapInitialized={mapInitialized}
-          setMapInitialized={setMapInitialized}
-        />
-        {/* <Carousel /> */}
-        <Description
-          challengesData={challengesData}
-          pressedChallengeNumber={pressedChallengeNumber}
-        />
-      </div> 
+    return (
+        <div className='App p-3'>
+            <>
+                {/* <AppFirstRow Challenges={challengesToAccordion}/> */}
+                <Carousel
+                    challengesData={challengesData}
+                    mapRef={mapRef}
+                    pressedChallengeNumber={pressedChallengeNumber}
+                    setPressedChallengeNumber={setPressedChallengeNumber}
+                    polygonIds={polygonIds}
+                />
 
-      
+                <FadeModal/>
 
-      </>
+                <div
+                    style={{
+                        position: 'relative',
+                        height: '253px',
+                        marginLeft: '0.6rem'
+                    }}
+                >
+                    <MapComponent
+                        mapContainer={mapContainer}
+                        mapRef={mapRef}
+                        challengesData={challengesData}
+                        setChallengesData={setChallengesData}
+                        pressedChallengeNumber={pressedChallengeNumber}
+                        setPressedChallengeNumber={setPressedChallengeNumber}
 
-    </div>
-  );
+                        markersRecords={markersRecords}
+                        setMarkersRecords={setMarkersRecords}
+                        polygonIds={polygonIds}
+                        setPolygonIds={setPolygonIds}
+                        mapInitialized={mapInitialized}
+                        setMapInitialized={setMapInitialized}
+                    />
+                    {/* <Carousel /> */}
+                    <Description
+                        challengesData={challengesData}
+                        pressedChallengeNumber={pressedChallengeNumber}
+                    />
+                </div>
+
+
+            </>
+
+        </div>
+    );
 }
 
 export default App;
