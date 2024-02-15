@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import L from 'leaflet';
 
+import 'leaflet/dist/leaflet.css';
 import './Carousel.css'
 import * as Polygons from '../Challenges/Polygons.jsx'
 
@@ -77,7 +78,7 @@ const Carousel = (({challengesData, mapRef, pressedChallengeNumber, setPressedCh
 		// console.log(polygonIds);
 		Polygons.changeAllPolygonsColor(mapRef, challengesData, polygonIds)
 		var polygon = mapRef.current._layers[polygonIds[nextIndex]];
-		// console.log('polygon: ', polygon);
+		console.log('polygon: ', polygon);
 		if (polygon)
 			polygon.setStyle({ fillColor: PRESSED_POLYGON_COLOR, color: PRESSED_POLYGON_COLOR });
 
@@ -90,7 +91,7 @@ const Carousel = (({challengesData, mapRef, pressedChallengeNumber, setPressedCh
 
 		Polygons.changeAllPolygonsColor(mapRef, challengesData, polygonIds)
 		var polygon = mapRef.current._layers[polygonIds[prevIndex]];
-		// console.log('polygon: ', polygon);
+		console.log('polygon: ', polygon);
 		if (polygon)
 			polygon.setStyle({ fillColor: PRESSED_POLYGON_COLOR, color: PRESSED_POLYGON_COLOR });
     }
