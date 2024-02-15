@@ -25,7 +25,8 @@ export function getActivePolygons(challengesData){
 
 const Challenges = ({mapRef, setCenterCoord, challengesData, setChallengesData, polygonIds, setPolygonIds, activePolygons,
 	setActivePolygons,	 markersData, setMarkersData, 
-markerIds, setMarkerIds, isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
+markerIds, setMarkerIds, isNewSuggestionAdded, setIsNewSuggestionAdded,
+mapInitialized}) => {
 	const [activeChallenges, setActiveChallenges] = useState([]);
 	// const [activePolygons, setActivePolygons] = useState([]);
 	
@@ -122,6 +123,7 @@ markerIds, setMarkerIds, isNewSuggestionAdded, setIsNewSuggestionAdded}) => {
 			activeChallenges={activeChallenges}
 			challenges={challengesData}
 			setChallengesData={setChallengesData}
+			mapInitialized={mapInitialized}
 		/>
 		<Markers 
 			mapRef={mapRef}

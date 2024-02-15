@@ -38,7 +38,8 @@ export const useMarkerState = () => {
 };
 
 export function initializeMap(mapContainer, mapRef, polygonVertices) {
-	if (!mapContainer.current || mapRef.current) return;
+	console.log('initializiing map');
+	if (!mapContainer.current || mapRef.current) return false;
 
 	const bounds = L.latLngBounds(polygonVertices);
 	var map = L.map(mapContainer.current)
@@ -53,6 +54,8 @@ export function initializeMap(mapContainer, mapRef, polygonVertices) {
 	//var marker = L.marker(centerCoords, { icon: DEFAULT_ICON }).addTo(map);
 
 	mapRef.current = map;
+	console.log('mapRef.current',  mapRef.current);
+	return true;
 }
   
 export function addButtonOnMap(customTableControl, map, addTableIsOnTheMap) {
@@ -81,7 +84,9 @@ const Map = ({
 	markersRecords,
 	setMarkersRecords,
 	polygonIds,
-	setPolygonIds}) => {
+	setPolygonIds,
+	mapInitialized,
+	setMapInitialized}) => {
 	// var markerIds = [];
 
 	// The value of this variable is not important. The effects have to be activated when the value
@@ -146,12 +151,19 @@ const Map = ({
 
 			CurrentLocation.getCurrentLocation()
 			.then(location => {
-				// console.log("Current location:", location, ' activePolygons ', activePolygons);
+				console.log("Current location:", location, ' activePolygons ', activePolygons);
 				
 				var vertices;
 				vertices = verticesOfClosestPolygon(challengesData, location)
 			
-				initializeMap(mapContainer, mapRef, vertices);
+
+				var isMapInit = initializeMap(mapContainer, mapRef, vertices);
+				console.log('isMapInit: ', isMapInit);
+				if (isMapInit){
+					setMapInitialized(true)
+					console.log('mapRef curr: ', mapRef.current);
+				}
+					
 				// }
 
 
@@ -159,7 +171,7 @@ const Map = ({
 			})
 			.catch(error => {
 				console.error("Error getting current location:", error);
-				initializeMap(mapContainer, mapRef, challengesData[0].polygon.vertices);
+				var isMapInit = initializeMap(mapContainer, mapRef, challengesData[0].polygon.vertices);
 				setPressedChallengeNumber(0);
 			});
 
@@ -358,6 +370,7 @@ const Map = ({
 			setMarkerIds={setMarkerIds}
 			isNewSuggestionAdded={isNewSuggestionAdded}
 			setIsNewSuggestionAdded={setIsNewSuggestionAdded}
+			mapInitialized={mapInitialized}
 		/>
 		</>
 	);

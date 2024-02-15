@@ -36,6 +36,7 @@ function App() {
   const [pressedChallengeNumber, setPressedChallengeNumber] = useState(null);
   const [markersRecords, setMarkersRecords] = useState([]);
   const [polygonIds, setPolygonIds] = useState([]);
+  const [mapInitialized, setMapInitialized] = useState(false);
 
   useEffect(() => {
     var Challenges = [];
@@ -52,6 +53,10 @@ function App() {
     //CurrentLocation.getCurrentLocation()
     
   }, [challengesData])
+
+  useEffect(() => {
+    console.log('!!! mapRef: ', mapRef);
+  }, [mapRef])
 
   var mapContainer = useRef(null);
   var mapRef = useRef(null);
@@ -88,6 +93,8 @@ function App() {
           setMarkersRecords={setMarkersRecords}
           polygonIds={polygonIds}
           setPolygonIds={setPolygonIds}
+          mapInitialized={mapInitialized}
+          setMapInitialized={setMapInitialized}
         />
         {/* <Carousel /> */}
         <Description

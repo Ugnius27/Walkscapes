@@ -21,15 +21,16 @@ export function changeAllPolygonsColor(mapRef, challengesData, polygonIds) {
 	}
 }
 
-const Polygons = ({mapRef, polygonIds, setPolygonIds, activeChallenges, challenges, setChallengesData}) => {
+const Polygons = ({mapRef, polygonIds, setPolygonIds, activeChallenges, challenges, setChallengesData, mapInitialized}) => {
 	const [polygons, setPolygons] = useState(null);
 
 	function createPolygon(map, vertices, color) {
+		console.log('map: ', map);
 		if (!map)
 			return;
 
 		var polygon = L.polygon(vertices, {color: color}).addTo(map);
-		// console.log('pol id: ', polygon._leaflet_id);
+		console.log('polygon ', polygon, 'pol id: ', polygon._leaflet_id);
 
 
 		// polygon.on('click', (e) => {
@@ -78,7 +79,7 @@ const Polygons = ({mapRef, polygonIds, setPolygonIds, activeChallenges, challeng
 		for (var i = 0; i < challenges.length; i++) {
 			var color = challenges[i].is_active? ACTIVE_POLYGON_COLOR : INACTIVE_POLYGON_COLOR;
 			var id = createPolygon(mapRef.current, challenges[i].polygon.vertices, color)
-			// console.log('id after: ', id);
+			console.log('id after: ', id);
 			if (id >= 0){
 				ids.push(id);
 				tempChallenges[i].polygon['leaflet_id'] = ids[ids.length - 1]
@@ -102,12 +103,12 @@ const Polygons = ({mapRef, polygonIds, setPolygonIds, activeChallenges, challeng
 	}, [])
 
 	useEffect(() => {
-		if (!polygons)
+		if (!polygons || mapInitialized == false)
 			return;
 
 		removePolygons(polygonIds);
 		putPolygonsOnMap(mapRef, challenges)
-	}, [polygons, activeChallenges])
+	}, [polygons, activeChallenges, mapInitialized])
 }
 
 export default Polygons;
