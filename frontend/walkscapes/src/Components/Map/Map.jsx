@@ -149,30 +149,34 @@ const Map = ({
         if (challengesData.length > 0 && activePolygons.length > 0 && mapRef.current === null) {
             // console.log('Chal data: ', challengesData)
 
-            CurrentLocation.getCurrentLocation()
-                .then(location => {
-                    console.log("Current location:", location, ' activePolygons ', activePolygons);
+            // CurrentLocation.getCurrentLocation()
+            //     .then(location => {
+            //         console.log("Current location:", location, ' activePolygons ', activePolygons);
 
-                    var vertices;
-                    vertices = verticesOfClosestPolygon(challengesData, location)
+            //         var vertices;
+            //         vertices = verticesOfClosestPolygon(challengesData, location)
 
 
-                    var isMapInit = initializeMap(mapContainer, mapRef, vertices);
-                    console.log('isMapInit: ', isMapInit);
-                    if (isMapInit) {
+            //         var isMapInit = initializeMap(mapContainer, mapRef, vertices);
+            //         console.log('isMapInit: ', isMapInit);
+            //         if (isMapInit) {
+            //             setMapInitialized(true)
+            //             console.log('mapRef curr: ', mapRef.current);
+            //         }
+
+            //         // }
+
+
+            //     })
+                // .catch(error => {
+                    // console.error("Error getting current location:", error);
+                    var isMapInit = initializeMap(mapContainer, mapRef, challengesData[0].polygon.vertices);
+					if (isMapInit) {
                         setMapInitialized(true)
                         console.log('mapRef curr: ', mapRef.current);
                     }
-
-                    // }
-
-
-                })
-                .catch(error => {
-                    console.error("Error getting current location:", error);
-                    var isMapInit = initializeMap(mapContainer, mapRef, challengesData[0].polygon.vertices);
                     setPressedChallengeNumber(0);
-                });
+                // });
 
             // if ((centerCoord[0] === -1 || centerCoord[1] === -1)){
             // 	initializeMap(mapContainer, santaka, mapRef);
