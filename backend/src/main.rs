@@ -8,10 +8,10 @@ use sqlx::MySqlPool;
 use actix_web::{web, App, HttpServer};
 use std::env;
 use actix_cors::Cors;
-use crate::routes::{json_api, ui_components};
+use crate::routes::{json_api, admin_panel::*, admin_panel};
 use json_api::*;
 use ui_components::challenge_list;
-use crate::routes::ui_components::{polygon_editor, record_viewer};
+use admin_panel::ui_components::*;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -22,11 +22,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     //DB
     let pool = MySqlPool::connect(&database_url).await?;
 
+    //Admin
+    let admin_password = env::var("ADMIN_PASSWORD").expect("Admin password not set");
+
     //Server
     HttpServer::new(move || {
         App::new()
             .wrap(Cors::permissive())
             .app_data(web::Data::new(pool.clone()))
+            .app_data(web::Data::new(admin_password.clone()))
 
             .service(marker::get_markers)
             .service(marker::get_marker_records)
@@ -39,6 +43,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             .service(challenge::get_challenges)
 
             .service(polygon::get_polygons)
+
+            .service(login::get_login_form)
+            .service(login::post_login_form)
+            .service(login::admin_redirect)
 
             .service(polygon_editor::post_polygon)
             .service(polygon_editor::delete_polygon)
@@ -60,7 +68,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .index_file("index.html"))
     })
         .bind("0.0.0.0:8080").expect("Failed to bind HTTP")
-        // .bind_rustls_021("0.0.0.0:8443", tls::load_rustls_config()).expect("Failed to bind HTTPS")
+        .bind_rustls_021("0.0.0.0:8443", tls::load_rustls_config()).expect("Failed to bind HTTPS")
         .run()
         .await.unwrap();
 
